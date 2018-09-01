@@ -277,11 +277,10 @@ class DeviceManagerClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
-    options.otherArgs.headers[
-      'x-goog-request-params'
-    ] = gax.routingHeader.fromParams({
-      parent: request.parent,
-    });
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'parent': request.parent
+      });
 
     return this._innerApiCalls.createDeviceRegistry(request, options, callback);
   }
@@ -331,11 +330,10 @@ class DeviceManagerClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
-    options.otherArgs.headers[
-      'x-goog-request-params'
-    ] = gax.routingHeader.fromParams({
-      name: request.name,
-    });
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'name': request.name
+      });
 
     return this._innerApiCalls.getDeviceRegistry(request, options, callback);
   }
@@ -401,11 +399,10 @@ class DeviceManagerClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
-    options.otherArgs.headers[
-      'x-goog-request-params'
-    ] = gax.routingHeader.fromParams({
-      'device_registry.name': request.deviceRegistry.name,
-    });
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'device_registry.name': request.deviceRegistry.name
+      });
 
     return this._innerApiCalls.updateDeviceRegistry(request, options, callback);
   }
@@ -447,11 +444,10 @@ class DeviceManagerClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
-    options.otherArgs.headers[
-      'x-goog-request-params'
-    ] = gax.routingHeader.fromParams({
-      name: request.name,
-    });
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'name': request.name
+      });
 
     return this._innerApiCalls.deleteDeviceRegistry(request, options, callback);
   }
@@ -549,11 +545,10 @@ class DeviceManagerClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
-    options.otherArgs.headers[
-      'x-goog-request-params'
-    ] = gax.routingHeader.fromParams({
-      parent: request.parent,
-    });
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'parent': request.parent
+      });
 
     return this._innerApiCalls.listDeviceRegistries(request, options, callback);
   }
@@ -606,7 +601,7 @@ class DeviceManagerClient {
    */
   listDeviceRegistriesStream(request, options) {
     options = options || {};
-    options.otherArgs = options.otherArgs || {};
+options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
     options.otherArgs.headers[
       'x-goog-request-params'
@@ -619,7 +614,7 @@ class DeviceManagerClient {
       request,
       options
     );
-  }
+  };
 
   /**
    * Creates a device in a device registry.
@@ -678,11 +673,10 @@ class DeviceManagerClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
-    options.otherArgs.headers[
-      'x-goog-request-params'
-    ] = gax.routingHeader.fromParams({
-      parent: request.parent,
-    });
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'parent': request.parent
+      });
 
     return this._innerApiCalls.createDevice(request, options, callback);
   }
@@ -738,11 +732,10 @@ class DeviceManagerClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
-    options.otherArgs.headers[
-      'x-goog-request-params'
-    ] = gax.routingHeader.fromParams({
-      name: request.name,
-    });
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'name': request.name
+      });
 
     return this._innerApiCalls.getDevice(request, options, callback);
   }
@@ -808,11 +801,10 @@ class DeviceManagerClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
-    options.otherArgs.headers[
-      'x-goog-request-params'
-    ] = gax.routingHeader.fromParams({
-      'device.name': request.device.name,
-    });
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'device.name': request.device.name
+      });
 
     return this._innerApiCalls.updateDevice(request, options, callback);
   }
@@ -855,11 +847,10 @@ class DeviceManagerClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
-    options.otherArgs.headers[
-      'x-goog-request-params'
-    ] = gax.routingHeader.fromParams({
-      name: request.name,
-    });
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'name': request.name
+      });
 
     return this._innerApiCalls.deleteDevice(request, options, callback);
   }
@@ -970,11 +961,10 @@ class DeviceManagerClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
-    options.otherArgs.headers[
-      'x-goog-request-params'
-    ] = gax.routingHeader.fromParams({
-      parent: request.parent,
-    });
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'parent': request.parent
+      });
 
     return this._innerApiCalls.listDevices(request, options, callback);
   }
@@ -1046,7 +1036,7 @@ class DeviceManagerClient {
       request,
       options
     );
-  }
+  };
 
   /**
    * Modifies the configuration for the device, which is eventually sent from
@@ -1109,17 +1099,12 @@ class DeviceManagerClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
-    options.otherArgs.headers[
-      'x-goog-request-params'
-    ] = gax.routingHeader.fromParams({
-      name: request.name,
-    });
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'name': request.name
+      });
 
-    return this._innerApiCalls.modifyCloudToDeviceConfig(
-      request,
-      options,
-      callback
-    );
+    return this._innerApiCalls.modifyCloudToDeviceConfig(request, options, callback);
   }
 
   /**
@@ -1173,17 +1158,12 @@ class DeviceManagerClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
-    options.otherArgs.headers[
-      'x-goog-request-params'
-    ] = gax.routingHeader.fromParams({
-      name: request.name,
-    });
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'name': request.name
+      });
 
-    return this._innerApiCalls.listDeviceConfigVersions(
-      request,
-      options,
-      callback
-    );
+    return this._innerApiCalls.listDeviceConfigVersions(request, options, callback);
   }
 
   /**
@@ -1237,11 +1217,10 @@ class DeviceManagerClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
-    options.otherArgs.headers[
-      'x-goog-request-params'
-    ] = gax.routingHeader.fromParams({
-      name: request.name,
-    });
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'name': request.name
+      });
 
     return this._innerApiCalls.listDeviceStates(request, options, callback);
   }
@@ -1305,11 +1284,10 @@ class DeviceManagerClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
-    options.otherArgs.headers[
-      'x-goog-request-params'
-    ] = gax.routingHeader.fromParams({
-      resource: request.resource,
-    });
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'resource': request.resource
+      });
 
     return this._innerApiCalls.setIamPolicy(request, options, callback);
   }
@@ -1362,11 +1340,10 @@ class DeviceManagerClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
-    options.otherArgs.headers[
-      'x-goog-request-params'
-    ] = gax.routingHeader.fromParams({
-      resource: request.resource,
-    });
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'resource': request.resource
+      });
 
     return this._innerApiCalls.getIamPolicy(request, options, callback);
   }
@@ -1429,11 +1406,10 @@ class DeviceManagerClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
-    options.otherArgs.headers[
-      'x-goog-request-params'
-    ] = gax.routingHeader.fromParams({
-      resource: request.resource,
-    });
+    options.otherArgs.headers['x-goog-request-params'] =
+      gax.routingHeader.fromParams({
+        'resource': request.resource
+      });
 
     return this._innerApiCalls.testIamPermissions(request, options, callback);
   }
@@ -1498,7 +1474,9 @@ class DeviceManagerClient {
    * @returns {String} - A string representing the project.
    */
   matchProjectFromLocationName(locationName) {
-    return this._pathTemplates.locationPathTemplate.match(locationName).project;
+    return this._pathTemplates.locationPathTemplate
+      .match(locationName)
+      .project;
   }
 
   /**
@@ -1509,7 +1487,8 @@ class DeviceManagerClient {
    * @returns {String} - A string representing the location.
    */
   matchLocationFromLocationName(locationName) {
-    return this._pathTemplates.locationPathTemplate.match(locationName)
+    return this._pathTemplates.locationPathTemplate
+      .match(locationName)
       .location;
   }
 
@@ -1521,7 +1500,9 @@ class DeviceManagerClient {
    * @returns {String} - A string representing the project.
    */
   matchProjectFromRegistryName(registryName) {
-    return this._pathTemplates.registryPathTemplate.match(registryName).project;
+    return this._pathTemplates.registryPathTemplate
+      .match(registryName)
+      .project;
   }
 
   /**
@@ -1532,7 +1513,8 @@ class DeviceManagerClient {
    * @returns {String} - A string representing the location.
    */
   matchLocationFromRegistryName(registryName) {
-    return this._pathTemplates.registryPathTemplate.match(registryName)
+    return this._pathTemplates.registryPathTemplate
+      .match(registryName)
       .location;
   }
 
@@ -1544,7 +1526,8 @@ class DeviceManagerClient {
    * @returns {String} - A string representing the registry.
    */
   matchRegistryFromRegistryName(registryName) {
-    return this._pathTemplates.registryPathTemplate.match(registryName)
+    return this._pathTemplates.registryPathTemplate
+      .match(registryName)
       .registry;
   }
 
@@ -1556,7 +1539,9 @@ class DeviceManagerClient {
    * @returns {String} - A string representing the project.
    */
   matchProjectFromDeviceName(deviceName) {
-    return this._pathTemplates.devicePathTemplate.match(deviceName).project;
+    return this._pathTemplates.devicePathTemplate
+      .match(deviceName)
+      .project;
   }
 
   /**
@@ -1567,7 +1552,9 @@ class DeviceManagerClient {
    * @returns {String} - A string representing the location.
    */
   matchLocationFromDeviceName(deviceName) {
-    return this._pathTemplates.devicePathTemplate.match(deviceName).location;
+    return this._pathTemplates.devicePathTemplate
+      .match(deviceName)
+      .location;
   }
 
   /**
@@ -1578,7 +1565,9 @@ class DeviceManagerClient {
    * @returns {String} - A string representing the registry.
    */
   matchRegistryFromDeviceName(deviceName) {
-    return this._pathTemplates.devicePathTemplate.match(deviceName).registry;
+    return this._pathTemplates.devicePathTemplate
+      .match(deviceName)
+      .registry;
   }
 
   /**
@@ -1589,8 +1578,11 @@ class DeviceManagerClient {
    * @returns {String} - A string representing the device.
    */
   matchDeviceFromDeviceName(deviceName) {
-    return this._pathTemplates.devicePathTemplate.match(deviceName).device;
+    return this._pathTemplates.devicePathTemplate
+      .match(deviceName)
+      .device;
   }
 }
+
 
 module.exports = DeviceManagerClient;
