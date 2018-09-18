@@ -20,17 +20,17 @@ describe('DeviceManagerSmokeTest', () => {
   if (!process.env.GCLOUD_PROJECT) {
     throw new Error('Usage: GCLOUD_PROJECT=<project_id> node #{$0}');
   }
-  let projectId = process.env.GCLOUD_PROJECT;
+  const projectId = process.env.GCLOUD_PROJECT;
 
   it('successfully makes a call to the service using promises', done => {
     const iot = require('@google-cloud/iot');
 
-    let client = new iot.v1.DeviceManagerClient({
+    const client = new iot.v1.DeviceManagerClient({
       // optional auth parameters.
     });
 
     // Iterate over all elements.
-    let formattedParent = client.locationPath(projectId, 'us-central1');
+    const formattedParent = client.locationPath(projectId, 'us-central1');
 
     client
       .listDeviceRegistries({parent: formattedParent})
@@ -47,21 +47,21 @@ describe('DeviceManagerSmokeTest', () => {
   it('successfully makes a call to the service using callbacks', done => {
     const iot = require('@google-cloud/iot');
 
-    let client = new iot.v1.DeviceManagerClient({
+    const client = new iot.v1.DeviceManagerClient({
       // optional auth parameters.
     });
 
     // Or obtain the paged response.
-    let formattedParent = client.locationPath(projectId, 'us-central1');
+    const formattedParent = client.locationPath(projectId, 'us-central1');
 
-    let options = {autoPaginate: false};
-    var callback = responses => {
+    const options = {autoPaginate: false};
+    const callback = responses => {
       // The actual resources in a response.
-      let resources = responses[0];
+      const resources = responses[0];
       // The next request if the response shows that there are more responses.
-      let nextRequest = responses[1];
+      const nextRequest = responses[1];
       // The actual response object, if necessary.
-      // var rawResponse = responses[2];
+      // const rawResponse = responses[2];
       for (let i = 0; i < resources.length; i += 1) {
         console.log(resources[i]);
       }
@@ -80,11 +80,11 @@ describe('DeviceManagerSmokeTest', () => {
   it('successfully makes a call to the service using streaming', done => {
     const iot = require('@google-cloud/iot');
 
-    let client = new iot.v1.DeviceManagerClient({
+    const client = new iot.v1.DeviceManagerClient({
       // optional auth parameters.
     });
 
-    let formattedParent = client.locationPath(projectId, 'us-central1');
+    const formattedParent = client.locationPath(projectId, 'us-central1');
     client
       .listDeviceRegistriesStream({parent: formattedParent})
       .on('data', element => {
