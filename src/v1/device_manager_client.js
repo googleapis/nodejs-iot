@@ -168,7 +168,7 @@ class DeviceManagerClient {
       'getIamPolicy',
       'testIamPermissions',
     ];
-    for (const methodName of deviceManagerStubMethods) {
+    for (let methodName of deviceManagerStubMethods) {
       this._innerApiCalls[methodName] = gax.createApiCall(
         deviceManagerStub.then(
           stub =>
