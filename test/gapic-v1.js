@@ -23,6 +23,22 @@ const error = new Error();
 error.code = FAKE_STATUS_CODE;
 
 describe('DeviceManagerClient', () => {
+  it('has servicePath', () => {
+    const servicePath = iotModule.v1.DeviceManagerClient.servicePath;
+    assert(servicePath);
+  });
+
+  it('has apiEndpoint', () => {
+    const apiEndpoint = iotModule.v1.DeviceManagerClient.apiEndpoint;
+    assert(apiEndpoint);
+  });
+
+  it('has port', () => {
+    const port = iotModule.v1.DeviceManagerClient.port;
+    assert(port);
+    assert(typeof port === 'number');
+  });
+
   describe('createDeviceRegistry', () => {
     it('invokes createDeviceRegistry without error', done => {
       const client = new iotModule.v1.DeviceManagerClient({
