@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.1.4](https://www.github.com/googleapis/nodejs-iot/compare/v1.1.3...v1.1.4) (2019-09-03)
+
+
+### Bug Fixes
+
+* use correct version # for x-goog-api-client header ([09adf73](https://www.github.com/googleapis/nodejs-iot/commit/09adf73))
+
 ### [1.1.3](https://www.github.com/googleapis/nodejs-iot/compare/v1.1.2...v1.1.3) (2019-08-02)
 
 
