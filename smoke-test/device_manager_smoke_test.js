@@ -16,7 +16,7 @@
 
 describe('DeviceManagerSmokeTest', () => {
   if (!process.env.GCLOUD_PROJECT) {
-    throw new Error('Usage: GCLOUD_PROJECT=<project_id> node #{$0}');
+    throw new Error("Usage: GCLOUD_PROJECT=<project_id> node #{$0}");
   }
   const projectId = process.env.GCLOUD_PROJECT;
 
@@ -30,8 +30,7 @@ describe('DeviceManagerSmokeTest', () => {
     // Iterate over all elements.
     const formattedParent = client.locationPath(projectId, 'us-central1');
 
-    client
-      .listDeviceRegistries({parent: formattedParent})
+    client.listDeviceRegistries({parent: formattedParent})
       .then(responses => {
         const resources = responses[0];
         for (const resource of resources) {
@@ -52,6 +51,7 @@ describe('DeviceManagerSmokeTest', () => {
     // Or obtain the paged response.
     const formattedParent = client.locationPath(projectId, 'us-central1');
 
+
     const options = {autoPaginate: false};
     const callback = responses => {
       // The actual resources in a response.
@@ -67,9 +67,8 @@ describe('DeviceManagerSmokeTest', () => {
         // Fetch the next page.
         return client.listDeviceRegistries(nextRequest, options).then(callback);
       }
-    };
-    client
-      .listDeviceRegistries({parent: formattedParent}, options)
+    }
+    client.listDeviceRegistries({parent: formattedParent}, options)
       .then(callback)
       .then(done)
       .catch(done);
@@ -83,8 +82,7 @@ describe('DeviceManagerSmokeTest', () => {
     });
 
     const formattedParent = client.locationPath(projectId, 'us-central1');
-    client
-      .listDeviceRegistriesStream({parent: formattedParent})
+    client.listDeviceRegistriesStream({parent: formattedParent})
       .on('data', element => {
         console.log(element);
       })
