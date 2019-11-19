@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.4.1](https://www.github.com/googleapis/nodejs-iot/compare/v1.4.0...v1.4.1) (2019-11-19)
+
+
+### Bug Fixes
+
+* **docs:** bump the release level to beta ([#229](https://www.github.com/googleapis/nodejs-iot/issues/229)) ([b62087f](https://www.github.com/googleapis/nodejs-iot/commit/b62087fdb781c9942df72ca3d8c3bedd46eac380))
+
 ## [1.4.0](https://www.github.com/googleapis/nodejs-iot/compare/v1.3.1...v1.4.0) (2019-11-15)
 
 
