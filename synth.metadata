@@ -1,12 +1,12 @@
 {
-  "updateTime": "2019-12-19T19:19:19.478395Z",
+  "updateTime": "2019-12-19T22:16:57.346409Z",
   "sources": [
     {
       "git": {
         "name": "googleapis",
         "remote": "https://github.com/googleapis/googleapis.git",
-        "sha": "ade4803e8a1a9e3efd249c8c86895d2f12eb2aaa",
-        "internalRef": "286418383"
+        "sha": "0ca305403dcc50e31ad9477c9b6241ddfd2056af",
+        "internalRef": "286439553"
       }
     },
     {
@@ -55,9 +55,6 @@
     },
     {
       "path": "README.md"
-    },
-    {
-      "path": "package-lock.json"
     },
     {
       "path": "tslint.json"
@@ -114,9 +111,6 @@
       "path": "system-test/fixtures/sample/src/index.ts"
     },
     {
-      "path": "node_modules/protobufjs/node_modules/@types/node/package.json"
-    },
-    {
       "path": "node_modules/protobufjs/cli/package-lock.json"
     },
     {
@@ -139,9 +133,6 @@
     },
     {
       "path": "node_modules/protobufjs/cli/node_modules/espree/package.json"
-    },
-    {
-      "path": "__pycache__/synth.cpython-36.pyc"
     },
     {
       "path": "samples/README.md"

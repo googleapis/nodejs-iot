@@ -29,7 +29,8 @@ for version in versions:
         'iot', 
         generator_args={
             "grpc-service-config": f"google/cloud/iot/{version}/cloudiot_grpc_service_config.json",
-            "package-name": f"@google-cloud/iot"
+            "package-name": f"@google-cloud/iot",
+            "main-service": f"iot"
             },
         proto_path=f'/google/cloud/iot/{version}',
         extra_proto_files=['google/cloud/common_resources.proto'],
@@ -40,19 +41,6 @@ s.copy(
     library,
     excludes=['package.json', 'README.md', 'src/index.ts'],
 )
-
-# Streaming is broken and missing grpc handling
-# https://github.com/googleapis/gapic-generator/issues/2152
-# s.replace(
-#     'src/v1/device_manager_client.js',
-#     f'(listDeviceRegistriesStream\(.*\n\s+options = .*\n)(\n\s+return)',
-#     '''\g<1>options.otherArgs = options.otherArgs || {};
-#     options.otherArgs.headers = options.otherArgs.headers || {};
-#     options.otherArgs.headers[
-#       'x-goog-request-params'
-#     ] = gax.routingHeader.fromParams({
-#       parent: request.parent,
-#     });\n\g<2>''')
 
 # Copy common templated files
 common_templates = gcp.CommonTemplates()

@@ -17,8 +17,8 @@ const path = require('path');
 module.exports = {
   entry: './src/index.ts',
   output: {
-    library: 'DeviceManager',
-    filename: './device-manager.js',
+    library: 'iot',
+    filename: './iot.js',
   },
   node: {
     child_process: 'empty',
