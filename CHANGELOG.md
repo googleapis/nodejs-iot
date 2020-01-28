@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.6.2](https://www.github.com/googleapis/nodejs-iot/compare/v1.6.1...v1.6.2) (2020-01-28)
+
+
+### Bug Fixes
+
+* enum, bytes, and Long types now accept strings ([629e2ed](https://www.github.com/googleapis/nodejs-iot/commit/629e2edcf7a693e156ca2a144615c2b5a4daa4ee))
+
 ### [1.6.1](https://www.github.com/googleapis/nodejs-iot/compare/v1.6.0...v1.6.1) (2020-01-09)
 
 
