@@ -142,14 +142,14 @@ export class DeviceManagerClient {
     // identifiers to uniquely identify resources within the API.
     // Create useful helper objects for these.
     this._pathTemplates = {
-      locationPathTemplate: new gaxModule.PathTemplate(
-        'projects/{project}/locations/{location}'
+      devicePathTemplate: new gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/registries/{registry}/devices/{device}'
       ),
       registryPathTemplate: new gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/registries/{registry}'
       ),
-      devicePathTemplate: new gaxModule.PathTemplate(
-        'projects/{project}/locations/{location}/registries/{registry}/devices/{device}'
+      locationPathTemplate: new gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}'
       ),
     };
 
@@ -1958,94 +1958,6 @@ export class DeviceManagerClient {
   // --------------------
 
   /**
-   * Return a fully-qualified location resource name string.
-   *
-   * @param {string} project
-   * @param {string} location
-   * @returns {string} Resource name string.
-   */
-  locationPath(project: string, location: string) {
-    return this._pathTemplates.locationPathTemplate.render({
-      project,
-      location,
-    });
-  }
-
-  /**
-   * Parse the project from Location resource.
-   *
-   * @param {string} locationName
-   *   A fully-qualified path representing Location resource.
-   * @returns {string} A string representing the project.
-   */
-  matchProjectFromLocationName(locationName: string) {
-    return this._pathTemplates.locationPathTemplate.match(locationName).project;
-  }
-
-  /**
-   * Parse the location from Location resource.
-   *
-   * @param {string} locationName
-   *   A fully-qualified path representing Location resource.
-   * @returns {string} A string representing the location.
-   */
-  matchLocationFromLocationName(locationName: string) {
-    return this._pathTemplates.locationPathTemplate.match(locationName)
-      .location;
-  }
-
-  /**
-   * Return a fully-qualified registry resource name string.
-   *
-   * @param {string} project
-   * @param {string} location
-   * @param {string} registry
-   * @returns {string} Resource name string.
-   */
-  registryPath(project: string, location: string, registry: string) {
-    return this._pathTemplates.registryPathTemplate.render({
-      project,
-      location,
-      registry,
-    });
-  }
-
-  /**
-   * Parse the project from Registry resource.
-   *
-   * @param {string} registryName
-   *   A fully-qualified path representing Registry resource.
-   * @returns {string} A string representing the project.
-   */
-  matchProjectFromRegistryName(registryName: string) {
-    return this._pathTemplates.registryPathTemplate.match(registryName).project;
-  }
-
-  /**
-   * Parse the location from Registry resource.
-   *
-   * @param {string} registryName
-   *   A fully-qualified path representing Registry resource.
-   * @returns {string} A string representing the location.
-   */
-  matchLocationFromRegistryName(registryName: string) {
-    return this._pathTemplates.registryPathTemplate.match(registryName)
-      .location;
-  }
-
-  /**
-   * Parse the registry from Registry resource.
-   *
-   * @param {string} registryName
-   *   A fully-qualified path representing Registry resource.
-   * @returns {string} A string representing the registry.
-   */
-  matchRegistryFromRegistryName(registryName: string) {
-    return this._pathTemplates.registryPathTemplate.match(registryName)
-      .registry;
-  }
-
-  /**
    * Return a fully-qualified device resource name string.
    *
    * @param {string} project
@@ -2110,6 +2022,94 @@ export class DeviceManagerClient {
    */
   matchDeviceFromDeviceName(deviceName: string) {
     return this._pathTemplates.devicePathTemplate.match(deviceName).device;
+  }
+
+  /**
+   * Return a fully-qualified registry resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} registry
+   * @returns {string} Resource name string.
+   */
+  registryPath(project: string, location: string, registry: string) {
+    return this._pathTemplates.registryPathTemplate.render({
+      project,
+      location,
+      registry,
+    });
+  }
+
+  /**
+   * Parse the project from Registry resource.
+   *
+   * @param {string} registryName
+   *   A fully-qualified path representing Registry resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromRegistryName(registryName: string) {
+    return this._pathTemplates.registryPathTemplate.match(registryName).project;
+  }
+
+  /**
+   * Parse the location from Registry resource.
+   *
+   * @param {string} registryName
+   *   A fully-qualified path representing Registry resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromRegistryName(registryName: string) {
+    return this._pathTemplates.registryPathTemplate.match(registryName)
+      .location;
+  }
+
+  /**
+   * Parse the registry from Registry resource.
+   *
+   * @param {string} registryName
+   *   A fully-qualified path representing Registry resource.
+   * @returns {string} A string representing the registry.
+   */
+  matchRegistryFromRegistryName(registryName: string) {
+    return this._pathTemplates.registryPathTemplate.match(registryName)
+      .registry;
+  }
+
+  /**
+   * Return a fully-qualified location resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @returns {string} Resource name string.
+   */
+  locationPath(project: string, location: string) {
+    return this._pathTemplates.locationPathTemplate.render({
+      project,
+      location,
+    });
+  }
+
+  /**
+   * Parse the project from Location resource.
+   *
+   * @param {string} locationName
+   *   A fully-qualified path representing Location resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromLocationName(locationName: string) {
+    return this._pathTemplates.locationPathTemplate.match(locationName).project;
+  }
+
+  /**
+   * Parse the location from Location resource.
+   *
+   * @param {string} locationName
+   *   A fully-qualified path representing Location resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromLocationName(locationName: string) {
+    return this._pathTemplates.locationPathTemplate.match(locationName)
+      .location;
   }
 
   /**
