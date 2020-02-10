@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.7.1](https://www.github.com/googleapis/nodejs-iot/compare/v1.7.0...v1.7.1) (2020-02-10)
+
+
+### Bug Fixes
+
+* pass x-goog-request-params header for streaming calls ([5a35e0f](https://www.github.com/googleapis/nodejs-iot/commit/5a35e0fd4ea40a1a5e9be2c03e83db5fb7c11f81))
+
 ## [1.7.0](https://www.github.com/googleapis/nodejs-iot/compare/v1.6.1...v1.7.0) (2020-01-30)
 
 
