@@ -12,13 +12,11 @@
   "repository": "googleapis/nodejs-iot",
   "private": true,
   "scripts": {
-    "test": "mocha --timeout 10000"
+    "test": "mocha --recursive --timeout 10000 */**/*test/*.js"
   },
   "dependencies": {
-    "@google-cloud/iot": "^1.7.0"
-  },
-  "devDependencies": {
+    "@google-cloud/iot": "^1.7.0",
     "chai": "^4.2.0",
-    "mocha": "^7.0.0"
+    "mocha": "^7.0.1"
   }
 }
