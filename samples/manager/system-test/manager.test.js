@@ -26,7 +26,7 @@ const region = 'us-central1';
 const projectId =
   process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT;
 
-const cmd = 'node manager.js';
+const cmd = 'node manager/manager.js';
 const cp = require('child_process');
 const cwd = path.join(__dirname, '..');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
@@ -39,7 +39,7 @@ const iotClient = new iot.v1.DeviceManagerClient();
 const pubSubClient = new PubSub({projectId});
 
 before(async () => {
-  execSync(installDeps, `${cwd}/../mqtt_example`);
+  execSync(installDeps, `${cwd}/mqtt_example`);
   assert(
     process.env.GCLOUD_PROJECT,
     `Must set GCLOUD_PROJECT environment variable!`
@@ -267,7 +267,7 @@ it('should send command message to device', async () => {
   );
 
   execSync(
-    `node cloudiot_mqtt_example_nodejs.js mqttDeviceDemo --deviceId=${deviceId} --registryId=${registryName}\
+    `node mqtt_example/cloudiot_mqtt_example_nodejs.js mqttDeviceDemo --deviceId=${deviceId} --registryId=${registryName}\
   --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --numMessages=20 --mqttBridgePort=8883`,
     path.join(__dirname, '../../mqtt_example')
   );

@@ -31,8 +31,9 @@ const region = `us-central1`;
 const rsaPublicCert = process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
 const rsaPrivateKey = process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
 
-const helper = 'node ../manager/manager.js';
-const cmd = 'node cloudiot_mqtt_example_nodejs.js ';
+const helper = 'node manager/manager.js';
+const cmd = 'node mqtt_example/cloudiot_mqtt_example_nodejs.js';
+
 const cmdSuffix = ` --numMessages=1 --privateKeyFile=${rsaPrivateKey} --algorithm=RS256`;
 const cwd = path.join(__dirname, '..');
 const installDeps = 'npm install';

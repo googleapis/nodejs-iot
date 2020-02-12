@@ -24,8 +24,8 @@ const uuid = require('uuid');
 const deviceId = 'test-node-device';
 const topicName = `nodejs-docs-samples-test-iot-${uuid.v4()}`;
 const registryName = `nodejs-test-registry-iot-${uuid.v4()}`;
-const helper = 'node ../manager/manager.js';
-const cmd = `node cloudiot_http_example.js --registryId="${registryName}" --deviceId="${deviceId}" `;
+const helper = 'node manager/manager.js';
+const cmd = `node http_example/cloudiot_http_example.js --registryId="${registryName}" --deviceId="${deviceId}" `;
 const cwd = path.join(__dirname, '..');
 const installDeps = 'npm install';
 
