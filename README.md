@@ -57,19 +57,19 @@ npm install @google-cloud/iot
 ### Using the client library
 
 ```javascript
-  const iot = require('@google-cloud/iot');
-  const client = new iot.v1.DeviceManagerClient();
+const iot = require('@google-cloud/iot');
+const client = new iot.v1.DeviceManagerClient();
 
-  async function quickstart() {
-    const projectId = await client.getProjectId();
-    const parent = client.locationPath(projectId, 'us-central1');
-    const [resources] = await client.listDeviceRegistries({parent});
-    console.log(`${resources.length} resource(s) found.`);
-    for (const resource of resources) {
-      console.log(resource);
-    }
+async function quickstart() {
+  const projectId = await client.getProjectId();
+  const parent = client.locationPath(projectId, 'us-central1');
+  const [resources] = await client.listDeviceRegistries({parent});
+  console.log(`${resources.length} resource(s) found.`);
+  for (const resource of resources) {
+    console.log(resource);
   }
-  quickstart();
+}
+quickstart();
 
 ```
 
@@ -112,11 +112,13 @@ More Information: [Google Cloud Platform Launch Stages][launch_stages]
 
 Contributions welcome! See the [Contributing Guide](https://github.com/googleapis/nodejs-iot/blob/master/CONTRIBUTING.md).
 
-Please note that this `README.md`, the `samples/README.md`,
+Please note that this [README.md](README.md), the [samples/README.md](samples/README.md),
 and a variety of configuration files in this repository (including `.nycrc` and `tsconfig.json`)
-are generated from a central template. To edit one of these files, make an edit
-to its template in this
-[directory](https://github.com/googleapis/synthtool/tree/master/synthtool/gcp/templates/node_library).
+are generated from a central template.
+
+If you would like to make edits to one of those files
+(or if you aren't certain if the file you're changing is one, check in the template repository before making changes),
+look for the file in the [template](https://github.com/googleapis/synthtool/tree/master/synthtool/gcp/templates/node_library).
 
 ## License
 
