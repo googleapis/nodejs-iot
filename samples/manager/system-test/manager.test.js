@@ -31,9 +31,9 @@ const cp = require('child_process');
 const cwd = path.join(__dirname, '..');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const installDeps = 'npm install';
-const rsaPublicCert = process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
-const rsaPrivateKey = process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
-const ecPublicKey = process.env.NODEJS_IOT_EC_PUBLIC_KEY;
+const rsaPublicCert = 'resources/rsa_cert.pem'; // process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
+const rsaPrivateKey = 'resources/rsa_private.pem'; //process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
+const ecPublicKey = 'resources/ec_public.pem'; // process.env.NODEJS_IOT_EC_PUBLIC_KEY;
 
 const iotClient = new iot.v1.DeviceManagerClient();
 const pubSubClient = new PubSub({projectId});
