@@ -14,10 +14,10 @@
 
 'use strict';
 
+const assert = require('assert');
 const iot = require('@google-cloud/iot');
 const path = require('path');
 const {PubSub} = require('@google-cloud/pubsub');
-const assert = require('assert');
 const uuid = require('uuid');
 
 const topicName = `nodejs-iot-test-topic-${uuid.v4()}`;
@@ -266,7 +266,7 @@ it('should send command message to device', async () => {
     cwd
   );
 
-  execSync(
+  cp.exec(
     `node mqtt_example/cloudiot_mqtt_example_nodejs.js mqttDeviceDemo --deviceId=${deviceId} --registryId=${registryName}\
   --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --numMessages=20 --mqttBridgePort=8883`,
     path.join(__dirname, '../../mqtt_example')
