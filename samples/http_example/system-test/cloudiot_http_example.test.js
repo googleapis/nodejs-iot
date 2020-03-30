@@ -53,7 +53,7 @@ after(async () => {
 
 it('should receive configuration message', async () => {
   const localDevice = 'test-rsa-device';
-  const localRegName = `${registryName}-rsa256`;
+  const localRegName = `${registryName}-rsa256config`;
 
   await execSync(`${helper} setupIotTopic ${topicName}`, cwd);
   await execSync(
