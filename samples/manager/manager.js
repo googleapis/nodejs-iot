@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* eslint-disable prefer-destructuring */
-
 'use strict';
 
 const fs = require('fs');

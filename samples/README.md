@@ -1,6 +1,6 @@
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
-# Google Cloud IoT Core NodeJS Samples
+# [Google Cloud Internet of Things (IoT) Core: Node.js Samples](https://github.com/googleapis/nodejs-iot)
 
 This folder contains NodeJS samples that demonstrate an overview of the Google
 Cloud IoT Core platform.
