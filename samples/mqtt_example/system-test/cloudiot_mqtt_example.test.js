@@ -15,8 +15,8 @@
 'use strict';
 
 const assert = require('assert');
-const childProcess = require('child_process');
-const execSync = cmd => childProcess.execSync(cmd, {encoding: 'utf-8'});
+const cp = require('child_process');
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const iot = require('@google-cloud/iot');
 const path = require('path');
 const {PubSub} = require('@google-cloud/pubsub');
@@ -28,8 +28,8 @@ const projectId =
 const topicName = `nodejs-iot-test-mqtt-topic-${uuid.v4()}`;
 const registryName = `nodejs-iot-test-mqtt-registry-${uuid.v4()}`;
 const region = `us-central1`;
-const rsaPublicCert = process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
-const rsaPrivateKey = process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
+const rsaPublicCert = 'resources/rsa_cert.pem';//process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
+const rsaPrivateKey = 'resources/rsa_private.pem';//process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
 
 const helper = 'node manager/manager.js';
 const cmd = 'node mqtt_example/cloudiot_mqtt_example_nodejs.js';
@@ -53,7 +53,6 @@ before(async () => {
   );
   // Create a unique topic to be used for testing.
   const [topic] = await pubSubClient.createTopic(topicName);
-  console.log(`Topic ${topic.name} created.`);
 
   // Creates a registry to be used for tests.
   const createRegistryRequest = {
@@ -70,18 +69,14 @@ before(async () => {
   await execSync(`${helper} setupIotTopic ${topicName}`, cwd);
 
   await iotClient.createDeviceRegistry(createRegistryRequest);
-  console.log(`Created registry: ${registryName}`);
 });
 
 after(async () => {
   await pubSubClient.topic(topicName).delete();
-  console.log(`Topic ${topicName} deleted.`);
 
   // Cleans up the registry by removing all associations and deleting all devices.
   execSync(`${helper} unbindAllDevices ${registryName}`, cwd);
   execSync(`${helper} clearRegistry ${registryName}`, cwd);
-
-  console.log('Deleted test registry.');
 });
 
 it('should receive configuration message', async () => {
@@ -184,33 +179,31 @@ it('should send state message', async () => {
   await execSync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });
 
-it.only('should receive command message', async () => {
+it('should receive command message', async () => {
   const deviceId = `commands-device`;
   const message = 'rotate 180 degrees';
 
-  childProcess.execSync(
+  await execSync(
     `${helper} createRsa256Device ${deviceId} ${registryName} ${rsaPublicCert}`,
-    {cwd: cwd}
+    cwd
   );
 
-  const exec = util.promisify(childProcess.exec);
+  const output = cp.exec(
+    `${cmd} mqttDeviceDemo --registryId=${registryName} --deviceId=${deviceId} --numMessages=5 --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --mqttBridgePort=8883`,
+    cwd,
+    (error, stdout, stderr) => {
+      assert.strictEqual(
+        new RegExp(`Command message received: ${message}`).test(stdout.toString()),
+        true
+      );
+    });
 
-  const output = exec(
-    `${cmd} mqttDeviceDemo --registryId=${registryName} --deviceId=${deviceId} --numMessages=30 --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --mqttBridgePort=8883`,
-    {cwd: cwd}
-  );
-
-  childProcess.execSync(
+  const cmdout = await execSync(
     `${helper} sendCommand ${deviceId} ${registryName} "${message}"`,
-    {cwd: cwd}
+    cwd
   );
 
-  const {stdout} = await output;
-
-  assert.strictEqual(
-    new RegExp(`Command message received: ${message}`).test(stdout),
-    true
-  );
+  await output;
 
   // Cleanup
   await iotClient.deleteDevice({
@@ -219,13 +212,13 @@ it.only('should receive command message', async () => {
 });
 
 it('should listen for bound device config message', async () => {
-  const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
+  const gatewayId = `nodejs-test-gateway-cm-${uuid.v4()}`;
   await execSync(
-    `${helper} createGateway ${registryName} ${gatewayId} --publicKeyFormat=RSA_X509_PEM --publicKeyFile=${rsaPublicCert}`,
+    `${helper} createGateway --registryId=${registryName} --gatewayId=${gatewayId} --publicKeyFormat=RSA_X509_PEM --publicKeyFile=${rsaPublicCert}`,
     cwd
   );
 
-  const deviceId = `nodejs-test-device-iot-${uuid.v4()}`;
+  const deviceId = `nodejs-test-device-cm-${uuid.v4()}`;
 
   await execSync(
     `${helper} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`,
@@ -255,26 +248,29 @@ it('should listen for bound device config message', async () => {
 });
 
 it('should listen for error topic messages', async () => {
-  const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
+  const gatewayId = `nodejs-test-gateway-err-${uuid.v4()}`;
   await execSync(
-    `${helper} createGateway ${registryName} ${gatewayId} --publicKeyFormat=RSA_X509_PEM --publicKeyFile=${rsaPublicCert}`,
+    `${helper} createGateway --registryId=${registryName} --gatewayId=${gatewayId} --publicKeyFormat=RSA_X509_PEM --publicKeyFile=${rsaPublicCert}`,
     cwd
   );
 
   // create a device but don't associate it with the gateway
-  const deviceId = `nodejs-test-device-iot-${uuid.v4()}`;
+  const deviceId = `nodejs-test-device-err-${uuid.v4()}`;
   await execSync(
     `${helper} createRsa256Device ${deviceId} ${registryName} ${rsaPublicCert}`,
     cwd
   );
 
   // check error topic contains error of attaching a device that is not bound
-  const out = await execSync(
-    `${cmd} listenForErrorMessages --gatewayId=${gatewayId} --registryId=${registryName} --deviceId=${deviceId} --privateKeyFile=${rsaPrivateKey} --clientDuration=30000 --algorithm=RS256`
+  const out = await cp.execSync(
+    `${cmd} listenForErrorMessages --gatewayId=${gatewayId} --registryId=${registryName} --deviceId=${deviceId} --privateKeyFile=${rsaPrivateKey} --clientDuration=30000 --algorithm=RS256`,
+    cwd
   );
 
+  const stdout = Buffer.from(out).toString();
+
   assert.strictEqual(
-    new RegExp(`DeviceId ${deviceId} is not associated with Gateway`).test(out),
+    new RegExp(`message received on error topic`).test(out),
     true
   );
 
@@ -294,13 +290,13 @@ it('should listen for error topic messages', async () => {
 });
 
 it('should send data from bound device', async () => {
-  const gatewayId = `nodejs-test-gateway-iot-${uuid.v4()}`;
+  const gatewayId = `nodejs-test-gateway-sdbd-${uuid.v4()}`;
   await execSync(
-    `${helper} createGateway ${registryName} ${gatewayId} --publicKeyFormat=RSA_X509_PEM --publicKeyFile=${rsaPublicCert}`,
+    `${helper} createGateway --registryId=${registryName} --gatewayId=${gatewayId} --publicKeyFormat=RSA_X509_PEM --publicKeyFile=${rsaPublicCert}`,
     cwd
   );
 
-  const deviceId = `nodejs-test-device-iot-${uuid.v4()}`;
+  const deviceId = `nodejs-test-sdbd-${uuid.v4()}`;
   await iotClient.createDevice({
     parent: iotClient.registryPath(projectId, region, registryName),
     device: {
