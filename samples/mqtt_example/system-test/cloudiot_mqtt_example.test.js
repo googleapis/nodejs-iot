@@ -17,10 +17,11 @@
 const assert = require('assert');
 const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
 const iot = require('@google-cloud/iot');
 const path = require('path');
 const {PubSub} = require('@google-cloud/pubsub');
-const util = require('util');
 const uuid = require('uuid');
 
 const projectId =
@@ -188,22 +189,21 @@ it('should receive command message', async () => {
     cwd
   );
 
-  const output = cp.exec(
+  const mqttClientExec = exec(
     `${cmd} mqttDeviceDemo --registryId=${registryName} --deviceId=${deviceId} --numMessages=5 --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --mqttBridgePort=8883`,
-    cwd,
-    (error, stdout, stderr) => {
-      assert.strictEqual(
-        new RegExp(`Command message received: ${message}`).test(stdout.toString()),
-        true
-      );
-    });
+    cwd);
 
   const cmdout = await execSync(
     `${helper} sendCommand ${deviceId} ${registryName} "${message}"`,
     cwd
   );
 
-  await output;
+  const { stdout, stderr } = await mqttClientExec
+
+  assert.strictEqual(
+    new RegExp(`Command message received: ${message}`).test(stdout.toString()),
+    true
+  );
 
   // Cleanup
   await iotClient.deleteDevice({
@@ -212,17 +212,19 @@ it('should receive command message', async () => {
 });
 
 it('should listen for bound device config message', async () => {
-  const gatewayId = `nodejs-test-gateway-cm-${uuid.v4()}`;
+  const gatewayId = `nodejs-test-gateway-cm`;
   await execSync(
     `${helper} createGateway --registryId=${registryName} --gatewayId=${gatewayId} --publicKeyFormat=RSA_X509_PEM --publicKeyFile=${rsaPublicCert}`,
     cwd
   );
 
-  const deviceId = `nodejs-test-device-cm-${uuid.v4()}`;
+  const deviceId = `nodejs-test-device-cm`;
+  await execSync(
+    `${helper} createUnauthDevice  ${deviceId} ${registryName}`
+  );
 
   await execSync(
-    `${helper} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`,
-    cwd
+    `${helper} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`
   );
 
   // listen for configuration changes
@@ -234,16 +236,13 @@ it('should listen for bound device config message', async () => {
 
   // cleanup
   await execSync(
-    `${helper} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`,
-    cwd
+    `${helper} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`
   );
   await execSync(
-    `${helper} deleteDevice ${gatewayId} ${registryName}`,
-    cwd
+    `${helper} deleteDevice ${gatewayId} ${registryName}`
   );
   await execSync(
-    `${helper} deleteDevice ${deviceId} ${registryName}`,
-    cwd
+    `${helper} deleteDevice ${deviceId} ${registryName}`
   );
 });
 
@@ -276,8 +275,7 @@ it('should listen for error topic messages', async () => {
 
   // cleanup
   await execSync(
-    `${helper} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`,
-    cwd
+    `${helper} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`
   );
   await execSync(
     `${helper} deleteDevice ${gatewayId} ${registryName}`,
@@ -292,8 +290,7 @@ it('should listen for error topic messages', async () => {
 it('should send data from bound device', async () => {
   const gatewayId = `nodejs-test-gateway-sdbd-${uuid.v4()}`;
   await execSync(
-    `${helper} createGateway --registryId=${registryName} --gatewayId=${gatewayId} --publicKeyFormat=RSA_X509_PEM --publicKeyFile=${rsaPublicCert}`,
-    cwd
+    `${helper} createGateway --registryId=${registryName} --gatewayId=${gatewayId} --publicKeyFormat=RSA_X509_PEM --publicKeyFile=${rsaPublicCert}`
   );
 
   const deviceId = `nodejs-test-sdbd-${uuid.v4()}`;
@@ -305,8 +302,7 @@ it('should send data from bound device', async () => {
   });
 
   await execSync(
-    `${helper} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`,
-    cwd
+    `${helper} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`
   );
 
   // relay telemetry on behalf of device
