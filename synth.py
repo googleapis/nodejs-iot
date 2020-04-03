@@ -21,9 +21,6 @@ import subprocess
 
 logging.basicConfig(level=logging.DEBUG)
 
-AUTOSYNTH_MULTIPLE_COMMITS = True
-
-
 gapic = gcp.GAPICMicrogenerator()
 versions = ['v1']
 
