@@ -15,7 +15,7 @@
     "test": "mocha --timeout 60000 manager/system-test/manager.test.js test/quickstart.test.js http_example/system-test/cloudiot_http_example.test.js mqtt_example/system-test/cloudiot_mqtt_example.test.js"
   },
   "dependencies": {
-    "@google-cloud/iot": "^1.8.0",
+    "@google-cloud/iot": "^2.0.0",
     "@google-cloud/pubsub": "^1.6.0",
     "googleapis": "^47.0.0"
   },
