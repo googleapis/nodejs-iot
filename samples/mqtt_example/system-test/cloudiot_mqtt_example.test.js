@@ -24,6 +24,8 @@ const path = require('path');
 const {PubSub} = require('@google-cloud/pubsub');
 const uuid = require('uuid');
 
+const {after, before, it, xit} = require('mocha');
+
 const projectId =
   process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT;
 const topicName = `nodejs-iot-test-mqtt-topic-${uuid.v4()}`;

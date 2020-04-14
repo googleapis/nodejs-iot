@@ -21,6 +21,8 @@ const path = require('path');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const uuid = require('uuid');
 
+const {after, before, it} = require('mocha');
+
 const deviceId = 'test-node-device';
 const topicName = `nodejs-docs-samples-test-iot-${uuid.v4()}`;
 const registryName = `nodejs-test-registry-iot-${uuid.v4()}`;
