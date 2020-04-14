@@ -653,7 +653,7 @@ const listenForErrorMessages = (
   // [END iot_listen_for_error_messages]
 };
 
-const {argv} = require(`yargs`)
+const {argv} = require('yargs')
   .options({
     projectId: {
       default: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,
@@ -713,8 +713,8 @@ const {argv} = require(`yargs`)
     },
   })
   .command(
-    `mqttDeviceDemo`,
-    `Connects a device, sends data, and receives data`,
+    'mqttDeviceDemo',
+    'Connects a device, sends data, and receives data',
     {
       messageType: {
         default: 'events',
@@ -746,8 +746,8 @@ const {argv} = require(`yargs`)
     }
   )
   .command(
-    `sendDataFromBoundDevice`,
-    `Sends data from a gateway on behalf of a bound device.`,
+    'sendDataFromBoundDevice',
+    'Sends data from a gateway on behalf of a bound device.',
     {
       gatewayId: {
         description: 'Cloud IoT gateway ID.',
@@ -779,8 +779,8 @@ const {argv} = require(`yargs`)
     }
   )
   .command(
-    `listenForConfigMessages`,
-    `Listens for configuration changes on a gateway and bound device.`,
+    'listenForConfigMessages',
+    'Listens for configuration changes on a gateway and bound device.',
     {
       gatewayId: {
         description: 'Cloud IoT gateway ID.',
@@ -811,8 +811,8 @@ const {argv} = require(`yargs`)
     }
   )
   .command(
-    `listenForErrorMessages`,
-    `Listens for error messages on a gateway.`,
+    'listenForErrorMessages',
+    'Listens for error messages on a gateway.',
     {
       gatewayId: {
         description: 'Cloud IoT gateway ID.',
@@ -843,19 +843,19 @@ const {argv} = require(`yargs`)
     }
   )
   .example(
-    `node $0 mqttDeviceDemo --projectId=blue-jet-123 \\\n\t--registryId=my-registry --deviceId=my-node-device \\\n\t--privateKeyFile=../rsa_private.pem --algorithm=RS256 \\\n\t--cloudRegion=us-central1 --numMessages=10 \\\n`
+    'node $0 mqttDeviceDemo --projectId=blue-jet-123 \\\n\t--registryId=my-registry --deviceId=my-node-device \\\n\t--privateKeyFile=../rsa_private.pem --algorithm=RS256 \\\n\t--cloudRegion=us-central1 --numMessages=10 \\\n'
   )
   .example(
-    `node $0 sendDataFromBoundDevice --projectId=blue-jet-123 \\\n\t--registryId=my-registry --deviceId=my-node-device \\\n\t--privateKeyFile=../rsa_private.pem --algorithm=RS256 \\\n\t--cloudRegion=us-central1 --gatewayId=my-node-gateway \\\n`
+    'node $0 sendDataFromBoundDevice --projectId=blue-jet-123 \\\n\t--registryId=my-registry --deviceId=my-node-device \\\n\t--privateKeyFile=../rsa_private.pem --algorithm=RS256 \\\n\t--cloudRegion=us-central1 --gatewayId=my-node-gateway \\\n'
   )
   .example(
-    `node $0 listenForConfigMessages --projectId=blue-jet-123 \\\n\t--registryId=my-registry --deviceId=my-node-device \\\n\t--privateKeyFile=../rsa_private.pem --algorithm=RS256 \\\n\t--cloudRegion=us-central1 --gatewayId=my-node-gateway \\\n\t--clientDuration=300000 \\\n`
+    'node $0 listenForConfigMessages --projectId=blue-jet-123 \\\n\t--registryId=my-registry --deviceId=my-node-device \\\n\t--privateKeyFile=../rsa_private.pem --algorithm=RS256 \\\n\t--cloudRegion=us-central1 --gatewayId=my-node-gateway \\\n\t--clientDuration=300000 \\\n'
   )
   .example(
-    `node $0 listenForErrorMessages --projectId=blue-jet-123 \\\n\t--registryId=my-registry --deviceId=my-node-device \\\n\t--privateKeyFile=../rsa_private.pem --algorithm=RS256 \\\n\t--cloudRegion=us-central1 --gatewayId=my-node-gateway \\\n\t--clientDuration=300000 \\\n`
+    'node $0 listenForErrorMessages --projectId=blue-jet-123 \\\n\t--registryId=my-registry --deviceId=my-node-device \\\n\t--privateKeyFile=../rsa_private.pem --algorithm=RS256 \\\n\t--cloudRegion=us-central1 --gatewayId=my-node-gateway \\\n\t--clientDuration=300000 \\\n'
   )
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/iot-core/docs`)
+  .epilogue('For more information, see https://cloud.google.com/iot-core/docs')
   .help()
   .strict();

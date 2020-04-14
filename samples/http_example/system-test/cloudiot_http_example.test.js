@@ -33,11 +33,11 @@ assert.ok(execSync(installDeps, `${cwd}/../manager`));
 before(async () => {
   assert(
     process.env.GCLOUD_PROJECT,
-    `Must set GCLOUD_PROJECT environment variable!`
+    'Must set GCLOUD_PROJECT environment variable!'
   );
   assert(
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+    'Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!'
   );
   const pubsub = new PubSub();
   const [topic] = await pubsub.createTopic(topicName);
@@ -56,10 +56,7 @@ it('should receive configuration message', async () => {
   const localRegName = `${registryName}-rsa256config`;
 
   await execSync(`${helper} setupIotTopic ${topicName}`, cwd);
-  await execSync(
-    `${helper} createRegistry ${localRegName} ${topicName}`,
-    cwd
-  );
+  await execSync(`${helper} createRegistry ${localRegName} ${topicName}`, cwd);
   await execSync(
     `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`,
     cwd
@@ -77,10 +74,7 @@ it('should receive configuration message', async () => {
     `${helper} getDeviceState ${localDevice} ${localRegName}`,
     cwd
   );
-  await execSync(
-    `${helper} deleteDevice ${localDevice} ${localRegName}`,
-    cwd
-  );
+  await execSync(`${helper} deleteDevice ${localDevice} ${localRegName}`, cwd);
   await execSync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });
 
@@ -89,10 +83,7 @@ it('should send event message', async () => {
   const localRegName = `${registryName}-rsa256`;
 
   await execSync(`${helper} setupIotTopic ${topicName}`, cwd);
-  await execSync(
-    `${helper} createRegistry ${localRegName} ${topicName}`,
-    cwd
-  );
+  await execSync(`${helper} createRegistry ${localRegName} ${topicName}`, cwd);
   await execSync(
     `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`,
     cwd
@@ -110,10 +101,7 @@ it('should send event message', async () => {
     `${helper} getDeviceState ${localDevice} ${localRegName}`,
     cwd
   );
-  await execSync(
-    `${helper} deleteDevice ${localDevice} ${localRegName}`,
-    cwd
-  );
+  await execSync(`${helper} deleteDevice ${localDevice} ${localRegName}`, cwd);
   await execSync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });
 
@@ -121,10 +109,7 @@ it('should send state message', async () => {
   const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
   await execSync(`${helper} setupIotTopic ${topicName}`, cwd);
-  await execSync(
-    `${helper} createRegistry ${localRegName} ${topicName}`,
-    cwd
-  );
+  await execSync(`${helper} createRegistry ${localRegName} ${topicName}`, cwd);
   await execSync(
     `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`,
     cwd
@@ -141,9 +126,6 @@ it('should send state message', async () => {
     `${helper} getDeviceState ${localDevice} ${localRegName}`,
     cwd
   );
-  await execSync(
-    `${helper} deleteDevice ${localDevice} ${localRegName}`,
-    cwd
-  );
+  await execSync(`${helper} deleteDevice ${localDevice} ${localRegName}`, cwd);
   await execSync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });

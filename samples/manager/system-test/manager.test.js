@@ -42,11 +42,11 @@ before(async () => {
   execSync(installDeps, `${cwd}/mqtt_example`);
   assert(
     process.env.GCLOUD_PROJECT,
-    `Must set GCLOUD_PROJECT environment variable!`
+    'Must set GCLOUD_PROJECT environment variable!'
   );
   assert(
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+    'Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!'
   );
   // Create a topic to be used for testing.
   const [topic] = await pubSubClient.createTopic(topicName);
@@ -250,10 +250,7 @@ it('should create and delete a registry', async () => {
     cwd
   );
   assert.ok(output.includes('Successfully created registry'));
-  output = await execSync(
-    `${cmd} deleteRegistry ${createRegistryId}`,
-    cwd
-  );
+  output = await execSync(`${cmd} deleteRegistry ${createRegistryId}`, cwd);
   assert.ok(output.includes('Successfully deleted registry'));
 });
 

@@ -36,7 +36,7 @@ const setupIotTopic = async topicName => {
 
   const pubsub = new PubSub();
   const topic = pubsub.topic(topicName);
-  const serviceAccount = `serviceAccount:cloud-iot@system.gserviceaccount.com`;
+  const serviceAccount = 'serviceAccount:cloud-iot@system.gserviceaccount.com';
 
   let policy = await topic.iam.getPolicy();
   policy = policy[0] || {};
@@ -744,7 +744,7 @@ const getDeviceConfigs = async (
     if (configs.length === 0) {
       console.log(`No configs for device: ${deviceId}`);
     } else {
-      console.log(`Configs:`);
+      console.log('Configs:');
     }
 
     for (let i = 0; i < configs.length; i++) {
@@ -1407,8 +1407,8 @@ require(`yargs`) // eslint-disable-line
     },
   })
   .command(
-    `createRsa256Device <deviceId> <registryId> <rsaPath>`,
-    `Creates an RSA256 device.`,
+    'createRsa256Device <deviceId> <registryId> <rsaPath>',
+    'Creates an RSA256 device.',
     {},
     async opts => {
       const client = await getClient(opts.serviceAccount);
@@ -1423,8 +1423,8 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `createEs256Device <deviceId> <registryId> <esPath>`,
-    `Creates an ES256 device.`,
+    'createEs256Device <deviceId> <registryId> <esPath>',
+    'Creates an ES256 device.',
     {},
     async opts => {
       const client = await getClient(opts.serviceAccount);
@@ -1439,8 +1439,8 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `createUnauthDevice <deviceId> <registryId>`,
-    `Creates a device without authorization.`,
+    'createUnauthDevice <deviceId> <registryId>',
+    'Creates a device without authorization.',
     {},
     async opts => {
       const client = await getClient(opts.serviceAccount);
@@ -1454,8 +1454,8 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `createDevice <deviceId> <registryId>`,
-    `Creates a device with the given public key. Public key can be ommitted and added later on.`,
+    'createDevice <deviceId> <registryId>',
+    'Creates a device with the given public key. Public key can be ommitted and added later on.',
     {
       publicKeyFormat: {
         default: 'RSA_X509_PEM',
@@ -1485,8 +1485,8 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `createRegistry <registryId> <pubsubTopic>`,
-    `Creates a device registry.`,
+    'createRegistry <registryId> <pubsubTopic>',
+    'Creates a device registry.',
     {},
     async opts => {
       const client = await getClient(opts.serviceAccount);
@@ -1500,8 +1500,8 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `lookupRegistry <registryId>`,
-    `Gets a device registry.`,
+    'lookupRegistry <registryId>',
+    'Gets a device registry.',
     {},
     async opts => {
       const client = await getClient(opts.serviceAccount);
@@ -1514,20 +1514,20 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `createIotTopic <pubsubTopic>`,
-    `Creates and configures a PubSub topic for Cloud IoT Core.`,
+    'createIotTopic <pubsubTopic>',
+    'Creates and configures a PubSub topic for Cloud IoT Core.',
     {},
     opts => createIotTopic(opts.pubsubTopic)
   )
   .command(
-    `setupIotTopic <pubsubTopic>`,
-    `Configures the PubSub topic for Cloud IoT Core.`,
+    'setupIotTopic <pubsubTopic>',
+    'Configures the PubSub topic for Cloud IoT Core.',
     {},
     opts => setupIotTopic(opts.pubsubTopic)
   )
   .command(
-    `deleteDevice <deviceId> <registryId>`,
-    `Deletes a device from the device registry.`,
+    'deleteDevice <deviceId> <registryId>',
+    'Deletes a device from the device registry.',
     {},
     async opts => {
       const client = await getClient(opts.serviceAccount);
@@ -1541,8 +1541,8 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `clearRegistry <registryId>`,
-    `!!Be careful! Removes all devices and then deletes a device registry!!`,
+    'clearRegistry <registryId>',
+    '!!Be careful! Removes all devices and then deletes a device registry!!',
     {},
     async opts => {
       const client = await getClient(opts.serviceAccount);
@@ -1555,8 +1555,8 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `deleteRegistry <registryId>`,
-    `Deletes a device registry.`,
+    'deleteRegistry <registryId>',
+    'Deletes a device registry.',
     {},
     async opts => {
       const client = await getClient(opts.serviceAccount);
@@ -1569,8 +1569,8 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `getDevice <deviceId> <registryId>`,
-    `Retrieves device info given a device ID.`,
+    'getDevice <deviceId> <registryId>',
+    'Retrieves device info given a device ID.',
     {},
     async opts => {
       const client = await getClient(opts.serviceAccount);
@@ -1584,8 +1584,8 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `getDeviceConfigs <deviceId> <registryId>`,
-    `Retrieves device configurations given a device ID.`,
+    'getDeviceConfigs <deviceId> <registryId>',
+    'Retrieves device configurations given a device ID.',
     {},
     async opts => {
       const client = await getClient(opts.serviceAccount);
@@ -1599,8 +1599,8 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `getDeviceState <deviceId> <registryId>`,
-    `Retrieves device state given a device ID.`,
+    'getDeviceState <deviceId> <registryId>',
+    'Retrieves device state given a device ID.',
     {},
     async opts => {
       const client = await getClient(opts.serviceAccount);
@@ -1614,8 +1614,8 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `getRegistry <registryId>`,
-    `Retrieves a registry.`,
+    'getRegistry <registryId>',
+    'Retrieves a registry.',
     {},
     async opts => {
       const client = await getClient(opts.serviceAccount);
@@ -1628,8 +1628,8 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `listDevices <registryId>`,
-    `Lists the devices in a given registry.`,
+    'listDevices <registryId>',
+    'Lists the devices in a given registry.',
     {},
     async opts => {
       const client = await getClient(opts.serviceAccount);
@@ -1642,8 +1642,8 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `listRegistries`,
-    `Lists the registries in a given project.`,
+    'listRegistries',
+    'Lists the registries in a given project.',
     {},
     async opts => {
       const client = await getClient(opts.serviceAccount);
@@ -1651,8 +1651,8 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `patchEs256 <deviceId> <registryId> <es256Path>`,
-    `Patches a device with ES256 authorization credentials.`,
+    'patchEs256 <deviceId> <registryId> <es256Path>',
+    'Patches a device with ES256 authorization credentials.',
     {},
     async opts => {
       const client = await getClient(opts.serviceAccount);
@@ -1667,8 +1667,8 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `patchRsa256 <deviceId> <registryId> <rsa256Path>`,
-    `Patches a device with RSA256 authentication credentials.`,
+    'patchRsa256 <deviceId> <registryId> <rsa256Path>',
+    'Patches a device with RSA256 authentication credentials.',
     {},
     async opts => {
       const client = await getClient(opts.serviceAccount);
@@ -1683,8 +1683,8 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `setConfig <deviceId> <registryId> <configuration> <version>`,
-    `Sets a devices configuration to the specified data.`,
+    'setConfig <deviceId> <registryId> <configuration> <version>',
+    'Sets a devices configuration to the specified data.',
     {},
     async opts => {
       const client = await getClient(opts.serviceAccount);
@@ -1700,8 +1700,8 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `sendCommand <deviceId> <registryId> <commandMsg>`,
-    `Sends a command message to a device subscribed to the commands topic`,
+    'sendCommand <deviceId> <registryId> <commandMsg>',
+    'Sends a command message to a device subscribed to the commands topic',
     {},
     async opts => {
       await sendCommand(
@@ -1714,8 +1714,8 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `getIamPolicy <registryId>`,
-    `Gets the IAM permissions for a given registry`,
+    'getIamPolicy <registryId>',
+    'Gets the IAM permissions for a given registry',
     {},
     async opts => {
       const client = await getClient(opts.serviceAccount);
@@ -1728,8 +1728,8 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `setIamPolicy <registryId> <member> <role>`,
-    `Gets the IAM permissions for a given registry`,
+    'setIamPolicy <registryId> <member> <role>',
+    'Gets the IAM permissions for a given registry',
     {},
     async opts => {
       const client = await getClient(opts.serviceAccount);
@@ -1744,8 +1744,8 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `createGateway`,
-    `Creates a gateway`,
+    'createGateway',
+    'Creates a gateway',
     {
       registryId: {
         description:
@@ -1802,8 +1802,8 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `listGateways <registryId>`,
-    `Lists gateways in a registry.`,
+    'listGateways <registryId>',
+    'Lists gateways in a registry.',
     {},
     async opts => {
       const client = await getClient(opts.serviceAccount);
@@ -1816,8 +1816,8 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `bindDeviceToGateway <registryId> <gatewayId> <deviceId>`,
-    `Binds a device to a gateway`,
+    'bindDeviceToGateway <registryId> <gatewayId> <deviceId>',
+    'Binds a device to a gateway',
     {},
     async opts => {
       const client = await getClient(opts.serviceAccount);
@@ -1832,8 +1832,8 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `unbindDeviceFromGateway <registryId> <gatewayId> <deviceId>`,
-    `Unbinds a device from a gateway`,
+    'unbindDeviceFromGateway <registryId> <gatewayId> <deviceId>',
+    'Unbinds a device from a gateway',
     {},
     async opts => {
       const client = await getClient(opts.serviceAccount);
@@ -1848,8 +1848,8 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `unbindDeviceFromAllGateways <registryId> <deviceId>`,
-    `Unbinds a device from all gateways`,
+    'unbindDeviceFromAllGateways <registryId> <deviceId>',
+    'Unbinds a device from all gateways',
     {},
     async opts => {
       await unbindDeviceFromAllGateways(
@@ -1861,16 +1861,16 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `unbindAllDevices <registryId>`,
-    `Unbinds all devices in a given registry. Mainly for clearing registries`,
+    'unbindAllDevices <registryId>',
+    'Unbinds all devices in a given registry. Mainly for clearing registries',
     {},
     async opts => {
       await unbindAllDevices(opts.projectId, opts.cloudRegion, opts.registryId);
     }
   )
   .command(
-    `listDevicesForGateway <registryId> <gatewayId>`,
-    `Lists devices in a gateway.`,
+    'listDevicesForGateway <registryId> <gatewayId>',
+    'Lists devices in a gateway.',
     {},
     async opts => {
       const client = await getClient(opts.serviceAccount);
@@ -1884,8 +1884,8 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .command(
-    `listGatewaysForDevice <registryId> <deviceId>`,
-    `Lists gateways for a given device.`,
+    'listGatewaysForDevice <registryId> <deviceId>',
+    'Lists gateways for a given device.',
     {},
     async opts => {
       const client = await getClient(opts.serviceAccount);
@@ -1899,46 +1899,46 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .example(
-    `node $0 createDevice my-device my-registry RS256_X509_PEM ./rsa_cert.pem`
+    'node $0 createDevice my-device my-registry RS256_X509_PEM ./rsa_cert.pem'
   )
   .example(
-    `node $0 createEs256Device my-es-device my-registry ../ec_public.pem`
+    'node $0 createEs256Device my-es-device my-registry ../ec_public.pem'
   )
   .example(
-    `node $0 createRegistry my-registry my-iot-topic --serviceAccount=$secure/svc.json --projectId=my-project-id`
+    'node $0 createRegistry my-registry my-iot-topic --serviceAccount=$secure/svc.json --projectId=my-project-id'
   )
   .example(
-    `node $0 createRsa256Device my-rsa-device my-registry ../rsa_cert.pem`
+    'node $0 createRsa256Device my-rsa-device my-registry ../rsa_cert.pem'
   )
   .example(
-    `node $0 createGateway --registryId=my-registry --gatewayId=my-gateway\
-    --format=RS256_X509_PEM --key=./rsa_cert.pem`
+    'node $0 createGateway --registryId=my-registry --gatewayId=my-gateway\
+    --format=RS256_X509_PEM --key=./rsa_cert.pem'
   )
-  .example(`node $0 createUnauthDevice my-device my-registry`)
-  .example(`node $0 deleteDevice my-device my-registry`)
-  .example(`node $0 deleteRegistry my-device my-registry`)
-  .example(`node $0 getDevice my-device my-registry`)
-  .example(`node $0 getDeviceState my-device my-registry`)
-  .example(`node $0 getIamPolicy my-registry`)
-  .example(`node $0 getRegistry my-registry`)
+  .example('node $0 createUnauthDevice my-device my-registry')
+  .example('node $0 deleteDevice my-device my-registry')
+  .example('node $0 deleteRegistry my-device my-registry')
+  .example('node $0 getDevice my-device my-registry')
+  .example('node $0 getDeviceState my-device my-registry')
+  .example('node $0 getIamPolicy my-registry')
+  .example('node $0 getRegistry my-registry')
   .example(
-    `node $0 listDevices -s path/svc.json -p your-project-id -c asia-east1 my-registry`
-  )
-  .example(
-    `node $0 listRegistries -s path/svc.json -p your-project-id -c europe-west1`
-  )
-  .example(`node $0 patchRsa256 my-device my-registry ../rsa_cert.pem`)
-  .example(`node $0 patchEs256 my-device my-registry ../ec_public.pem`)
-  .example(`node $0 setConfig my-device my-registry "test" 0`)
-  .example(`node $0 sendCommand my-device my-registry test`)
-  .example(
-    `node $0 setIamPolicy my-registry user:example@example.com roles/viewer`
+    'node $0 listDevices -s path/svc.json -p your-project-id -c asia-east1 my-registry'
   )
   .example(
-    `node $0 setupTopic my-iot-topic --serviceAccount=$HOME/creds_iot.json --projectId=my-project-id`
+    'node $0 listRegistries -s path/svc.json -p your-project-id -c europe-west1'
+  )
+  .example('node $0 patchRsa256 my-device my-registry ../rsa_cert.pem')
+  .example('node $0 patchEs256 my-device my-registry ../ec_public.pem')
+  .example('node $0 setConfig my-device my-registry "test" 0')
+  .example('node $0 sendCommand my-device my-registry test')
+  .example(
+    'node $0 setIamPolicy my-registry user:example@example.com roles/viewer'
+  )
+  .example(
+    'node $0 setupTopic my-iot-topic --serviceAccount=$HOME/creds_iot.json --projectId=my-project-id'
   )
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/iot-core/docs`)
+  .epilogue('For more information, see https://cloud.google.com/iot-core/docs')
   .help()
   .strict().argv;

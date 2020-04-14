@@ -37,7 +37,7 @@ const createJwt = (projectId, privateKeyFile, algorithm) => {
 // [END iot_http_jwt]
 
 console.log('Google Cloud IoT Core HTTP example.');
-const {argv} = require(`yargs`)
+const {argv} = require('yargs')
   .options({
     projectId: {
       default: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,
@@ -104,11 +104,11 @@ const {argv} = require(`yargs`)
     },
   })
   .example(
-    `node $0 cloudiot_http_example.js --projectId=blue-jet-123 --registryId=my-registry --deviceId=my-node-device --privateKeyFile=../rsaPrivate.pem --algorithm=RS256`
+    'node $0 cloudiot_http_example.js --projectId=blue-jet-123 --registryId=my-registry --deviceId=my-node-device --privateKeyFile=../rsaPrivate.pem --algorithm=RS256'
   )
   .wrap(120)
   .recommendCommands()
-  .epilogue(`For more information, see https://cloud.google.com/iot-core/docs`)
+  .epilogue('For more information, see https://cloud.google.com/iot-core/docs')
   .help()
   .strict();
 

@@ -28,9 +28,9 @@ const projectId =
   process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT;
 const topicName = `nodejs-iot-test-mqtt-topic-${uuid.v4()}`;
 const registryName = `nodejs-iot-test-mqtt-registry-${uuid.v4()}`;
-const region = `us-central1`;
-const rsaPublicCert = 'resources/rsa_cert.pem';//process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
-const rsaPrivateKey = 'resources/rsa_private.pem';//process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
+const region = 'us-central1';
+const rsaPublicCert = 'resources/rsa_cert.pem'; //process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
+const rsaPrivateKey = 'resources/rsa_private.pem'; //process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
 
 const helper = 'node manager/manager.js';
 const cmd = 'node mqtt_example/cloudiot_mqtt_example_nodejs.js';
@@ -46,11 +46,11 @@ assert.ok(execSync(installDeps, `${cwd}/../manager`));
 before(async () => {
   assert(
     process.env.GCLOUD_PROJECT,
-    `Must set GCLOUD_PROJECT environment variable!`
+    'Must set GCLOUD_PROJECT environment variable!'
   );
   assert(
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    `Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!`
+    'Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!'
   );
   // Create a unique topic to be used for testing.
   const [topic] = await pubSubClient.createTopic(topicName);
@@ -84,14 +84,8 @@ it('should receive configuration message', async () => {
   const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
 
-  let output = await execSync(
-    `${helper} setupIotTopic ${topicName}`,
-    cwd
-  );
-  await execSync(
-    `${helper} createRegistry ${localRegName} ${topicName}`,
-    cwd
-  );
+  let output = await execSync(`${helper} setupIotTopic ${topicName}`, cwd);
+  await execSync(`${helper} createRegistry ${localRegName} ${topicName}`, cwd);
   await execSync(
     `${helper} createRsa256Device ${localDevice} ${localRegName} ${rsaPublicCert}`,
     cwd
@@ -110,10 +104,7 @@ it('should receive configuration message', async () => {
     `${helper} getDeviceState ${localDevice} ${localRegName}`,
     cwd
   );
-  await execSync(
-    `${helper} deleteDevice ${localDevice} ${localRegName}`,
-    cwd
-  );
+  await execSync(`${helper} deleteDevice ${localDevice} ${localRegName}`, cwd);
   await execSync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });
 
@@ -122,10 +113,7 @@ it('should send event message', async () => {
   const localRegName = `${registryName}-rsa256`;
 
   await execSync(`${helper} setupIotTopic ${topicName}`, cwd);
-  await execSync(
-    `${helper} createRegistry ${localRegName} ${topicName}`,
-    cwd
-  );
+  await execSync(`${helper} createRegistry ${localRegName} ${topicName}`, cwd);
   await execSync(
     `${helper} createRsa256Device ${localDevice} ${localRegName} ${rsaPublicCert}`,
     cwd
@@ -142,10 +130,7 @@ it('should send event message', async () => {
     `${helper} getDeviceState ${localDevice} ${localRegName}`,
     cwd
   );
-  await execSync(
-    `${helper} deleteDevice ${localDevice} ${localRegName}`,
-    cwd
-  );
+  await execSync(`${helper} deleteDevice ${localDevice} ${localRegName}`, cwd);
   await execSync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });
 
@@ -153,10 +138,7 @@ it('should send state message', async () => {
   const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
   await execSync(`${helper} setupIotTopic ${topicName}`, cwd);
-  await execSync(
-    `${helper} createRegistry ${localRegName} ${topicName}`,
-    cwd
-  );
+  await execSync(`${helper} createRegistry ${localRegName} ${topicName}`, cwd);
   await execSync(
     `${helper} createRsa256Device ${localDevice} ${localRegName} ${rsaPublicCert}`,
     cwd
@@ -173,15 +155,12 @@ it('should send state message', async () => {
     `${helper} getDeviceState ${localDevice} ${localRegName}`,
     cwd
   );
-  await execSync(
-    `${helper} deleteDevice ${localDevice} ${localRegName}`,
-    cwd
-  );
+  await execSync(`${helper} deleteDevice ${localDevice} ${localRegName}`, cwd);
   await execSync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });
 
 xit('should receive command message', async () => {
-  const deviceId = `commands-device`;
+  const deviceId = 'commands-device';
   const message = 'rotate 180 degrees';
 
   await execSync(
@@ -191,14 +170,15 @@ xit('should receive command message', async () => {
 
   const mqttClientExec = exec(
     `${cmd} mqttDeviceDemo --registryId=${registryName} --deviceId=${deviceId} --numMessages=5 --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --mqttBridgePort=8883`,
-    cwd);
+    cwd
+  );
 
-  const cmdout = await execSync(
+  await execSync(
     `${helper} sendCommand ${deviceId} ${registryName} "${message}"`,
     cwd
   );
 
-  const { stdout, stderr } = await mqttClientExec
+  const {stdout} = await mqttClientExec;
 
   assert.strictEqual(
     new RegExp(`Command message received: ${message}`).test(stdout.toString()),
@@ -212,16 +192,14 @@ xit('should receive command message', async () => {
 });
 
 it('should listen for bound device config message', async () => {
-  const gatewayId = `nodejs-test-gateway-cm`;
+  const gatewayId = 'nodejs-test-gateway-cm';
   await execSync(
     `${helper} createGateway --registryId=${registryName} --gatewayId=${gatewayId} --publicKeyFormat=RSA_X509_PEM --publicKeyFile=${rsaPublicCert}`,
     cwd
   );
 
-  const deviceId = `nodejs-test-device-cm`;
-  await execSync(
-    `${helper} createUnauthDevice  ${deviceId} ${registryName}`
-  );
+  const deviceId = 'nodejs-test-device-cm';
+  await execSync(`${helper} createUnauthDevice  ${deviceId} ${registryName}`);
 
   await execSync(
     `${helper} bindDeviceToGateway ${registryName} ${gatewayId} ${deviceId}`
@@ -238,12 +216,8 @@ it('should listen for bound device config message', async () => {
   await execSync(
     `${helper} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`
   );
-  await execSync(
-    `${helper} deleteDevice ${gatewayId} ${registryName}`
-  );
-  await execSync(
-    `${helper} deleteDevice ${deviceId} ${registryName}`
-  );
+  await execSync(`${helper} deleteDevice ${gatewayId} ${registryName}`);
+  await execSync(`${helper} deleteDevice ${deviceId} ${registryName}`);
 });
 
 it('should listen for error topic messages', async () => {
@@ -269,7 +243,7 @@ it('should listen for error topic messages', async () => {
   const stdout = Buffer.from(out).toString();
 
   assert.strictEqual(
-    new RegExp(`message received on error topic`).test(out),
+    new RegExp('message received on error topic').test(stdout),
     true
   );
 
@@ -277,14 +251,8 @@ it('should listen for error topic messages', async () => {
   await execSync(
     `${helper} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`
   );
-  await execSync(
-    `${helper} deleteDevice ${gatewayId} ${registryName}`,
-    cwd
-  );
-  await execSync(
-    `${helper} deleteDevice ${deviceId} ${registryName}`,
-    cwd
-  );
+  await execSync(`${helper} deleteDevice ${gatewayId} ${registryName}`, cwd);
+  await execSync(`${helper} deleteDevice ${deviceId} ${registryName}`, cwd);
 });
 
 it('should send data from bound device', async () => {
@@ -317,12 +285,6 @@ it('should send data from bound device', async () => {
     `${helper} unbindDeviceFromGateway ${registryName} ${gatewayId} ${deviceId}`,
     cwd
   );
-  await execSync(
-    `${helper} deleteDevice ${gatewayId} ${registryName}`,
-    cwd
-  );
-  await execSync(
-    `${helper} deleteDevice ${deviceId} ${registryName}`,
-    cwd
-  );
+  await execSync(`${helper} deleteDevice ${gatewayId} ${registryName}`, cwd);
+  await execSync(`${helper} deleteDevice ${deviceId} ${registryName}`, cwd);
 });
