@@ -12,7 +12,7 @@
   "repository": "googleapis/nodejs-iot",
   "private": true,
   "scripts": {
-    "test": "mocha --timeout 60000 manager/system-test/manager.test.js test/quickstart.test.js http_example/system-test/cloudiot_http_example.test.js mqtt_example/system-test/cloudiot_mqtt_example.test.js"
+    "test": "mocha --timeout 60000 manager/system-test/manager.test.js http_example/system-test/cloudiot_http_example.test.js mqtt_example/system-test/cloudiot_mqtt_example.test.js"
   },
   "dependencies": {
     "@google-cloud/iot": "^1.8.0",

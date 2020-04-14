@@ -257,7 +257,7 @@ it('should create and delete a registry', async () => {
   assert.ok(output.includes('Successfully deleted registry'));
 });
 
-it('should send command message to device', async () => {
+xit('should send command message to device', async () => {
   const deviceId = 'test-device-command';
   const commandMessage = 'rotate:180_degrees';
 

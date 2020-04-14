@@ -180,7 +180,7 @@ it('should send state message', async () => {
   await execSync(`${helper} deleteRegistry ${localRegName}`, cwd);
 });
 
-it('should receive command message', async () => {
+xit('should receive command message', async () => {
   const deviceId = `commands-device`;
   const message = 'rotate 180 degrees';
 
