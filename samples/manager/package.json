@@ -23,16 +23,5 @@
     "mocha": "^7.1.1",
     "uuid": "^3.3.2",
     "yargs": "^15.1.0"
-  },
-  "cloud-repo-tools": {
-    "requiresKeyFile": true,
-    "requiresProjectId": true,
-    "test": {
-      "build": {
-        "requiredEnvVars": [
-          "API_KEY"
-        ]
-      }
-    }
   }
 }
