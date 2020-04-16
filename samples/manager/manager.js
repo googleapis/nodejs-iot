@@ -17,7 +17,6 @@
 const fs = require('fs');
 
 // [START iot_get_client]
-const {google} = require('googleapis');
 const iot = require('@google-cloud/iot');
 
 const API_VERSION = 'v1';
