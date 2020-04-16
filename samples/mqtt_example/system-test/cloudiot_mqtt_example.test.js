@@ -257,7 +257,7 @@ it('should listen for error topic messages', async () => {
   await execSync(`${helper} deleteDevice ${deviceId} ${registryName}`, cwd);
 });
 
-it('should send data from bound device', async () => {
+xit('should send data from bound device', async () => {
   const gatewayId = `nodejs-test-gateway-sdbd-${uuid.v4()}`;
   await execSync(
     `${helper} createGateway --registryId=${registryName} --gatewayId=${gatewayId} --publicKeyFormat=RSA_X509_PEM --publicKeyFile=${rsaPublicCert}`
