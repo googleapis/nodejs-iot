@@ -15,6 +15,7 @@
 'use strict';
 
 const fs = require('fs');
+const {google} = require('googleapis');
 
 // [START iot_get_client]
 const iot = require('@google-cloud/iot');
