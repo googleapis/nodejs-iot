@@ -42,7 +42,7 @@ for version in versions:
 # skip index, protos, package.json, and README.md
 s.copy(
     library,
-    excludes=['package.json', 'README.md', 'src/index.ts'],
+    excludes=['package.json', 'README.md'],
 )
 
 # Copy common templated files
