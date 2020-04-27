@@ -1,0 +1,28 @@
+{
+  "author": "Google Inc.",
+  "version": "0.0.1",
+  "description": "MQTT Example for Google Cloud IoT Core using NodeJS.",
+  "license": "Apache-2.0",
+  "main": "cloudiot_mqtt_example_nodejs.js",
+  "name": "nodejs-docs-samples-iot-mqtt-example",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "scripts": {
+    "test": "mocha system-test/*.test.js --timeout=600000",
+    "system-test": "mocha system-test/*.test.js --timeout=600000"
+  },
+  "dependencies": {
+    "@google-cloud/iot": "^1.0.0",
+    "@google-cloud/pubsub": "^1.0.0",
+    "jsonwebtoken": "^8.5.0",
+    "mocha": "^7.0.0",
+    "mqtt": "^3.0.0",
+    "yargs": "^15.0.0",
+    "uuid": "^3.3.2"
+  }
+}
