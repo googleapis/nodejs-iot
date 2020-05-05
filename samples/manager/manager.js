@@ -111,7 +111,7 @@ const lookupRegistry = async (client, registryId, projectId, cloudRegion) => {
       registryId
     );
 
-    async function getDeviceRegistry() {
+    async function getRegistry() {
       // Construct request
       const responses = await iotClient.getDeviceRegistry({name: registryName});
       const response = responses[0];
@@ -119,7 +119,7 @@ const lookupRegistry = async (client, registryId, projectId, cloudRegion) => {
     }
 
     try {
-      getDeviceRegistry();
+      getRegistry();
     } catch (err) {
       console.error('Error getting registry', err);
     }
@@ -565,11 +565,12 @@ const deleteDevice = async (
 
 // Clear the given registry by removing all devices and deleting the registry.
 const clearRegistry = async (client, registryId, projectId, cloudRegion) => {
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-
   let devices;
+
   async function listDevices() {
     // Construct request
+    const parentName = `projects/${projectId}/locations/${cloudRegion}`;
+    const registryName = `${parentName}/registries/${registryId}`;
     const request = {
       parent: registryName,
     };
@@ -604,7 +605,6 @@ const clearRegistry = async (client, registryId, projectId, cloudRegion) => {
 
   async function deleteRegistry() {
     // Construct request
-    const registryName = `${parentName}/registries/${registryId}`;
     const requestDelete = {
       name: registryName,
     };
@@ -914,7 +914,7 @@ const getRegistry = async (client, registryId, projectId, cloudRegion) => {
       registryId
     );
 
-    async function getDeviceRegistry() {
+    async function getRegistry() {
       // Construct request
       const responses = await iotClient.getDeviceRegistry({name: registryName});
       const response = responses[0];
@@ -924,7 +924,7 @@ const getRegistry = async (client, registryId, projectId, cloudRegion) => {
     }
 
     try {
-      getDeviceRegistry();
+      getRegistry();
     } catch (err) {
       console.error('Could not get device registry', err);
     }
