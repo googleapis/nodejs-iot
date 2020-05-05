@@ -104,27 +104,23 @@ const lookupRegistry = async (client, registryId, projectId, cloudRegion) => {
     // optional auth parameters.
   });
 
+  const registryName = iotClient.registryPath(
+    projectId,
+    cloudRegion,
+    registryId
+  );
+
+  async function getDeviceRegistry() {
+    // Construct request
+    const responses = await iotClient.getDeviceRegistry({name: registryName});
+    const response = responses[0];
+    console.log(response);
+  }
+
   try {
-    const registryName = iotClient.registryPath(
-      projectId,
-      cloudRegion,
-      registryId
-    );
-
-    async function getIotDeviceRegistry() {
-      // Construct request
-      const responses = await iotClient.getDeviceRegistry({name: registryName});
-      const response = responses[0];
-      console.log(response);
-    }
-
-    try {
-      getIotDeviceRegistry();
-    } catch (err) {
-      console.error('Error getting registry', err);
-    }
+    getDeviceRegistry();
   } catch (err) {
-    console.error('Could not look up registry', err);
+    console.error('Error getting registry', err);
   }
   // [END iot_lookup_registry]
 };
@@ -908,30 +904,25 @@ const getRegistry = async (client, registryId, projectId, cloudRegion) => {
     // optional auth parameters.
   });
 
+  const registryName = iotClient.registryPath(
+    projectId,
+    cloudRegion,
+    registryId
+  );
+
+  async function getDeviceRegistry() {
+    // Construct request
+    const responses = await iotClient.getDeviceRegistry({name: registryName});
+    const response = responses[0];
+
+    console.log('Found registry:', registryId);
+    console.log(response);
+  }
+
   try {
-    const registryName = iotClient.registryPath(
-      projectId,
-      cloudRegion,
-      registryId
-    );
-
-    async function getIotDeviceRegistry() {
-      // Construct request
-      const responses = await iotClient.getDeviceRegistry({name: registryName});
-      const response = responses[0];
-
-      console.log('Found registry:', registryId);
-      console.log(response);
-    }
-
-    try {
-      getIotDeviceRegistry();
-    } catch (err) {
-      console.error('Could not get device registry', err);
-    }
+    getDeviceRegistry();
   } catch (err) {
-    console.error('Could not find registry:', registryId);
-    console.error('Trace:', err);
+    console.error('Could not get device registry', err);
   }
   // [END iot_get_registry]
 };
