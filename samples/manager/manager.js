@@ -74,10 +74,8 @@ const setupIotTopic = async topicName => {
     console.log(JSON.stringify(updatedPolicy, null, 2));
   }
 
-
-
   try {
-
+    setPolicy();
   } catch (err) {
     console.error('Error updating policy:', err);
   }
