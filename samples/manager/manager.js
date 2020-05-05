@@ -829,22 +829,28 @@ const sendCommand = async (
     // optional auth parameters.
   });
 
-  const formattedName = iotClient.devicePath(
-    projectId,
-    cloudRegion,
-    registryId,
-    deviceId
-  );
-  const binaryData = Buffer.from(commandMessage);
-  const request = {
-    name: formattedName,
-    binaryData: binaryData,
-  };
+  async function sendCommand() {
+    // Construct request
+    const formattedName = iotClient.devicePath(
+      projectId,
+      cloudRegion,
+      registryId,
+      deviceId
+    );
+
+    const binaryData = Buffer.from(commandMessage);
+
+    const request = {
+      name: formattedName,
+      binaryData: binaryData,
+    };
+
+    const responses = await iotClient.sendCommandToDevice(request);
+    console.log('Sent command: ', responses[0]);
+  }
 
   try {
-    const responses = await iotClient.sendCommandToDevice(request);
-
-    console.log('Sent command: ', responses[0]);
+    sendCommand();
   } catch (err) {
     console.error('Could not send command:', err);
   }
