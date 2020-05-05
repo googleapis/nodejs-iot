@@ -38,39 +38,44 @@ const setupIotTopic = async topicName => {
   const topic = pubsub.topic(topicName);
   const serviceAccount = 'serviceAccount:cloud-iot@system.gserviceaccount.com';
 
-  let policy = await topic.iam.getPolicy();
-  policy = policy[0] || {};
+  async function setPolicy() {
+    // Construct request
+    let policy = await topic.iam.getPolicy();
+    policy = policy[0] || {};
 
-  policy.bindings || (policy.bindings = []);
-  console.log(JSON.stringify(policy, null, 2));
+    policy.bindings || (policy.bindings = []);
+    console.log(JSON.stringify(policy, null, 2));
 
-  let hasRole = false;
-  let binding = {
-    role: 'roles/pubsub.publisher',
-    members: [serviceAccount],
-  };
+    let hasRole = false;
+    let binding = {
+      role: 'roles/pubsub.publisher',
+      members: [serviceAccount],
+    };
 
-  policy.bindings.forEach(_binding => {
-    if (_binding.role === binding.role) {
-      binding = _binding;
-      hasRole = true;
-      return false;
+    policy.bindings.forEach(_binding => {
+      if (_binding.role === binding.role) {
+        binding = _binding;
+        hasRole = true;
+        return false;
+      }
+    });
+
+    if (hasRole) {
+      binding.members || (binding.members = []);
+      if (binding.members.indexOf(serviceAccount) === -1) {
+        binding.members.push(serviceAccount);
+      }
+    } else {
+      policy.bindings.push(binding);
     }
-  });
 
-  if (hasRole) {
-    binding.members || (binding.members = []);
-    if (binding.members.indexOf(serviceAccount) === -1) {
-      binding.members.push(serviceAccount);
-    }
-  } else {
-    policy.bindings.push(binding);
-  }
-
-  // Updates the IAM policy for the topic
-  try {
+    // Updates the IAM policy for the topic
     const [updatedPolicy] = await topic.iam.setPolicy(policy);
     console.log(JSON.stringify(updatedPolicy, null, 2));
+  }
+
+  try {
+    setPolicy();
   } catch (err) {
     console.error('Error updating policy:', err);
   }
