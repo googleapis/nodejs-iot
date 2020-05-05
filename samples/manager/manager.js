@@ -110,10 +110,16 @@ const lookupRegistry = async (client, registryId, projectId, cloudRegion) => {
       cloudRegion,
       registryId
     );
-    try {
+
+    async function getDeviceRegistry() {
+      // Construct request
       const responses = await iotClient.getDeviceRegistry({name: registryName});
       const response = responses[0];
       console.log(response);
+    }
+
+    try {
+      getDeviceRegistry();
     } catch (err) {
       console.error('Error getting registry', err);
     }
@@ -145,26 +151,31 @@ const createRegistry = async (
     // optional auth parameters.
   });
 
-  const newParent = iotClient.locationPath(projectId, cloudRegion);
-  const deviceRegistry = {
-    eventNotificationConfigs: [
-      {
-        pubsubTopicName: topicPath,
-      },
-    ],
-    id: registryId,
-  };
-  const request = {
-    parent: newParent,
-    deviceRegistry: deviceRegistry,
-  };
+  async function createDeviceRegistry() {
+    // Construct request
+    const newParent = iotClient.locationPath(projectId, cloudRegion);
+    const deviceRegistry = {
+      eventNotificationConfigs: [
+        {
+          pubsubTopicName: topicPath,
+        },
+      ],
+      id: registryId,
+    };
+    const request = {
+      parent: newParent,
+      deviceRegistry: deviceRegistry,
+    };
 
-  try {
     const responses = await iotClient.createDeviceRegistry(request);
     const response = responses[0];
 
     console.log('Successfully created registry');
     console.log(response);
+  }
+
+  try {
+    createDeviceRegistry();
   } catch (err) {
     console.error('Could not create registry', err);
   }
@@ -499,15 +510,20 @@ const listRegistries = async (client, projectId, cloudRegion) => {
     // optional auth parameters.
   });
 
-  // Iterate over all elements.
-  const formattedParent = newClient.locationPath(projectId, cloudRegion);
+  async function listDeviceRegistries() {
+    // Construct request
+    // Iterate over all elements.
+    const formattedParent = newClient.locationPath(projectId, cloudRegion);
 
-  try {
     const responses = await newClient.listDeviceRegistries({
       parent: formattedParent,
     });
     const resources = responses[0];
     console.log('Current registries in project:\n', resources);
+  }
+
+  try {
+    listDeviceRegistries();
   } catch (err) {
     console.error('Could not list registries', err);
   }
@@ -550,21 +566,21 @@ const deleteDevice = async (
 // Clear the given registry by removing all devices and deleting the registry.
 const clearRegistry = async (client, registryId, projectId, cloudRegion) => {
   const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
-  const requestDelete = {
-    name: registryName,
-  };
-
-  const request = {
-    parent: registryName,
-  };
 
   let devices;
-  try {
+  async function listDevices() {
+    // Construct request
+    const request = {
+      parent: registryName,
+    };
+
     const {data} = await client.projects.locations.registries.devices.list(
       request
     );
     devices = data.devices;
+  }
+  try {
+    listDevices();
   } catch (err) {
     console.error('Could not list devices', err);
     return;
@@ -586,14 +602,24 @@ const clearRegistry = async (client, registryId, projectId, cloudRegion) => {
     await Promise.all(promises);
   }
 
-  // Delete registry
-  try {
+  async function deleteRegistry() {
+    // Construct request
+    const registryName = `${parentName}/registries/${registryId}`;
+    const requestDelete = {
+      name: registryName,
+    };
+
     const {data} = await client.projects.locations.registries.delete(
       requestDelete
     );
 
     console.log(`Successfully deleted registry ${registryName}`);
     console.log(data);
+  }
+
+  // Delete registry
+  try {
+    deleteRegistry();
   } catch (err) {
     console.error('Could not delete registry', err);
   }
@@ -614,17 +640,23 @@ const deleteRegistry = async (client, registryId, projectId, cloudRegion) => {
     // optional auth parameters.
   });
 
-  const registryName = iotClient.registryPath(
-    projectId,
-    cloudRegion,
-    registryId
-  );
-  try {
+  async function deleteDeviceRegistry() {
+    // Construct request
+    const registryName = iotClient.registryPath(
+      projectId,
+      cloudRegion,
+      registryId
+    );
+
     const responses = await iotClient.deleteDeviceRegistry({
       name: registryName,
     });
     console.log(responses);
     console.log('Successfully deleted registry');
+  }
+
+  try {
+    deleteDeviceRegistry();
   } catch (err) {
     console.error('Could not delete registry', err);
   }
@@ -881,12 +913,18 @@ const getRegistry = async (client, registryId, projectId, cloudRegion) => {
       cloudRegion,
       registryId
     );
-    try {
+
+    async function getDeviceRegistry() {
+      // Construct request
       const responses = await iotClient.getDeviceRegistry({name: registryName});
       const response = responses[0];
 
       console.log('Found registry:', registryId);
       console.log(response);
+    }
+
+    try {
+      getDeviceRegistry();
     } catch (err) {
       console.error('Could not get device registry', err);
     }
