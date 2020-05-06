@@ -1051,42 +1051,47 @@ const createGateway = async (
     // optional auth parameters.
   });
 
-  const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
+  async function createDevice() {
+    // Construct request
+    const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
 
-  console.log('Creating gateway:', gatewayId);
+    console.log('Creating gateway:', gatewayId);
 
-  let credentials = [];
+    let credentials = [];
 
-  // if public key format and path are specified, use those
-  if (publicKeyFormat && publicKeyFile) {
-    credentials = [
-      {
-        publicKey: {
-          format: publicKeyFormat,
-          key: fs.readFileSync(publicKeyFile).toString(),
+    // if public key format and path are specified, use those
+    if (publicKeyFormat && publicKeyFile) {
+      credentials = [
+        {
+          publicKey: {
+            format: publicKeyFormat,
+            key: fs.readFileSync(publicKeyFile).toString(),
+          },
         },
+      ];
+    }
+
+    const device = {
+      id: gatewayId,
+      credentials: credentials,
+      gatewayConfig: {
+        gatewayType: 'GATEWAY',
+        gatewayAuthMethod: gatewayAuthMethod,
       },
-    ];
-  }
+    };
 
-  const device = {
-    id: gatewayId,
-    credentials: credentials,
-    gatewayConfig: {
-      gatewayType: 'GATEWAY',
-      gatewayAuthMethod: gatewayAuthMethod,
-    },
-  };
+    const request = {
+      parent: regPath,
+      device,
+    };
 
-  const request = {
-    parent: regPath,
-    device,
-  };
-
-  try {
     const responses = await iotClient.createDevice(request);
     const response = responses[0];
     console.log('Created device:', response);
+  }
+
+  try {
+    createDevice();
   } catch (err) {
     console.error('Could not create gateway', err);
   }
@@ -1114,20 +1119,25 @@ const bindDeviceToGateway = async (
     // optional auth parameters.
   });
 
-  const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
+  async function bindDeviceToGateway() {
+    // Construct request
+    const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
 
-  const bindRequest = {
-    parent: regPath,
-    deviceId: deviceId,
-    gatewayId: gatewayId,
-  };
+    const bindRequest = {
+      parent: regPath,
+      deviceId: deviceId,
+      gatewayId: gatewayId,
+    };
 
-  console.log(`Binding device: ${deviceId}`);
+    console.log(`Binding device: ${deviceId}`);
 
-  try {
     await iotClient.bindDeviceToGateway(bindRequest);
 
     console.log(`Bound ${deviceId} to`, gatewayId);
+  }
+
+  try {
+    bindDeviceToGateway();
   } catch (err) {
     console.error('Could not bind device', err);
   }
@@ -1156,18 +1166,23 @@ const unbindDeviceFromGateway = async (
   const iotClient = new iot.v1.DeviceManagerClient({
     // optional auth parameters.
   });
-  const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
 
-  const unbindRequest = {
-    parent: regPath,
-    deviceId: deviceId,
-    gatewayId: gatewayId,
-  };
+  async function unbindDeviceFromGateway() {
+    // Construct request
+    const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
+
+    const unbindRequest = {
+      parent: regPath,
+      deviceId: deviceId,
+      gatewayId: gatewayId,
+    };
+
+    await iotClient.unbindDeviceFromGateway(unbindRequest);
+    console.log(`Unbound ${deviceId} from`, gatewayId);
+  }
 
   try {
-    await iotClient.unbindDeviceFromGateway(unbindRequest);
-
-    console.log(`Unbound ${deviceId} from`, gatewayId);
+    unbindDeviceFromGateway();
   } catch (err) {
     console.error('Could not unbind device', err);
   }
@@ -1191,18 +1206,23 @@ const unbindDeviceFromAllGateways = async (
     registryId,
     deviceId
   );
-  try {
+  async function getDevice() {
     const responses = await iotClient.getDevice({name: devicePath});
     device = responses[0];
     console.log(`Found Device ${device.id}`);
+  }
+
+  try {
+    getDevice();
   } catch (err) {
     console.error('Could not find device:', deviceId);
     console.error('Trace:', err);
     return;
   }
 
-  if (device) {
-    try {
+  async function unbindDeviceFromAllGateways() {
+    // Construct request
+    if (device) {
       const parentName = iotClient.registryPath(
         projectId,
         cloudRegion,
@@ -1226,10 +1246,14 @@ const unbindDeviceFromAllGateways = async (
           );
         }
       }
-    } catch (err) {
-      console.error('Could not list gateways', err);
-      return;
     }
+  }
+
+  try {
+    unbindDeviceFromAllGateways();
+  } catch (err) {
+    console.error('Could not list gateways', err);
+    return;
   }
 };
 
@@ -1239,12 +1263,16 @@ const unbindAllDevices = async (projectId, cloudRegion, registryId) => {
     // optional auth parameters.
   });
 
-  const parentName = iotClient.registryPath(projectId, cloudRegion, registryId);
+  async function listDevices() {
+    // Construct request
+    const parentName = iotClient.registryPath(
+      projectId,
+      cloudRegion,
+      registryId
+    );
 
-  try {
     const responses = await iotClient.listDevices({parent: parentName});
     const devices = responses[0];
-
     if (devices.length > 0) {
       console.log('Current devices in registry:');
     } else {
@@ -1260,6 +1288,10 @@ const unbindAllDevices = async (projectId, cloudRegion, registryId) => {
         device.id
       );
     }
+  }
+
+  try {
+    listDevices();
   } catch (err) {
     console.error('Could not list devices', err);
   }
@@ -1276,13 +1308,14 @@ const listGateways = async (client, projectId, cloudRegion, registryId) => {
     // optional auth parameters.
   });
 
-  const registryPath = iotClient.registryPath(
-    projectId,
-    cloudRegion,
-    registryId
-  );
+  async function listDevices() {
+    // Construct request
+    const registryPath = iotClient.registryPath(
+      projectId,
+      cloudRegion,
+      registryId
+    );
 
-  try {
     console.log('Current gateways in registry:');
     const responses = await iotClient.listDevices({
       parent: registryPath,
@@ -1298,6 +1331,10 @@ const listGateways = async (client, projectId, cloudRegion, registryId) => {
         console.log('----\n', device);
       }
     });
+  }
+
+  try {
+    listDevices();
   } catch (err) {
     console.error('Could not list gateways:');
     console.error('Trace:', err);
@@ -1324,9 +1361,13 @@ const listDevicesForGateway = async (
     // optional auth parameters.
   });
 
-  const parentName = iotClient.registryPath(projectId, cloudRegion, registryId);
-
-  try {
+  async function listDevices() {
+    // Construct request
+    const parentName = iotClient.registryPath(
+      projectId,
+      cloudRegion,
+      registryId
+    );
     const responses = await iotClient.listDevices({
       parent: parentName,
       gatewayListOptions: {associationsGatewayId: gatewayId},
@@ -1343,6 +1384,10 @@ const listDevicesForGateway = async (
       const device = devices[i];
       console.log(`\tDevice: ${device.numId}: ${device.id}`);
     }
+  }
+
+  try {
+    listDevices();
   } catch (err) {
     console.error('Could not list devices', err);
   }
@@ -1367,9 +1412,14 @@ const listGatewaysForDevice = async (
     // optional auth parameters.
   });
 
-  const parentName = iotClient.registryPath(projectId, cloudRegion, registryId);
+  async function listDevices() {
+    // Construct request
+    const parentName = iotClient.registryPath(
+      projectId,
+      cloudRegion,
+      registryId
+    );
 
-  try {
     const responses = await iotClient.listDevices({
       parent: parentName,
       gatewayListOptions: {associationsDeviceId: deviceId},
@@ -1386,6 +1436,10 @@ const listGatewaysForDevice = async (
       const device = devices[i];
       console.log(`\tDevice: ${device.numId}: ${device.id}`);
     }
+  }
+
+  try {
+    listDevices();
   } catch (err) {
     console.error('Could not list devices', err);
   }
