@@ -1037,14 +1037,14 @@ const getIamPolicy = async (client, registryId, projectId, cloudRegion) => {
       registryId
     );
 
-    let bindings, etag;
+    let bindings;
     const responses = await iotClient.getIamPolicy({
       resource: formattedResource,
     });
     const response = responses[0];
 
     bindings = response.bindings;
-    etag = response.etag;
+    const etag = response.etag;
 
     console.log('ETAG:', etag);
     bindings = bindings || [];
@@ -1106,13 +1106,13 @@ const setIamPolicy = async (
       policy: policy,
     };
 
-    let bindings, etag;
+    let bindings;
 
     const responses = await iotClient.setIamPolicy(request);
     const response = responses[0];
 
     bindings = response.bindings;
-    etag = response.etag;
+    const etag = response.etag;
 
     console.log('ETAG:', etag);
     bindings = bindings || [];
