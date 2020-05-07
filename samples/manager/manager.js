@@ -199,27 +199,33 @@ const createDevice = async (
     // optional auth parameters.
   });
 
-  const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
-  const device = {
-    id: deviceId,
-    credentials: [
-      {
-        publicKey: {
-          format: publicKeyFormat,
-          key: fs.readFileSync(publicKeyFile).toString(),
+  async function createDevice() {
+    // Construct request
+    const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
+    const device = {
+      id: deviceId,
+      credentials: [
+        {
+          publicKey: {
+            format: publicKeyFormat,
+            key: fs.readFileSync(publicKeyFile).toString(),
+          },
         },
-      },
-    ],
-  };
+      ],
+    };
 
-  const request = {
-    parent: regPath,
-    device,
-  };
-  try {
+    const request = {
+      parent: regPath,
+      device,
+    };
+
     const responses = await iotClient.createDevice(request);
     const response = responses[0];
     console.log('Created device', response);
+  }
+
+  try {
+    createDevice();
   } catch (err) {
     console.error('Could not create device', err);
   }
@@ -246,17 +252,22 @@ const createUnauthDevice = async (
     // optional auth parameters.
   });
 
-  const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
-  const device = {id: deviceId};
-  const request = {
-    parent: regPath,
-    device,
-  };
+  async function createDevice() {
+    // Construct request
+    const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
+    const device = {id: deviceId};
+    const request = {
+      parent: regPath,
+      device,
+    };
 
-  try {
     const responses = await iotClient.createDevice(request);
     const response = responses[0];
     console.log('Created device', response);
+  }
+
+  try {
+    createDevice();
   } catch (err) {
     console.error('Could not create device', err);
   }
@@ -283,28 +294,33 @@ const createRsaDevice = async (
     // optional auth parameters.
   });
 
-  const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
-  const device = {
-    id: deviceId,
-    credentials: [
-      {
-        publicKey: {
-          format: 'RSA_X509_PEM',
-          key: fs.readFileSync(rsaCertificateFile).toString(),
+  async function createDevice() {
+    // Construct request
+    const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
+    const device = {
+      id: deviceId,
+      credentials: [
+        {
+          publicKey: {
+            format: 'RSA_X509_PEM',
+            key: fs.readFileSync(rsaCertificateFile).toString(),
+          },
         },
-      },
-    ],
-  };
+      ],
+    };
 
-  const request = {
-    parent: regPath,
-    device,
-  };
+    const request = {
+      parent: regPath,
+      device,
+    };
 
-  try {
     const responses = await iotClient.createDevice(request);
     const response = responses[0];
     console.log('Created device', response);
+  }
+
+  try {
+    createDevice();
   } catch (err) {
     console.error('Could not create device', err);
   }
@@ -331,27 +347,32 @@ const createEsDevice = async (
     // optional auth parameters.
   });
 
-  const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
-  const device = {
-    id: deviceId,
-    credentials: [
-      {
-        publicKey: {
-          format: 'ES256_PEM',
-          key: fs.readFileSync(esCertificateFile).toString(),
+  async function createDevice() {
+    // Construct request
+    const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
+    const device = {
+      id: deviceId,
+      credentials: [
+        {
+          publicKey: {
+            format: 'ES256_PEM',
+            key: fs.readFileSync(esCertificateFile).toString(),
+          },
         },
-      },
-    ],
-  };
-  const request = {
-    parent: regPath,
-    device,
-  };
+      ],
+    };
+    const request = {
+      parent: regPath,
+      device,
+    };
 
-  try {
     const responses = await iotClient.createDevice(request);
     const response = responses[0];
     console.log('Created device', response);
+  }
+
+  try {
+    createDevice();
   } catch (err) {
     console.error('Could not create device', err);
   }
@@ -377,26 +398,27 @@ const patchRsa256ForAuth = async (
     // optional auth parameters.
   });
 
-  const devPath = iotClient.devicePath(
-    projectId,
-    cloudRegion,
-    registryId,
-    deviceId
-  );
+  async function updateDevice() {
+    // Construct request
+    const devPath = iotClient.devicePath(
+      projectId,
+      cloudRegion,
+      registryId,
+      deviceId
+    );
 
-  const device = {
-    name: devPath,
-    credentials: [
-      {
-        publicKey: {
-          format: 'RSA_X509_PEM',
-          key: fs.readFileSync(rsaPublicKeyFile).toString(),
+    const device = {
+      name: devPath,
+      credentials: [
+        {
+          publicKey: {
+            format: 'RSA_X509_PEM',
+            key: fs.readFileSync(rsaPublicKeyFile).toString(),
+          },
         },
-      },
-    ],
-  };
+      ],
+    };
 
-  try {
     const responses = await iotClient.updateDevice({
       device: device,
       updateMask: {paths: ['credentials']},
@@ -404,6 +426,10 @@ const patchRsa256ForAuth = async (
 
     console.log('Patched device:', deviceId);
     console.log('Response', responses[0]);
+  }
+
+  try {
+    updateDevice();
   } catch (err) {
     console.error('Error patching device:', deviceId, err);
   }
@@ -429,26 +455,27 @@ const patchEs256ForAuth = async (
     // optional auth parameters.
   });
 
-  const devPath = iotClient.devicePath(
-    projectId,
-    cloudRegion,
-    registryId,
-    deviceId
-  );
+  async function updateDevice() {
+    // Construct request
+    const devPath = iotClient.devicePath(
+      projectId,
+      cloudRegion,
+      registryId,
+      deviceId
+    );
 
-  const device = {
-    name: devPath,
-    credentials: [
-      {
-        publicKey: {
-          format: 'ES256_PEM',
-          key: fs.readFileSync(esPublicKeyFile).toString(),
+    const device = {
+      name: devPath,
+      credentials: [
+        {
+          publicKey: {
+            format: 'ES256_PEM',
+            key: fs.readFileSync(esPublicKeyFile).toString(),
+          },
         },
-      },
-    ],
-  };
+      ],
+    };
 
-  try {
     const responses = await iotClient.updateDevice({
       device: device,
       updateMask: {paths: ['credentials']},
@@ -456,6 +483,10 @@ const patchEs256ForAuth = async (
 
     console.log('Patched device:', deviceId);
     console.log('Response', responses[0]);
+  }
+
+  try {
+    updateDevice();
   } catch (err) {
     console.error('Error patching device:', deviceId, err);
   }
@@ -473,9 +504,14 @@ const listDevices = async (client, registryId, projectId, cloudRegion) => {
     // optional auth parameters.
   });
 
-  const parentName = iotClient.registryPath(projectId, cloudRegion, registryId);
+  async function listDevices() {
+    // Construct request
+    const parentName = iotClient.registryPath(
+      projectId,
+      cloudRegion,
+      registryId
+    );
 
-  try {
     const responses = await iotClient.listDevices({parent: parentName});
     const devices = responses[0];
 
@@ -489,6 +525,10 @@ const listDevices = async (client, registryId, projectId, cloudRegion) => {
       const device = devices[i];
       console.log(`Device ${i}: `, device);
     }
+  }
+
+  try {
+    listDevices();
   } catch (err) {
     console.error('Could not list devices', err);
   }
@@ -544,15 +584,21 @@ const deleteDevice = async (
     // optional auth parameters.
   });
 
-  const devPath = iotClient.devicePath(
-    projectId,
-    cloudRegion,
-    registryId,
-    deviceId
-  );
-  try {
+  async function deleteDevice() {
+    // Construct request
+    const devPath = iotClient.devicePath(
+      projectId,
+      cloudRegion,
+      registryId,
+      deviceId
+    );
+
     const responses = await iotClient.deleteDevice({name: devPath});
     console.log('Successfully deleted device', responses);
+  }
+
+  try {
+    deleteDevice();
   } catch (err) {
     console.error('Could not delete device', err);
   }
@@ -677,18 +723,24 @@ const getDevice = async (
   const iotClient = new iot.v1.DeviceManagerClient({
     // optional auth parameters.
   });
-  const devicePath = iotClient.devicePath(
-    projectId,
-    cloudRegion,
-    registryId,
-    deviceId
-  );
 
-  try {
+  async function getDevice() {
+    // Construct request
+    const devicePath = iotClient.devicePath(
+      projectId,
+      cloudRegion,
+      registryId,
+      deviceId
+    );
+
     const responses = await iotClient.getDevice({name: devicePath});
     const data = responses[0];
 
     console.log('Found device:', deviceId, data);
+  }
+
+  try {
+    getDevice();
   } catch (err) {
     console.error('Could not find device:', deviceId);
     console.error('Trace:', err);
@@ -713,14 +765,15 @@ const getDeviceState = async (
   const iotClient = new iot.v1.DeviceManagerClient({
     // optional auth parameters.
   });
-  const devicePath = iotClient.devicePath(
-    projectId,
-    cloudRegion,
-    registryId,
-    deviceId
-  );
 
-  try {
+  async function listDeviceStates() {
+    const devicePath = iotClient.devicePath(
+      projectId,
+      cloudRegion,
+      registryId,
+      deviceId
+    );
+
     const responses = await iotClient.listDeviceStates({name: devicePath});
     const states = responses[0].deviceStates;
     if (states.length === 0) {
@@ -738,6 +791,10 @@ const getDeviceState = async (
         state.binaryData.toString('utf8')
       );
     }
+  }
+
+  try {
+    listDeviceStates();
   } catch (err) {
     console.error('Could not find device:', deviceId);
     console.error('trace:', err);
@@ -762,14 +819,16 @@ const getDeviceConfigs = async (
   const iotClient = new iot.v1.DeviceManagerClient({
     // optional auth parameters.
   });
-  const devicePath = iotClient.devicePath(
-    projectId,
-    cloudRegion,
-    registryId,
-    deviceId
-  );
 
-  try {
+  async function listDeviceConfigVersions() {
+    // Construct request
+    const devicePath = iotClient.devicePath(
+      projectId,
+      cloudRegion,
+      registryId,
+      deviceId
+    );
+
     const responses = await iotClient.listDeviceConfigVersions({
       name: devicePath,
     });
@@ -790,6 +849,10 @@ const getDeviceConfigs = async (
         config.binaryData.toString('utf8')
       );
     }
+  }
+
+  try {
+    listDeviceConfigVersions();
   } catch (err) {
     console.error('Could not find device:', deviceId);
     console.error('trace:', err);
@@ -819,24 +882,28 @@ const setDeviceConfig = async (
     // optional auth parameters.
   });
 
-  const formattedName = iotClient.devicePath(
-    projectId,
-    cloudRegion,
-    registryId,
-    deviceId
-  );
+  async function modifyCloudToDeviceConfig() {
+    // Construct request
+    const formattedName = iotClient.devicePath(
+      projectId,
+      cloudRegion,
+      registryId,
+      deviceId
+    );
 
-  const binaryData = Buffer.from(data).toString('base64');
-  const request = {
-    name: formattedName,
-    versionToUpdate: version,
-    binaryData: binaryData,
-  };
+    const binaryData = Buffer.from(data).toString('base64');
+    const request = {
+      name: formattedName,
+      versionToUpdate: version,
+      binaryData: binaryData,
+    };
+
+    const responses = await iotClient.modifyCloudToDeviceConfig(request);
+    console.log('Success:', responses[0]);
+  }
 
   try {
-    const responses = await iotClient.modifyCloudToDeviceConfig(request);
-
-    console.log('Success:', responses[0]);
+    modifyCloudToDeviceConfig();
   } catch (err) {
     console.error('Could not update config:', deviceId);
     console.error('Message:', err);
@@ -962,14 +1029,15 @@ const getIamPolicy = async (client, registryId, projectId, cloudRegion) => {
     // optional auth parameters.
   });
 
-  const formattedResource = iotClient.registryPath(
-    projectId,
-    cloudRegion,
-    registryId
-  );
+  async function getIamPolicy() {
+    // Construct request
+    const formattedResource = iotClient.registryPath(
+      projectId,
+      cloudRegion,
+      registryId
+    );
 
-  let bindings, etag;
-  try {
+    let bindings, etag;
     const responses = await iotClient.getIamPolicy({
       resource: formattedResource,
     });
@@ -988,6 +1056,10 @@ const getIamPolicy = async (client, registryId, projectId, cloudRegion) => {
         console.log(`\t${_member}`);
       });
     });
+  }
+
+  try {
+    getIamPolicy();
   } catch (err) {
     console.error('Could not find policy for: ', registryId);
     console.error('Trace: ', err);
@@ -1016,24 +1088,26 @@ const setIamPolicy = async (
     // optional auth parameters.
   });
 
-  const resource = iotClient.registryPath(projectId, cloudRegion, registryId);
+  async function setIamPolicy() {
+    // Construct request
+    const resource = iotClient.registryPath(projectId, cloudRegion, registryId);
 
-  const policy = {
-    bindings: [
-      {
-        members: [member],
-        role: role,
-      },
-    ],
-  };
+    const policy = {
+      bindings: [
+        {
+          members: [member],
+          role: role,
+        },
+      ],
+    };
 
-  const request = {
-    resource: resource,
-    policy: policy,
-  };
+    const request = {
+      resource: resource,
+      policy: policy,
+    };
 
-  let bindings, etag;
-  try {
+    let bindings, etag;
+
     const responses = await iotClient.setIamPolicy(request);
     const response = responses[0];
 
@@ -1050,6 +1124,10 @@ const setIamPolicy = async (
         console.log(`\t${_member}`);
       });
     });
+  }
+
+  try {
+    setIamPolicy();
   } catch (err) {
     console.error('Could not set policy for: ', registryId);
     console.error('Trace: ', err);
