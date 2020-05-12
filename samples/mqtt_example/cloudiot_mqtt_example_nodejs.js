@@ -49,7 +49,7 @@ const createJwt = (projectId, privateKeyFile, algorithm) => {
     exp: parseInt(Date.now() / 1000) + 20 * 60, // 20 minutes
     aud: projectId,
   };
-  const privateKey = fs.readFileSync(privateKeyFile);
+  const privateKey = await fs.promises.readFile(privateKeyFile);
   return jwt.sign(token, privateKey, {algorithm: algorithm});
 };
 // [END iot_mqtt_jwt]
