@@ -15,6 +15,7 @@
 'use strict';
 // [START iot_http_includes]
 const fs = require('fs');
+const {promisify} = require('util');
 const jwt = require('jsonwebtoken');
 const request = require('retry-request', {request: require('request')});
 // [END iot_http_includes]
@@ -22,7 +23,7 @@ const request = require('retry-request', {request: require('request')});
 // Create a Cloud IoT Core JWT for the given project ID, signed with the given
 // private key.
 // [START iot_http_jwt]
-const createJwt = (projectId, privateKeyFile, algorithm) => {
+const createJwt = async (projectId, privateKeyFile, algorithm) => {
   // Create a JWT to authenticate this device. The device will be disconnected
   // after the token expires, and will have to reconnect with a new token. The
   // audience field should always be set to the GCP project ID.
@@ -31,7 +32,8 @@ const createJwt = (projectId, privateKeyFile, algorithm) => {
     exp: parseInt(Date.now() / 1000) + 20 * 60, // 20 minutes
     aud: projectId,
   };
-  const privateKey = await fs.promises.readFile(privateKeyFile);
+  const readFileAsync = promisify(fs.readFile);
+  const privateKey = await readFileAsync(privateKeyFile);
   return jwt.sign(token, privateKey, {algorithm: algorithm});
 };
 // [END iot_http_jwt]

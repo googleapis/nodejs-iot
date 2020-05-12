@@ -15,6 +15,7 @@
 'use strict';
 
 const fs = require('fs');
+const {promisify} = require('util');
 const {google} = require('googleapis');
 
 // [START iot_get_client]
@@ -188,7 +189,8 @@ const createDevice = async (
   async function createDevice() {
     // Construct request
     const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
-    const key = await fs.promises.readFile(publicKeyFile);
+    const readFileAsync = promisify(fs.readFile);
+    const key = await readFileAsync(publicKeyFile);
     const device = {
       id: deviceId,
       credentials: [
@@ -274,7 +276,8 @@ const createRsaDevice = async (
   async function createDevice() {
     // Construct request
     const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
-    const key = await fs.promises.readFile(rsaCertificateFile);
+    const readFileAsync = promisify(fs.readFile);
+    const key = await readFileAsync(rsaCertificateFile);
     const device = {
       id: deviceId,
       credentials: [
@@ -323,7 +326,8 @@ const createEsDevice = async (
   async function createDevice() {
     // Construct request
     const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
-    const key = await fs.promises.readFile(esCertificateFile);
+    const readFileAsync = promisify(fs.readFile);
+    const key = await readFileAsync(esCertificateFile);
     const device = {
       id: deviceId,
       credentials: [
@@ -375,7 +379,8 @@ const patchRsa256ForAuth = async (
       registryId,
       deviceId
     );
-    const key = await fs.promises.readFile(rsaPublicKeyFile);
+    const readFileAsync = promisify(fs.readFile);
+    const key = await readFileAsync(rsaPublicKeyFile);
 
     const device = {
       name: devPath,
@@ -429,7 +434,8 @@ const patchEs256ForAuth = async (
       registryId,
       deviceId
     );
-    const key = await fs.promises.readFile(esPublicKeyFile);
+    const readFileAsync = promisify(fs.readFile);
+    const key = await readFileAsync(esPublicKeyFile);
 
     const device = {
       name: devPath,
@@ -1068,7 +1074,8 @@ const createGateway = async (
     console.log('Creating gateway:', gatewayId);
 
     let credentials = [];
-    const publicKey = await fs.promises.readFile(publicKeyFile);
+    const readFileAsync = promisify(fs.readFile);
+    const publicKey = await readFileAsync(publicKeyFile);
 
     // if public key format and path are specified, use those
     if (publicKeyFormat && publicKeyFile) {

@@ -16,6 +16,7 @@
 
 // [START iot_mqtt_include]
 const fs = require('fs');
+const {promisify} = require('util');
 const jwt = require('jsonwebtoken');
 const mqtt = require('mqtt');
 // [END iot_mqtt_include]
@@ -40,7 +41,7 @@ console.log('Google Cloud IoT Core MQTT example.');
 // Create a Cloud IoT Core JWT for the given project id, signed with the given
 // private key.
 // [START iot_mqtt_jwt]
-const createJwt = (projectId, privateKeyFile, algorithm) => {
+const createJwt = async (projectId, privateKeyFile, algorithm) => {
   // Create a JWT to authenticate this device. The device will be disconnected
   // after the token expires, and will have to reconnect with a new token. The
   // audience field should always be set to the GCP project id.
@@ -49,7 +50,8 @@ const createJwt = (projectId, privateKeyFile, algorithm) => {
     exp: parseInt(Date.now() / 1000) + 20 * 60, // 20 minutes
     aud: projectId,
   };
-  const privateKey = await fs.promises.readFile(privateKeyFile);
+  const readFileAsync = promisify(fs.readFile);
+  const privateKey = await readFileAsync(privateKeyFile);
   return jwt.sign(token, privateKey, {algorithm: algorithm});
 };
 // [END iot_mqtt_jwt]
