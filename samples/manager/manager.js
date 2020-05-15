@@ -14,7 +14,7 @@
 
 'use strict';
 
-const {readFile} = require('fs').promises;
+const {readFileSync} = require('fs');
 const {google} = require('googleapis');
 
 // [START iot_get_client]
@@ -188,14 +188,13 @@ const createDevice = async (
   async function createDevice() {
     // Construct request
     const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
-    const key = await readFile(publicKeyFile);
     const device = {
       id: deviceId,
       credentials: [
         {
           publicKey: {
             format: publicKeyFormat,
-            key: key.toString(),
+            key: readFileSync(publicKeyFile).toString(),
           },
         },
       ],
@@ -274,14 +273,13 @@ const createRsaDevice = async (
   async function createDevice() {
     // Construct request
     const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
-    const key = await readFile(rsaCertificateFile);
     const device = {
       id: deviceId,
       credentials: [
         {
           publicKey: {
             format: 'RSA_X509_PEM',
-            key: key.toString(),
+            key: readFileSync(rsaCertificateFile).toString(),
           },
         },
       ],
@@ -323,14 +321,13 @@ const createEsDevice = async (
   async function createDevice() {
     // Construct request
     const regPath = iotClient.registryPath(projectId, cloudRegion, registryId);
-    const key = await readFile(esCertificateFile);
     const device = {
       id: deviceId,
       credentials: [
         {
           publicKey: {
             format: 'ES256_PEM',
-            key: key.toString(),
+            key: readFileSync(esCertificateFile).toString(),
           },
         },
       ],
@@ -375,7 +372,6 @@ const patchRsa256ForAuth = async (
       registryId,
       deviceId
     );
-    const key = await readFile(rsaPublicKeyFile);
 
     const device = {
       name: devPath,
@@ -383,7 +379,7 @@ const patchRsa256ForAuth = async (
         {
           publicKey: {
             format: 'RSA_X509_PEM',
-            key: key.toString(),
+            key: readFileSync(rsaPublicKeyFile).toString(),
           },
         },
       ],
@@ -429,7 +425,6 @@ const patchEs256ForAuth = async (
       registryId,
       deviceId
     );
-    const key = await readFile(esPublicKeyFile);
 
     const device = {
       name: devPath,
@@ -437,7 +432,7 @@ const patchEs256ForAuth = async (
         {
           publicKey: {
             format: 'ES256_PEM',
-            key: key.toString(),
+            key: readFileSync(esPublicKeyFile).toString(),
           },
         },
       ],
@@ -1068,7 +1063,6 @@ const createGateway = async (
     console.log('Creating gateway:', gatewayId);
 
     let credentials = [];
-    const publicKey = await readFile(publicKeyFile);
 
     // if public key format and path are specified, use those
     if (publicKeyFormat && publicKeyFile) {
@@ -1076,7 +1070,7 @@ const createGateway = async (
         {
           publicKey: {
             format: publicKeyFormat,
-            key: publicKey.toString(),
+            key: readFileSync(publicKeyFile).toString(),
           },
         },
       ];

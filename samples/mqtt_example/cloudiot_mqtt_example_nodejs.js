@@ -15,8 +15,7 @@
 'use strict';
 
 // [START iot_mqtt_include]
-const fs = require('fs');
-const {promisify} = require('util');
+const {readFileSync} = require('fs');
 const jwt = require('jsonwebtoken');
 const mqtt = require('mqtt');
 // [END iot_mqtt_include]
@@ -41,7 +40,7 @@ console.log('Google Cloud IoT Core MQTT example.');
 // Create a Cloud IoT Core JWT for the given project id, signed with the given
 // private key.
 // [START iot_mqtt_jwt]
-const createJwt = async (projectId, privateKeyFile, algorithm) => {
+const createJwt = (projectId, privateKeyFile, algorithm) => {
   // Create a JWT to authenticate this device. The device will be disconnected
   // after the token expires, and will have to reconnect with a new token. The
   // audience field should always be set to the GCP project id.
@@ -50,8 +49,7 @@ const createJwt = async (projectId, privateKeyFile, algorithm) => {
     exp: parseInt(Date.now() / 1000) + 20 * 60, // 20 minutes
     aud: projectId,
   };
-  const readFileAsync = promisify(fs.readFile);
-  const privateKey = await readFileAsync(privateKeyFile);
+  const privateKey = readFileSync(privateKeyFile);
   return jwt.sign(token, privateKey, {algorithm: algorithm});
 };
 // [END iot_mqtt_jwt]
@@ -87,7 +85,7 @@ const publishAsync = (
     console.log(`Backing off for ${publishDelayMs}ms before publishing.`);
   }
 
-  setTimeout(async () => {
+  setTimeout(() => {
     const payload = `${argv.registryId}/${argv.deviceId}-payload-${messagesSent}`;
 
     // Publish "payload" to the MQTT topic. qos=1 means at least once delivery.
@@ -101,7 +99,7 @@ const publishAsync = (
     });
 
     const schedulePublishDelayMs = argv.messageType === 'events' ? 1000 : 2000;
-    setTimeout(async () => {
+    setTimeout(() => {
       // [START iot_mqtt_jwt_refresh]
       const secsFromIssue = parseInt(Date.now() / 1000) - iatTime;
       if (secsFromIssue > argv.tokenExpMins * 60) {
@@ -109,7 +107,7 @@ const publishAsync = (
         console.log(`\tRefreshing token after ${secsFromIssue} seconds.`);
 
         client.end();
-        connectionArgs.password = await createJwt(
+        connectionArgs.password = createJwt(
           argv.projectId,
           argv.privateKeyFile,
           argv.algorithm
@@ -169,7 +167,7 @@ const publishAsync = (
 };
 // [END iot_mqtt_publish]
 
-const mqttDeviceDemo = async (
+const mqttDeviceDemo = (
   deviceId,
   registryId,
   projectId,
@@ -206,7 +204,7 @@ const mqttDeviceDemo = async (
     port: mqttBridgePort,
     clientId: mqttClientId,
     username: 'unused',
-    password: await createJwt(projectId, privateKeyFile, algorithm),
+    password: createJwt(projectId, privateKeyFile, algorithm),
     protocol: 'mqtts',
     secureProtocol: 'TLSv1_2_method',
   };
@@ -358,7 +356,7 @@ const publishAsyncGateway = (
     payload = `${registryId}/${deviceId}-payload-${messagesSent}`;
   }
 
-  setTimeout(async () => {
+  setTimeout(() => {
     // Publish "payload" to the MQTT topic. qos=1 means at least once delivery.
     // Cloud IoT Core also supports qos=0 for at most once delivery.
     console.log(`Publishing message: ${payload} to ${mqttTopic}`);
@@ -370,14 +368,14 @@ const publishAsyncGateway = (
     });
 
     const schedulePublishDelayMs = 5000; // messageType === 'events' ? 1000 : 2000;
-    setTimeout(async () => {
+    setTimeout(() => {
       const secsFromIssue = parseInt(Date.now() / 1000) - iatTime;
       if (secsFromIssue > tokenExpMins * 60) {
         iatTime = parseInt(Date.now() / 1000);
         console.log(`\tRefreshing token after ${secsFromIssue} seconds.`);
 
         client.end();
-        connectionArgs.password = await createJwt(
+        connectionArgs.password = createJwt(
           projectId,
           privateKeyFile,
           algorithm
@@ -399,7 +397,7 @@ const publishAsyncGateway = (
 };
 
 // Sends data from a gateway on behalf of a device that is bound to that gateway.
-const sendDataFromBoundDevice = async (
+const sendDataFromBoundDevice = (
   deviceId,
   gatewayId,
   registryId,
@@ -431,7 +429,7 @@ const sendDataFromBoundDevice = async (
     port: mqttBridgePort,
     clientId: mqttClientId,
     username: 'unused',
-    password: await createJwt(projectId, privateKeyFile, algorithm),
+    password: createJwt(projectId, privateKeyFile, algorithm),
     protocol: 'mqtts',
     qos: 1,
     secureProtocol: 'TLSv1_2_method',
@@ -490,7 +488,7 @@ const sendDataFromBoundDevice = async (
 };
 
 // Listen for configuration messages on a gateway and bound device.
-const listenForConfigMessages = async (
+const listenForConfigMessages = (
   deviceId,
   gatewayId,
   registryId,
@@ -520,7 +518,7 @@ const listenForConfigMessages = async (
     port: mqttBridgePort,
     clientId: mqttClientId,
     username: 'unused',
-    password: await createJwt(projectId, privateKeyFile, algorithm),
+    password: createJwt(projectId, privateKeyFile, algorithm),
     protocol: 'mqtts',
     qos: 1,
     secureProtocol: 'TLSv1_2_method',
@@ -576,7 +574,7 @@ const listenForConfigMessages = async (
 };
 
 // Listen for error messages on a gateway.
-const listenForErrorMessages = async (
+const listenForErrorMessages = (
   deviceId,
   gatewayId,
   registryId,
@@ -607,7 +605,7 @@ const listenForErrorMessages = async (
     port: mqttBridgePort,
     clientId: mqttClientId,
     username: 'unused',
-    password: await createJwt(projectId, privateKeyFile, algorithm),
+    password: createJwt(projectId, privateKeyFile, algorithm),
     protocol: 'mqtts',
     qos: 1,
     secureProtocol: 'TLSv1_2_method',
