@@ -15,7 +15,7 @@
 'use strict';
 
 // [START iot_mqtt_include]
-const fs = require('fs');
+const {readFileSync} = require('fs');
 const jwt = require('jsonwebtoken');
 const mqtt = require('mqtt');
 // [END iot_mqtt_include]
@@ -49,7 +49,7 @@ const createJwt = (projectId, privateKeyFile, algorithm) => {
     exp: parseInt(Date.now() / 1000) + 20 * 60, // 20 minutes
     aud: projectId,
   };
-  const privateKey = fs.readFileSync(privateKeyFile);
+  const privateKey = readFileSync(privateKeyFile);
   return jwt.sign(token, privateKey, {algorithm: algorithm});
 };
 // [END iot_mqtt_jwt]
