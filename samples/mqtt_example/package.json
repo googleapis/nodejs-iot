@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@google-cloud/iot": "^2.0.0",
-    "@google-cloud/pubsub": "^1.0.0",
+    "@google-cloud/pubsub": "^2.0.0",
     "jsonwebtoken": "^8.5.0",
     "mocha": "^7.0.0",
     "mqtt": "^4.0.0",
