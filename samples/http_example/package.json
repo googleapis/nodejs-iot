@@ -24,6 +24,6 @@
     "uuid": "^8.0.0",
     "yargs": "^15.0.0",
     "@google-cloud/pubsub": "^2.0.0",
-    "googleapis": "^51.0.0"
+    "googleapis": "^52.0.0"
   }
 }
