@@ -15,20 +15,6 @@
 'use strict';
 
 const {readFileSync} = require('fs');
-const {google} = require('googleapis');
-
-// [START iot_get_client]
-const iot = require('@google-cloud/iot');
-
-const API_VERSION = 'v1';
-const DISCOVERY_API = 'https://cloudiot.googleapis.com/$discovery/rest';
-
-const client = new iot.v1.DeviceManagerClient();
-// [END iot_get_client]
-
-if (client === undefined) {
-  console.log('Did not instantiate client.');
-}
 
 // Configures the topic for Cloud IoT Core.
 const setupIotTopic = async topicName => {
@@ -89,7 +75,7 @@ const createIotTopic = async topicName => {
 };
 
 // Lookup the registry, assuming that it exists.
-const lookupRegistry = async (client, registryId, projectId, cloudRegion) => {
+const lookupRegistry = async (registryId, projectId, cloudRegion) => {
   // [START iot_lookup_registry]
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
@@ -117,7 +103,6 @@ const lookupRegistry = async (client, registryId, projectId, cloudRegion) => {
 };
 
 const createRegistry = async (
-  client,
   registryId,
   projectId,
   cloudRegion,
@@ -166,7 +151,6 @@ const createRegistry = async (
 
 // Create a new device with a given public key format
 const createDevice = async (
-  client,
   deviceId,
   registryId,
   projectId,
@@ -216,7 +200,6 @@ const createDevice = async (
 // Create a new device with the given id. The body defines the parameters for
 // the device, such as authentication.
 const createUnauthDevice = async (
-  client,
   deviceId,
   registryId,
   projectId,
@@ -252,7 +235,6 @@ const createUnauthDevice = async (
 
 // Create a device using RSA256 for authentication.
 const createRsaDevice = async (
-  client,
   deviceId,
   registryId,
   projectId,
@@ -300,7 +282,6 @@ const createRsaDevice = async (
 
 // Create a device using ES256 for authentication.
 const createEsDevice = async (
-  client,
   deviceId,
   registryId,
   projectId,
@@ -347,7 +328,6 @@ const createEsDevice = async (
 
 // Add RSA256 authentication to the given device.
 const patchRsa256ForAuth = async (
-  client,
   deviceId,
   registryId,
   rsaPublicKeyFile,
@@ -400,7 +380,6 @@ const patchRsa256ForAuth = async (
 
 // Add ES256 authentication to the given device.
 const patchEs256ForAuth = async (
-  client,
   deviceId,
   registryId,
   esPublicKeyFile,
@@ -452,7 +431,7 @@ const patchEs256ForAuth = async (
 };
 
 // List all of the devices in the given registry.
-const listDevices = async (client, registryId, projectId, cloudRegion) => {
+const listDevices = async (registryId, projectId, cloudRegion) => {
   // [START iot_list_devices]
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
@@ -490,7 +469,7 @@ const listDevices = async (client, registryId, projectId, cloudRegion) => {
 };
 
 // List all of the registries in the given project.
-const listRegistries = async (client, projectId, cloudRegion) => {
+const listRegistries = async (projectId, cloudRegion) => {
   // [START iot_list_registries]
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
@@ -517,13 +496,7 @@ const listRegistries = async (client, projectId, cloudRegion) => {
 };
 
 // Delete the given device from the registry.
-const deleteDevice = async (
-  client,
-  deviceId,
-  registryId,
-  projectId,
-  cloudRegion
-) => {
+const deleteDevice = async (deviceId, registryId, projectId, cloudRegion) => {
   // [START iot_delete_device]
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
@@ -552,25 +525,15 @@ const deleteDevice = async (
 };
 
 // Clear the given registry by removing all devices and deleting the registry.
-const clearRegistry = async (client, registryId, projectId, cloudRegion) => {
-  const parentName = `projects/${projectId}/locations/${cloudRegion}`;
-  const registryName = `${parentName}/registries/${registryId}`;
+const clearRegistry = async (registryId, projectId, cloudRegion) => {
+  const iot = require('@google-cloud/iot');
+  const iotClient = new iot.v1.DeviceManagerClient();
 
   let devices;
-
-  async function listDevices() {
-    // Construct request
-    const request = {
-      parent: registryName,
-    };
-
-    const {data} = await client.projects.locations.registries.devices.list(
-      request
-    );
-    devices = data.devices;
-  }
   try {
-    listDevices();
+    [devices] = await iotClient.listDeviceRegistries({
+      parent: iotClient.locationPath(projectId, cloudRegion),
+    });
   } catch (err) {
     console.error('Could not list devices', err);
     return;
@@ -581,29 +544,21 @@ const clearRegistry = async (client, registryId, projectId, cloudRegion) => {
   if (devices) {
     const promises = devices.map((device, index) => {
       console.log(`${device.id} [${index}/${devices.length}] removed`);
-      return deleteDevice(
-        client,
-        device.id,
-        registryId,
-        projectId,
-        cloudRegion
-      );
+      return deleteDevice(device.id, registryId, projectId, cloudRegion);
     });
     await Promise.all(promises);
   }
 
   async function deleteRegistry() {
-    // Construct request
-    const requestDelete = {
-      name: registryName,
-    };
-
-    const {data} = await client.projects.locations.registries.delete(
-      requestDelete
+    const registryName = iotClient.registryPath(
+      projectId,
+      cloudRegion,
+      registryId
     );
-
+    await iotClient.deleteDeviceRegistry({
+      name: registryName,
+    });
     console.log(`Successfully deleted registry ${registryName}`);
-    console.log(data);
   }
 
   // Delete registry
@@ -612,7 +567,7 @@ const clearRegistry = async (client, registryId, projectId, cloudRegion) => {
 
 // Delete the given registry. Note that this will only succeed if the registry
 // is empty.
-const deleteRegistry = async (client, registryId, projectId, cloudRegion) => {
+const deleteRegistry = async (registryId, projectId, cloudRegion) => {
   // [START iot_delete_registry]
   // Client retrieved in callback
   // const cloudRegion = 'us-central1';
@@ -645,13 +600,7 @@ const deleteRegistry = async (client, registryId, projectId, cloudRegion) => {
 };
 
 // Retrieve the given device from the registry.
-const getDevice = async (
-  client,
-  deviceId,
-  registryId,
-  projectId,
-  cloudRegion
-) => {
+const getDevice = async (deviceId, registryId, projectId, cloudRegion) => {
   // [START iot_get_device]
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-device';
@@ -682,13 +631,7 @@ const getDevice = async (
 };
 
 // Retrieve the given device's state from the registry.
-const getDeviceState = async (
-  client,
-  deviceId,
-  registryId,
-  projectId,
-  cloudRegion
-) => {
+const getDeviceState = async (deviceId, registryId, projectId, cloudRegion) => {
   // [START iot_get_device_state]
   // const cloudRegion = 'us-central1';
   // const deviceId = 'my-device';
@@ -732,7 +675,6 @@ const getDeviceState = async (
 
 // Retrieve the given device's configuration history from the registry.
 const getDeviceConfigs = async (
-  client,
   deviceId,
   registryId,
   projectId,
@@ -785,7 +727,6 @@ const getDeviceConfigs = async (
 
 // Send configuration data to device.
 const setDeviceConfig = async (
-  client,
   deviceId,
   registryId,
   projectId,
@@ -873,7 +814,7 @@ const sendCommand = async (
 };
 
 // Retrieve the given device from the registry.
-const getRegistry = async (client, registryId, projectId, cloudRegion) => {
+const getRegistry = async (registryId, projectId, cloudRegion) => {
   // [START iot_get_registry]
   // Client retrieved in callback
   // const cloudRegion = 'us-central1';
@@ -903,31 +844,8 @@ const getRegistry = async (client, registryId, projectId, cloudRegion) => {
   // [END iot_get_registry]
 };
 
-// Returns an authorized API client by discovering the Cloud IoT Core API with
-// the provided API key.
-const getClient = async serviceAccountJson => {
-  // the getClient method looks for the GCLOUD_PROJECT and GOOGLE_APPLICATION_CREDENTIALS
-  // environment variables if serviceAccountJson is not passed in
-  const authClient = await google.auth.getClient({
-    keyFilename: serviceAccountJson,
-    scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-  });
-
-  const discoveryUrl = `${DISCOVERY_API}?version=${API_VERSION}`;
-
-  google.options({
-    auth: authClient,
-  });
-
-  try {
-    return google.discoverAPI(discoveryUrl);
-  } catch (err) {
-    console.error('Error during API discovery.', err);
-  }
-};
-
 // Retrieves the IAM policy for a given registry.
-const getIamPolicy = async (client, registryId, projectId, cloudRegion) => {
+const getIamPolicy = async (registryId, projectId, cloudRegion) => {
   // [START iot_get_iam_policy]
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
@@ -973,7 +891,6 @@ const getIamPolicy = async (client, registryId, projectId, cloudRegion) => {
 
 // Sets the IAM permissions for a given registry to a single member / role.
 const setIamPolicy = async (
-  client,
   registryId,
   projectId,
   cloudRegion,
@@ -1034,7 +951,6 @@ const setIamPolicy = async (
 
 // Creates a gateway.
 const createGateway = async (
-  client,
   projectId,
   cloudRegion,
   registryId,
@@ -1100,7 +1016,6 @@ const createGateway = async (
 
 // Binds a device to a gateway so that it can be attached.
 const bindDeviceToGateway = async (
-  client,
   projectId,
   cloudRegion,
   registryId,
@@ -1142,7 +1057,6 @@ const bindDeviceToGateway = async (
 
 // Unbinds a device from a gateway.
 const unbindDeviceFromGateway = async (
-  client,
   projectId,
   cloudRegion,
   registryId,
@@ -1229,7 +1143,6 @@ const unbindDeviceFromAllGateways = async (
         for (let i = 0; i < gateways.length; i++) {
           const gatewayId = gateways[i].id;
           unbindDeviceFromGateway(
-            client,
             projectId,
             cloudRegion,
             registryId,
@@ -1281,7 +1194,7 @@ const unbindAllDevices = async (projectId, cloudRegion, registryId) => {
 };
 
 // Lists gateways in a registry.
-const listGateways = async (client, projectId, cloudRegion, registryId) => {
+const listGateways = async (projectId, cloudRegion, registryId) => {
   // [START iot_list_gateways]
   // const cloudRegion = 'us-central1';
   // const projectId = 'adjective-noun-123';
@@ -1322,7 +1235,6 @@ const listGateways = async (client, projectId, cloudRegion, registryId) => {
 
 // Lists devices bound to a gateway.
 const listDevicesForGateway = async (
-  client,
   projectId,
   cloudRegion,
   registryId,
@@ -1369,7 +1281,6 @@ const listDevicesForGateway = async (
 
 // Lists gateways a given device is bound to.
 const listGatewaysForDevice = async (
-  client,
   projectId,
   cloudRegion,
   registryId,
@@ -1445,9 +1356,7 @@ require(`yargs`) // eslint-disable-line
     'Creates an RSA256 device.',
     {},
     async opts => {
-      const client = await getClient(opts.serviceAccount);
       await createRsaDevice(
-        client,
         opts.deviceId,
         opts.registryId,
         opts.projectId,
@@ -1461,9 +1370,7 @@ require(`yargs`) // eslint-disable-line
     'Creates an ES256 device.',
     {},
     async opts => {
-      const client = await getClient(opts.serviceAccount);
       await createEsDevice(
-        client,
         opts.deviceId,
         opts.registryId,
         opts.projectId,
@@ -1477,9 +1384,7 @@ require(`yargs`) // eslint-disable-line
     'Creates a device without authorization.',
     {},
     async opts => {
-      const client = await getClient(opts.serviceAccount);
       await createUnauthDevice(
-        client,
         opts.deviceId,
         opts.registryId,
         opts.projectId,
@@ -1506,9 +1411,7 @@ require(`yargs`) // eslint-disable-line
       },
     },
     async opts => {
-      const client = await getClient(opts.serviceAccount);
       await createDevice(
-        client,
         opts.deviceId,
         opts.registryId,
         opts.projectId,
@@ -1523,9 +1426,7 @@ require(`yargs`) // eslint-disable-line
     'Creates a device registry.',
     {},
     async opts => {
-      const client = await getClient(opts.serviceAccount);
       await createRegistry(
-        client,
         opts.registryId,
         opts.projectId,
         opts.cloudRegion,
@@ -1538,13 +1439,7 @@ require(`yargs`) // eslint-disable-line
     'Gets a device registry.',
     {},
     async opts => {
-      const client = await getClient(opts.serviceAccount);
-      await lookupRegistry(
-        client,
-        opts.registryId,
-        opts.projectId,
-        opts.cloudRegion
-      );
+      await lookupRegistry(opts.registryId, opts.projectId, opts.cloudRegion);
     }
   )
   .command(
@@ -1564,9 +1459,7 @@ require(`yargs`) // eslint-disable-line
     'Deletes a device from the device registry.',
     {},
     async opts => {
-      const client = await getClient(opts.serviceAccount);
       await deleteDevice(
-        client,
         opts.deviceId,
         opts.registryId,
         opts.projectId,
@@ -1579,13 +1472,7 @@ require(`yargs`) // eslint-disable-line
     '!!Be careful! Removes all devices and then deletes a device registry!!',
     {},
     async opts => {
-      const client = await getClient(opts.serviceAccount);
-      await clearRegistry(
-        client,
-        opts.registryId,
-        opts.projectId,
-        opts.cloudRegion
-      );
+      await clearRegistry(opts.registryId, opts.projectId, opts.cloudRegion);
     }
   )
   .command(
@@ -1593,13 +1480,7 @@ require(`yargs`) // eslint-disable-line
     'Deletes a device registry.',
     {},
     async opts => {
-      const client = await getClient(opts.serviceAccount);
-      await deleteRegistry(
-        client,
-        opts.registryId,
-        opts.projectId,
-        opts.cloudRegion
-      );
+      await deleteRegistry(opts.registryId, opts.projectId, opts.cloudRegion);
     }
   )
   .command(
@@ -1607,9 +1488,7 @@ require(`yargs`) // eslint-disable-line
     'Retrieves device info given a device ID.',
     {},
     async opts => {
-      const client = await getClient(opts.serviceAccount);
       await getDevice(
-        client,
         opts.deviceId,
         opts.registryId,
         opts.projectId,
@@ -1622,9 +1501,7 @@ require(`yargs`) // eslint-disable-line
     'Retrieves device configurations given a device ID.',
     {},
     async opts => {
-      const client = await getClient(opts.serviceAccount);
       getDeviceConfigs(
-        client,
         opts.deviceId,
         opts.registryId,
         opts.projectId,
@@ -1637,9 +1514,7 @@ require(`yargs`) // eslint-disable-line
     'Retrieves device state given a device ID.',
     {},
     async opts => {
-      const client = await getClient(opts.serviceAccount);
       getDeviceState(
-        client,
         opts.deviceId,
         opts.registryId,
         opts.projectId,
@@ -1652,13 +1527,7 @@ require(`yargs`) // eslint-disable-line
     'Retrieves a registry.',
     {},
     async opts => {
-      const client = await getClient(opts.serviceAccount);
-      await getRegistry(
-        client,
-        opts.registryId,
-        opts.projectId,
-        opts.cloudRegion
-      );
+      await getRegistry(opts.registryId, opts.projectId, opts.cloudRegion);
     }
   )
   .command(
@@ -1666,13 +1535,7 @@ require(`yargs`) // eslint-disable-line
     'Lists the devices in a given registry.',
     {},
     async opts => {
-      const client = await getClient(opts.serviceAccount);
-      await listDevices(
-        client,
-        opts.registryId,
-        opts.projectId,
-        opts.cloudRegion
-      );
+      await listDevices(opts.registryId, opts.projectId, opts.cloudRegion);
     }
   )
   .command(
@@ -1680,8 +1543,7 @@ require(`yargs`) // eslint-disable-line
     'Lists the registries in a given project.',
     {},
     async opts => {
-      const client = await getClient(opts.serviceAccount);
-      await listRegistries(client, opts.projectId, opts.cloudRegion);
+      await listRegistries(opts.projectId, opts.cloudRegion);
     }
   )
   .command(
@@ -1689,9 +1551,7 @@ require(`yargs`) // eslint-disable-line
     'Patches a device with ES256 authorization credentials.',
     {},
     async opts => {
-      const client = await getClient(opts.serviceAccount);
       await patchEs256ForAuth(
-        client,
         opts.deviceId,
         opts.registryId,
         opts.es256Path,
@@ -1705,9 +1565,7 @@ require(`yargs`) // eslint-disable-line
     'Patches a device with RSA256 authentication credentials.',
     {},
     async opts => {
-      const client = await getClient(opts.serviceAccount);
       await patchRsa256ForAuth(
-        client,
         opts.deviceId,
         opts.registryId,
         opts.rsa256Path,
@@ -1721,9 +1579,7 @@ require(`yargs`) // eslint-disable-line
     'Sets a devices configuration to the specified data.',
     {},
     async opts => {
-      const client = await getClient(opts.serviceAccount);
       await setDeviceConfig(
-        client,
         opts.deviceId,
         opts.registryId,
         opts.projectId,
@@ -1752,13 +1608,7 @@ require(`yargs`) // eslint-disable-line
     'Gets the IAM permissions for a given registry',
     {},
     async opts => {
-      const client = await getClient(opts.serviceAccount);
-      await getIamPolicy(
-        client,
-        opts.registryId,
-        opts.projectId,
-        opts.cloudRegion
-      );
+      await getIamPolicy(opts.registryId, opts.projectId, opts.cloudRegion);
     }
   )
   .command(
@@ -1766,9 +1616,7 @@ require(`yargs`) // eslint-disable-line
     'Gets the IAM permissions for a given registry',
     {},
     async opts => {
-      const client = await getClient(opts.serviceAccount);
       await setIamPolicy(
-        client,
         opts.registryId,
         opts.projectId,
         opts.cloudRegion,
@@ -1823,9 +1671,7 @@ require(`yargs`) // eslint-disable-line
       },
     },
     async opts => {
-      const client = await getClient(opts.serviceAccount);
       await createGateway(
-        client,
         opts.projectId,
         opts.cloudRegion,
         opts.registryId,
@@ -1840,13 +1686,7 @@ require(`yargs`) // eslint-disable-line
     'Lists gateways in a registry.',
     {},
     async opts => {
-      const client = await getClient(opts.serviceAccount);
-      await listGateways(
-        client,
-        opts.projectId,
-        opts.cloudRegion,
-        opts.registryId
-      );
+      await listGateways(opts.projectId, opts.cloudRegion, opts.registryId);
     }
   )
   .command(
@@ -1854,9 +1694,7 @@ require(`yargs`) // eslint-disable-line
     'Binds a device to a gateway',
     {},
     async opts => {
-      const client = await getClient(opts.serviceAccount);
       await bindDeviceToGateway(
-        client,
         opts.projectId,
         opts.cloudRegion,
         opts.registryId,
@@ -1870,9 +1708,7 @@ require(`yargs`) // eslint-disable-line
     'Unbinds a device from a gateway',
     {},
     async opts => {
-      const client = await getClient(opts.serviceAccount);
       await unbindDeviceFromGateway(
-        client,
         opts.projectId,
         opts.cloudRegion,
         opts.registryId,
@@ -1907,9 +1743,7 @@ require(`yargs`) // eslint-disable-line
     'Lists devices in a gateway.',
     {},
     async opts => {
-      const client = await getClient(opts.serviceAccount);
       await listDevicesForGateway(
-        client,
         opts.projectId,
         opts.cloudRegion,
         opts.registryId,
@@ -1922,9 +1756,7 @@ require(`yargs`) // eslint-disable-line
     'Lists gateways for a given device.',
     {},
     async opts => {
-      const client = await getClient(opts.serviceAccount);
       await listGatewaysForDevice(
-        client,
         opts.projectId,
         opts.cloudRegion,
         opts.registryId,
