@@ -17,21 +17,18 @@
 const {PubSub} = require('@google-cloud/pubsub');
 const assert = require('assert');
 const cp = require('child_process');
-const path = require('path');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const uuid = require('uuid');
-
 const {after, before, it} = require('mocha');
 
 const deviceId = 'test-node-device';
 const topicName = `nodejs-docs-samples-test-iot-${uuid.v4()}`;
 const registryName = `nodejs-test-registry-iot-${uuid.v4()}`;
-const helper = 'node manager/manager.js';
-const cmd = `node http_example/cloudiot_http_example.js --registryId="${registryName}" --deviceId="${deviceId}" `;
-const cwd = path.join(__dirname, '..');
+const helper = 'node ../manager/manager.js';
+const cmd = `node cloudiot_http_example.js --registryId="${registryName}" --deviceId="${deviceId}" `;
 const installDeps = 'npm install';
 
-assert.ok(execSync(installDeps, `${cwd}/../manager`));
+assert.ok(execSync(installDeps, '../manager'));
 before(async () => {
   assert(
     process.env.GCLOUD_PROJECT,
@@ -57,77 +54,61 @@ it('should receive configuration message', async () => {
   const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256config`;
 
-  await execSync(`${helper} setupIotTopic ${topicName}`, cwd);
-  await execSync(`${helper} createRegistry ${localRegName} ${topicName}`, cwd);
+  await execSync(`${helper} setupIotTopic ${topicName}`);
+  await execSync(`${helper} createRegistry ${localRegName} ${topicName}`);
   await execSync(
-    `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`,
-    cwd
+    `${helper} createRsa256Device ${localDevice} ${localRegName} ../resources/rsa_cert.pem`
   );
-
   const output = await execSync(
-    `${cmd} --messageType=events --numMessages=1 --privateKeyFile=resources/rsa_private.pem --algorithm=RS256`,
-    cwd
+    `${cmd} --messageType=events --numMessages=1 --privateKeyFile=../resources/rsa_private.pem --algorithm=RS256`
   );
 
   assert.strictEqual(new RegExp(/Getting config/).test(output), true);
 
   // Check / cleanup
-  await execSync(
-    `${helper} getDeviceState ${localDevice} ${localRegName}`,
-    cwd
-  );
-  await execSync(`${helper} deleteDevice ${localDevice} ${localRegName}`, cwd);
-  await execSync(`${helper} deleteRegistry ${localRegName}`, cwd);
+  await execSync(`${helper} getDeviceState ${localDevice} ${localRegName}`);
+  await execSync(`${helper} deleteDevice ${localDevice} ${localRegName}`);
+  await execSync(`${helper} deleteRegistry ${localRegName}`);
 });
 
 it('should send event message', async () => {
   const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
 
-  await execSync(`${helper} setupIotTopic ${topicName}`, cwd);
-  await execSync(`${helper} createRegistry ${localRegName} ${topicName}`, cwd);
+  await execSync(`${helper} setupIotTopic ${topicName}`);
+  await execSync(`${helper} createRegistry ${localRegName} ${topicName}`);
   await execSync(
-    `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`,
-    cwd
+    `${helper} createRsa256Device ${localDevice} ${localRegName} ../resources/rsa_cert.pem`
   );
 
   const output = await execSync(
-    `${cmd} --messageType=events --numMessages=1 --privateKeyFile=resources/rsa_private.pem --algorithm=RS256`,
-    cwd
+    `${cmd} --messageType=events --numMessages=1 --privateKeyFile=../resources/rsa_private.pem --algorithm=RS256`
   );
 
   assert.strictEqual(new RegExp(/Publishing message/).test(output), true);
 
   // Check / cleanup
-  await execSync(
-    `${helper} getDeviceState ${localDevice} ${localRegName}`,
-    cwd
-  );
-  await execSync(`${helper} deleteDevice ${localDevice} ${localRegName}`, cwd);
-  await execSync(`${helper} deleteRegistry ${localRegName}`, cwd);
+  await execSync(`${helper} getDeviceState ${localDevice} ${localRegName}`);
+  await execSync(`${helper} deleteDevice ${localDevice} ${localRegName}`);
+  await execSync(`${helper} deleteRegistry ${localRegName}`);
 });
 
 it('should send state message', async () => {
   const localDevice = 'test-rsa-device';
   const localRegName = `${registryName}-rsa256`;
-  await execSync(`${helper} setupIotTopic ${topicName}`, cwd);
-  await execSync(`${helper} createRegistry ${localRegName} ${topicName}`, cwd);
+  await execSync(`${helper} setupIotTopic ${topicName}`);
+  await execSync(`${helper} createRegistry ${localRegName} ${topicName}`);
   await execSync(
-    `${helper} createRsa256Device ${localDevice} ${localRegName} resources/rsa_cert.pem`,
-    cwd
+    `${helper} createRsa256Device ${localDevice} ${localRegName} ../resources/rsa_cert.pem`
   );
 
   const output = await execSync(
-    `${cmd} --messageType=state --numMessages=1 --privateKeyFile=resources/rsa_private.pem --algorithm=RS256`,
-    cwd
+    `${cmd} --messageType=state --numMessages=1 --privateKeyFile=../resources/rsa_private.pem --algorithm=RS256`
   );
   assert.strictEqual(new RegExp(/Publishing message/).test(output), true);
 
   // Check / cleanup
-  await execSync(
-    `${helper} getDeviceState ${localDevice} ${localRegName}`,
-    cwd
-  );
-  await execSync(`${helper} deleteDevice ${localDevice} ${localRegName}`, cwd);
-  await execSync(`${helper} deleteRegistry ${localRegName}`, cwd);
+  await execSync(`${helper} getDeviceState ${localDevice} ${localRegName}`);
+  await execSync(`${helper} deleteDevice ${localDevice} ${localRegName}`);
+  await execSync(`${helper} deleteRegistry ${localRegName}`);
 });
