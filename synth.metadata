@@ -11,8 +11,8 @@
       "git": {
         "name": "googleapis",
         "remote": "https://github.com/googleapis/googleapis.git",
-        "sha": "96eb8c021fe574d2fe9840c4990515347274ea82",
-        "internalRef": "328959737"
+        "sha": "b267d696cd58bc658b4e4b6cd698b05b5b6a073e",
+        "internalRef": "328987468"
       }
     },
     {
@@ -43,7 +43,6 @@
     ".github/ISSUE_TEMPLATE/support_request.md",
     ".github/PULL_REQUEST_TEMPLATE.md",
     ".github/release-please.yml",
-    ".github/workflows/ci.yaml",
     ".gitignore",
     ".jsdoc.js",
     ".kokoro/.gitattributes",
