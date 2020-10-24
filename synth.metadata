@@ -11,8 +11,8 @@
       "git": {
         "name": "googleapis",
         "remote": "https://github.com/googleapis/googleapis.git",
-        "sha": "303f90207bdb344685583ebdb44c1e607782321b",
-        "internalRef": "329762863"
+        "sha": "88d4f10bbe6821a3e16b082f408bc381a73860ff",
+        "internalRef": "329771412"
       }
     },
     {
@@ -61,7 +61,6 @@
     ".kokoro/publish.sh",
     ".kokoro/release/docs-devsite.cfg",
     ".kokoro/release/docs-devsite.sh",
-    ".kokoro/release/docs.cfg",
     ".kokoro/release/docs.sh",
     ".kokoro/release/publish.cfg",
     ".kokoro/samples-test.sh",
