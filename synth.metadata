@@ -11,8 +11,8 @@
       "git": {
         "name": "googleapis",
         "remote": "https://github.com/googleapis/googleapis.git",
-        "sha": "c7331b75b0b7bbd614373b7d37085db1c80dd4be",
-        "internalRef": "338157137"
+        "sha": "11fd1fb53d03cf4852d3f63d679292e3c7b6e7c8",
+        "internalRef": "338201056"
       }
     },
     {
@@ -38,6 +38,12 @@
     ".eslintignore",
     ".eslintrc.json",
     ".gitattributes",
+    ".github/ISSUE_TEMPLATE/bug_report.md",
+    ".github/ISSUE_TEMPLATE/feature_request.md",
+    ".github/ISSUE_TEMPLATE/support_request.md",
+    ".github/PULL_REQUEST_TEMPLATE.md",
+    ".github/release-please.yml",
+    ".github/workflows/ci.yaml",
     ".gitignore",
     ".jsdoc.js",
     ".kokoro/.gitattributes",
@@ -61,6 +67,7 @@
     ".kokoro/publish.sh",
     ".kokoro/release/docs-devsite.cfg",
     ".kokoro/release/docs-devsite.sh",
+    ".kokoro/release/docs.cfg",
     ".kokoro/release/docs.sh",
     ".kokoro/release/publish.cfg",
     ".kokoro/samples-test.sh",
@@ -86,6 +93,7 @@
     "protos/protos.js",
     "protos/protos.json",
     "renovate.json",
+    "samples/README.md",
     "src/index.ts",
     "src/v1/device_manager_client.ts",
     "src/v1/device_manager_client_config.json",
