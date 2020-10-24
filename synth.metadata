@@ -19,7 +19,7 @@
       "git": {
         "name": "synthtool",
         "remote": "https://github.com/googleapis/synthtool.git",
-        "sha": "5f6ef0ec5501d33c4667885b37a7685a30d41a76"
+        "sha": "b7413d38b763827c72c0360f0a3d286c84656eeb"
       }
     }
   ],
@@ -38,9 +38,12 @@
     ".eslintignore",
     ".eslintrc.json",
     ".gitattributes",
+    ".github/ISSUE_TEMPLATE/bug_report.md",
+    ".github/ISSUE_TEMPLATE/feature_request.md",
     ".github/ISSUE_TEMPLATE/support_request.md",
     ".github/PULL_REQUEST_TEMPLATE.md",
     ".github/release-please.yml",
+    ".github/workflows/ci.yaml",
     ".gitignore",
     ".jsdoc.js",
     ".kokoro/.gitattributes",
