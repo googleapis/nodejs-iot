@@ -11,8 +11,7 @@
       "git": {
         "name": "googleapis",
         "remote": "https://github.com/googleapis/googleapis.git",
-        "sha": "d6f5ad878ccaf59d3a39d12c5e4d9a9a50970748",
-        "internalRef": "337925389"
+        "sha": "b2ad55637dedc1fcd8cb82435a84277615356503"
       }
     },
     {
@@ -38,8 +37,6 @@
     ".eslintignore",
     ".eslintrc.json",
     ".gitattributes",
-    ".github/PULL_REQUEST_TEMPLATE.md",
-    ".github/release-please.yml",
     ".gitignore",
     ".jsdoc.js",
     ".kokoro/.gitattributes",
@@ -89,7 +86,6 @@
     "protos/protos.js",
     "protos/protos.json",
     "renovate.json",
-    "samples/README.md",
     "src/index.ts",
     "src/v1/device_manager_client.ts",
     "src/v1/device_manager_client_config.json",
