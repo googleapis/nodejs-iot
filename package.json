@@ -48,8 +48,8 @@
     "google-gax": "^2.9.2"
   },
   "devDependencies": {
-    "@microsoft/api-documenter": "^7.8.10",
-    "@microsoft/api-extractor": "^7.8.10",
+    "@microsoft/api-documenter": "7.11.0",
+    "@microsoft/api-extractor": "7.8.2-pr1796.0",
     "@types/mocha": "^8.0.0",
     "@types/node": "^12.0.0",
     "@types/sinon": "^9.0.0",
