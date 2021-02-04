@@ -7,5 +7,3 @@
 
 # The yoshi-nodejs team is the default owner for nodejs repositories.
 *     @googleapis/yoshi-nodejs @googleapis/ml-apis
-
-/samples/                           @googleapis/api-iot @googleapis/yoshi-nodejs
