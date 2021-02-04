@@ -4,15 +4,15 @@
       "git": {
         "name": ".",
         "remote": "https://github.com/googleapis/nodejs-iot.git",
-        "sha": "6077d60e1c9d66deeb4bec78ec67d2d7518308db"
+        "sha": "e5d97def2c6feb4b99ca03a7250ce20fd9a6bf47"
       }
     },
     {
       "git": {
         "name": "googleapis",
         "remote": "https://github.com/googleapis/googleapis.git",
-        "sha": "d189e871205fea665a9648f7c4676f027495ccaf",
-        "internalRef": "345596855"
+        "sha": "13b6ba5e35620d15a97ae0f8c38be0c0ff1c2d42",
+        "internalRef": "355397730"
       }
     },
     {
