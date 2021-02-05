@@ -451,7 +451,27 @@ const listDevices = async (registryId, projectId, cloudRegion) => {
 
     // See full list of device fields: https://cloud.google.com/iot/docs/reference/cloudiot/rest/v1/projects.locations.registries.devices
     // Warning! Use snake_case field names.
-    const fieldMask = { paths: [ 'id', 'name', 'num_id', 'credentials', 'last_heartbeat_time', 'last_event_time', 'last_state_time', 'last_config_ack_time', 'last_config_send_time', 'blocked', 'last_error_time', 'last_error_status', 'config', 'state', 'log_level', 'metadata', 'gateway_config' ] };
+    const fieldMask = {
+      paths: [
+        'id',
+        'name',
+        'num_id',
+        'credentials',
+        'last_heartbeat_time',
+        'last_event_time',
+        'last_state_time',
+        'last_config_ack_time',
+        'last_config_send_time',
+        'blocked',
+        'last_error_time',
+        'last_error_status',
+        'config',
+        'state',
+        'log_level',
+        'metadata',
+        'gateway_config',
+      ],
+    };
 
     const [response] = await iotClient.listDevices({
       parent: parentName,
@@ -629,7 +649,27 @@ const getDevice = async (deviceId, registryId, projectId, cloudRegion) => {
 
     // See full list of device fields: https://cloud.google.com/iot/docs/reference/cloudiot/rest/v1/projects.locations.registries.devices
     // Warning! Use snake_case field names.
-    const fieldMask = { paths: [ 'id', 'name', 'num_id', 'credentials', 'last_heartbeat_time', 'last_event_time', 'last_state_time', 'last_config_ack_time', 'last_config_send_time', 'blocked', 'last_error_time', 'last_error_status', 'config', 'state', 'log_level', 'metadata', 'gateway_config' ] };
+    const fieldMask = {
+      paths: [
+        'id',
+        'name',
+        'num_id',
+        'credentials',
+        'last_heartbeat_time',
+        'last_event_time',
+        'last_state_time',
+        'last_config_ack_time',
+        'last_config_send_time',
+        'blocked',
+        'last_error_time',
+        'last_error_status',
+        'config',
+        'state',
+        'log_level',
+        'metadata',
+        'gateway_config',
+      ],
+    };
 
     const [response] = await iotClient.getDevice({
       name: devicePath,
