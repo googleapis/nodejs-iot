@@ -15,6 +15,8 @@ Run the following command to install the library dependencies for NodeJS:
 
     npm install
 
+Download server certificate as described in the [Cloud IoT MQTT guides](https://cloud.google.com/iot/docs/how-tos/mqtt-bridge#downloading_mqtt_server_certificates).
+
 # Running the sample
 
 The following command summarizes the sample usage:
@@ -35,6 +37,7 @@ The following command summarizes the sample usage:
         --registryId          Cloud IoT registry ID.
         --deviceId            Cloud IoT device ID.
         --privateKeyFile      Path to private key file.
+        --serverCertFile      Path to server certificate file.
         --algorithm           Encryption algorithm to generate the JWT.
         --numMessages         Number of messages to publish.
         --tokenExpMins        Minutes to JWT token expiration.
@@ -54,6 +57,7 @@ run the following examples:
         --registryId=my-registry \
         --deviceId=my-device \
         --privateKeyFile=../rsa_private.pem \
+        --serverCertFile=../roots.pem \
         --algorithm=RS256
 
     node cloudiot_mqtt_example_nodejs.js sendDataFromBoundDevice \
@@ -63,6 +67,7 @@ run the following examples:
         --gatewayId=my-gateway \
         --deviceId=my-device \
         --privateKeyFile=../rsa_private.pem \
+        --serverCertFile=../roots.pem \
         --algorithm=RS256
 
     node cloudiot_mqtt_example_nodejs.js listenForConfigMessages \
@@ -72,6 +77,7 @@ run the following examples:
         --gatewayid=my-gateway \
         --deviceId=my-device \
         --privateKeyFile=../rsa_private.pem \
+        --serverCertFile=../roots.pem \
         --algorithm=RS256
         --clientDuration=60000
 
