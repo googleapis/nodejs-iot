@@ -174,6 +174,7 @@ const mqttDeviceDemo = (
   region,
   algorithm,
   privateKeyFile,
+  serverCertFile,
   mqttBridgeHostname,
   mqttBridgePort,
   messageType,
@@ -186,6 +187,7 @@ const mqttDeviceDemo = (
   // const region = `us-central1`;
   // const algorithm = `RS256`;
   // const privateKeyFile = `./rsa_private.pem`;
+  // const serverCertFile = `./roots.pem`;
   // const mqttBridgeHostname = `mqtt.googleapis.com`;
   // const mqttBridgePort = 8883;
   // const messageType = `events`;
@@ -207,6 +209,7 @@ const mqttDeviceDemo = (
     password: createJwt(projectId, privateKeyFile, algorithm),
     protocol: 'mqtts',
     secureProtocol: 'TLSv1_2_method',
+    ca: [readFileSync(serverCertFile)],
   };
 
   // Create a client, and connect to the Google MQTT bridge.
@@ -405,6 +408,7 @@ const sendDataFromBoundDevice = (
   region,
   algorithm,
   privateKeyFile,
+  serverCertFile,
   mqttBridgeHostname,
   mqttBridgePort,
   numMessages,
@@ -417,6 +421,7 @@ const sendDataFromBoundDevice = (
   // const region = `us-central1`;
   // const algorithm = `RS256`;
   // const privateKeyFile = `./rsa_private.pem`;
+  // const serverCertFile = `./roots.pem`;
   // const mqttBridgeHostname = `mqtt.googleapis.com`;
   // const mqttBridgePort = 8883;
   // const numMessages = 5;
@@ -433,6 +438,7 @@ const sendDataFromBoundDevice = (
     protocol: 'mqtts',
     qos: 1,
     secureProtocol: 'TLSv1_2_method',
+    ca: [readFileSync(serverCertFile)],
   };
 
   // Create a client, and connect to the Google MQTT bridge.
@@ -496,6 +502,7 @@ const listenForConfigMessages = (
   region,
   algorithm,
   privateKeyFile,
+  serverCertFile,
   mqttBridgeHostname,
   mqttBridgePort,
   clientDuration
@@ -507,6 +514,7 @@ const listenForConfigMessages = (
   // const region = `us-central1`;
   // const algorithm = `RS256`;
   // const privateKeyFile = `./rsa_private.pem`;
+  // const serverCertFile = `./roots.pem`;
   // const mqttBridgeHostname = `mqtt.googleapis.com`;
   // const mqttBridgePort = 8883;
   // const clientDuration = 60000;
@@ -522,6 +530,7 @@ const listenForConfigMessages = (
     protocol: 'mqtts',
     qos: 1,
     secureProtocol: 'TLSv1_2_method',
+    ca: [readFileSync(serverCertFile)],
   };
 
   // Create a client, and connect to the Google MQTT bridge.
@@ -582,6 +591,7 @@ const listenForErrorMessages = (
   region,
   algorithm,
   privateKeyFile,
+  serverCertFile,
   mqttBridgeHostname,
   mqttBridgePort,
   clientDuration
@@ -594,6 +604,7 @@ const listenForErrorMessages = (
   // const region = `us-central1`;
   // const algorithm = `RS256`;
   // const privateKeyFile = `./rsa_private.pem`;
+  // const serverCertFile = `./roots.pem`;
   // const mqttBridgeHostname = `mqtt.googleapis.com`;
   // const mqttBridgePort = 8883;
   // const clientDuration = 60000;
@@ -609,6 +620,7 @@ const listenForErrorMessages = (
     protocol: 'mqtts',
     qos: 1,
     secureProtocol: 'TLSv1_2_method',
+    ca: [readFileSync(serverCertFile)],
   };
 
   // Create a client, and connect to the Google MQTT bridge.
@@ -686,6 +698,12 @@ const {argv} = require('yargs')
       demandOption: true,
       type: 'string',
     },
+    serverCertFile: {
+      description: 'Path to server certificate file.',
+      requiresArg: true,
+      demandOption: true,
+      type: 'string',
+    },
     algorithm: {
       description: 'Encryption algorithm to generate the JWT.',
       requiresArg: true,
@@ -738,6 +756,7 @@ const {argv} = require('yargs')
         opts.cloudRegion,
         opts.algorithm,
         opts.privateKeyFile,
+        opts.serverCertFile,
         opts.mqttBridgeHostname,
         opts.mqttBridgePort,
         opts.messageType,
@@ -771,6 +790,7 @@ const {argv} = require('yargs')
         opts.cloudRegion,
         opts.algorithm,
         opts.privateKeyFile,
+        opts.serverCertFile,
         opts.mqttBridgeHostname,
         opts.mqttBridgePort,
         opts.numMessages,
@@ -804,6 +824,7 @@ const {argv} = require('yargs')
         opts.cloudRegion,
         opts.algorithm,
         opts.privateKeyFile,
+        opts.serverCertFile,
         opts.mqttBridgeHostname,
         opts.mqttBridgePort,
         opts.clientDuration
@@ -836,6 +857,7 @@ const {argv} = require('yargs')
         opts.cloudRegion,
         opts.algorithm,
         opts.privateKeyFile,
+        opts.serverCertFile,
         opts.mqttBridgeHostname,
         opts.mqttBridgePort,
         opts.clientDuration
@@ -843,16 +865,16 @@ const {argv} = require('yargs')
     }
   )
   .example(
-    'node $0 mqttDeviceDemo --projectId=blue-jet-123 \\\n\t--registryId=my-registry --deviceId=my-node-device \\\n\t--privateKeyFile=../rsa_private.pem --algorithm=RS256 \\\n\t--cloudRegion=us-central1 --numMessages=10 \\\n'
+    'node $0 mqttDeviceDemo --projectId=blue-jet-123 \\\n\t--registryId=my-registry --deviceId=my-node-device \\\n\t--privateKeyFile=../rsa_private.pem \\\n\t--serverCertFile=../roots.pem --algorithm=RS256 \\\n\t--cloudRegion=us-central1 --numMessages=10 \\\n'
   )
   .example(
-    'node $0 sendDataFromBoundDevice --projectId=blue-jet-123 \\\n\t--registryId=my-registry --deviceId=my-node-device \\\n\t--privateKeyFile=../rsa_private.pem --algorithm=RS256 \\\n\t--cloudRegion=us-central1 --gatewayId=my-node-gateway \\\n'
+    'node $0 sendDataFromBoundDevice --projectId=blue-jet-123 \\\n\t--registryId=my-registry --deviceId=my-node-device \\\n\t--privateKeyFile=../rsa_private.pem \\\n\t--serverCertFile=../roots.pem --algorithm=RS256 \\\n\t--cloudRegion=us-central1 --gatewayId=my-node-gateway \\\n'
   )
   .example(
-    'node $0 listenForConfigMessages --projectId=blue-jet-123 \\\n\t--registryId=my-registry --deviceId=my-node-device \\\n\t--privateKeyFile=../rsa_private.pem --algorithm=RS256 \\\n\t--cloudRegion=us-central1 --gatewayId=my-node-gateway \\\n\t--clientDuration=300000 \\\n'
+    'node $0 listenForConfigMessages --projectId=blue-jet-123 \\\n\t--registryId=my-registry --deviceId=my-node-device \\\n\t--privateKeyFile=../rsa_private.pem \\\n\t--serverCertFile=../roots.pem --algorithm=RS256 \\\n\t--cloudRegion=us-central1 --gatewayId=my-node-gateway \\\n\t--clientDuration=300000 \\\n'
   )
   .example(
-    'node $0 listenForErrorMessages --projectId=blue-jet-123 \\\n\t--registryId=my-registry --deviceId=my-node-device \\\n\t--privateKeyFile=../rsa_private.pem --algorithm=RS256 \\\n\t--cloudRegion=us-central1 --gatewayId=my-node-gateway \\\n\t--clientDuration=300000 \\\n'
+    'node $0 listenForErrorMessages --projectId=blue-jet-123 \\\n\t--registryId=my-registry --deviceId=my-node-device \\\n\t--privateKeyFile=../rsa_private.pem \\\n\t--serverCertFile=../roots.pem --algorithm=RS256 \\\n\t--cloudRegion=us-central1 --gatewayId=my-node-gateway \\\n\t--clientDuration=300000 \\\n'
   )
   .wrap(120)
   .recommendCommands()
