@@ -32,11 +32,12 @@ const registryName = `nodejs-iot-test-mqtt-registry-${uuid.v4()}`;
 const region = 'us-central1';
 const rsaPublicCert = 'resources/rsa_cert.pem'; //process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
 const rsaPrivateKey = 'resources/rsa_private.pem'; //process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
+const serverCert = 'resources/roots.pem'; //process.env.NODEJS_IOT_SERVER_CERT;'
 
 const helper = 'node ../manager/manager.js';
 const cmd = 'node cloudiot_mqtt_example_nodejs.js';
 
-const cmdSuffix = ` --numMessages=1 --privateKeyFile=${rsaPrivateKey} --algorithm=RS256`;
+const cmdSuffix = ` --privateKeyFile=${rsaPrivateKey} --serverCertFile=${serverCert} --algorithm=RS256`;
 const installDeps = 'npm install';
 
 const iotClient = new iot.v1.DeviceManagerClient();
@@ -45,8 +46,8 @@ const pubSubClient = new PubSub({projectId});
 assert.ok(execSync(installDeps, '../manager'));
 before(async () => {
   assert(
-    process.env.GCLOUD_PROJECT,
-    'Must set GCLOUD_PROJECT environment variable!'
+    process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT,
+    'Must set GOOGLE_CLOUD_PROJECT or GCLOUD_PROJECT environment variable!'
   );
   assert(
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
@@ -91,7 +92,7 @@ it('should receive configuration message', async () => {
   );
 
   output = await execSync(
-    `${cmd} mqttDeviceDemo --messageType=events --registryId="${localRegName}" --deviceId="${localDevice}" ${cmdSuffix}`
+    `${cmd} mqttDeviceDemo --messageType=events --registryId="${localRegName}" --deviceId="${localDevice}" --numMessages=1 ${cmdSuffix}`
   );
 
   assert.strictEqual(new RegExp('connect').test(output), true);
@@ -114,7 +115,7 @@ it('should send event message', async () => {
   );
 
   const output = await execSync(
-    `${cmd} mqttDeviceDemo --messageType=events --registryId="${localRegName}" --deviceId="${localDevice}" ${cmdSuffix}`
+    `${cmd} mqttDeviceDemo --messageType=events --registryId="${localRegName}" --deviceId="${localDevice}" --numMessages=1 ${cmdSuffix}`
   );
   assert.strictEqual(new RegExp('Publishing message:').test(output), true);
 
@@ -134,7 +135,7 @@ it('should send state message', async () => {
   );
 
   const output = await execSync(
-    `${cmd} mqttDeviceDemo --messageType=state --registryId="${localRegName}" --deviceId="${localDevice}" ${cmdSuffix}`
+    `${cmd} mqttDeviceDemo --messageType=state --registryId="${localRegName}" --deviceId="${localDevice}" --numMessages=1 ${cmdSuffix}`
   );
   assert.strictEqual(new RegExp('Publishing message:').test(output), true);
 
@@ -153,7 +154,7 @@ xit('should receive command message', async () => {
   );
 
   const mqttClientExec = exec(
-    `${cmd} mqttDeviceDemo --registryId=${registryName} --deviceId=${deviceId} --numMessages=5 --privateKeyFile=${rsaPrivateKey} --algorithm=RS256 --mqttBridgePort=8883`
+    `${cmd} mqttDeviceDemo --registryId=${registryName} --deviceId=${deviceId} --numMessages=5 --mqttBridgePort=8883 ${cmdSuffix}`
   );
 
   await execSync(
@@ -188,7 +189,7 @@ it('should listen for bound device config message', async () => {
 
   // listen for configuration changes
   const out = await execSync(
-    `${cmd} listenForConfigMessages --deviceId=${deviceId} --gatewayId=${gatewayId} --registryId=${registryName} --privateKeyFile=${rsaPrivateKey} --clientDuration=10000 --algorithm=RS256`
+    `${cmd} listenForConfigMessages --deviceId=${deviceId} --gatewayId=${gatewayId} --registryId=${registryName} --clientDuration=10000 ${cmdSuffix}`
   );
 
   assert.strictEqual(new RegExp('message received').test(out), true);
@@ -215,7 +216,7 @@ it('should listen for error topic messages', async () => {
 
   // check error topic contains error of attaching a device that is not bound
   const out = await cp.execSync(
-    `${cmd} listenForErrorMessages --gatewayId=${gatewayId} --registryId=${registryName} --deviceId=${deviceId} --privateKeyFile=${rsaPrivateKey} --clientDuration=30000 --algorithm=RS256`
+    `${cmd} listenForErrorMessages --gatewayId=${gatewayId} --registryId=${registryName} --deviceId=${deviceId} --clientDuration=30000 ${cmdSuffix}`
   );
 
   const stdout = Buffer.from(out).toString();
@@ -253,7 +254,7 @@ xit('should send data from bound device', async () => {
 
   // relay telemetry on behalf of device
   const out = await execSync(
-    `${cmd} sendDataFromBoundDevice --deviceId=${deviceId} --gatewayId=${gatewayId} --registryId=${registryName} --privateKeyFile=${rsaPrivateKey} --numMessages=5 --algorithm=RS256`
+    `${cmd} sendDataFromBoundDevice --deviceId=${deviceId} --gatewayId=${gatewayId} --registryId=${registryName} --numMessages=5`
   );
 
   assert.strictEqual(new RegExp('Publishing message 5/5').test(out), true);
