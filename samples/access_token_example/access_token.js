@@ -13,9 +13,9 @@
 // limitations under the License.
 
 'use strict';
-const { readFileSync } = require('fs');
+const {readFileSync} = require('fs');
 const jwt = require('jsonwebtoken');
-const { request } = require('gaxios');
+const {request} = require('gaxios');
 const HOST = 'https://cloudiottoken.googleapis.com"';
 // Generate GCP access token."
 const generateGcpToken = async (
@@ -56,7 +56,7 @@ const generateGcpToken = async (
   ) {
     const requestUrl = `${HOST}/v1alpha1/projects/${projectId}/locations/${cloudRegion}/registries/${registryId}/devices/${deviceId}:generateAccessToken?scope=${scopes}`;
 
-    const headers = { authorization: `Bearer ${jwtToken}` };
+    const headers = {authorization: `Bearer ${jwtToken}`};
     const options = {
       url: requestUrl,
       method: 'POST',
