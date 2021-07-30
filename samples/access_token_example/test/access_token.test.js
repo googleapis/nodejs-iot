@@ -40,7 +40,6 @@ const iotClient = new iot.v1.DeviceManagerClient();
 const pubSubClient = new PubSub({ projectId });
 
 before(async () => {
-
   assert(
     process.env.GCLOUD_PROJECT,
     'Must set GCLOUD_PROJECT environment variable!'
@@ -89,13 +88,9 @@ after(async () => {
 });
 
 it('should generate gcp access token', async () => {
-
-
   const output = await execSync(
     `${cmd} --certificateFile="${rsaPrivateKey}" --scopes = "scope1 scope2"`
   );
 
   assert.strictEqual(new RegExp(/Publishing message/).test(output), true);
 });
-
-
