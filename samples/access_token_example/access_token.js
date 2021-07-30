@@ -1,4 +1,4 @@
-// Copyright 2020 Google LLC
+// Copyright 2021 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,10 +13,10 @@
 // limitations under the License.
 
 'use strict';
-const { readFileSync } = require("fs");
+const { readFileSync } = require('fs');
 const jwt = require('jsonwebtoken');
 const { request } = require('gaxios');
-const HOST = "";
+const HOST = 'https://cloudiottoken.googleapis.com"';
 // Generate GCP access token."
 const generateGcpToken = async (
   cloud_region,
@@ -44,12 +44,12 @@ const generateGcpToken = async (
     };
     const privateKey = readFileSync(certificateFile);
 
-    const encodedJwt = jwt.sign(jwtPayload, privateKey, { algorithm: algorithm });
+    const encodedJwt = jwt.sign(jwtPayload, privateKey, { algorithm });
     return encodedJwt;
-  };
-  async function exchangeIotJwtTokenWithGcpToken(cloudRegion, projectId, registryId, deviceId, jwtToken, scopes) {
+  }
+  async function exchangeIotJwtTokenWithGcpToken(cloudRegion, projectId, registryId, deviceId, jwtToken, scope) {
 
-    const requestUrl = `${HOST}/v1alpha1/projects/${projectId}/locations/${cloudRegion}/registries/${registryId}/devices/${deviceId}:generateAccessToken?scope=${scopes}`;
+    const requestUrl = `${HOST}/v1alpha1/projects/${projectId}/locations/${cloudRegion}/registries/${registryId}/devices/${deviceId}:generateAccessToken?scope=${scope}`;
 
     const headers = { authorization: `Bearer ${jwtToken}` };
     const options = {
@@ -66,7 +66,7 @@ const generateGcpToken = async (
     } catch (err) {
       console.error('Received error: ', err);
     }
-  };
+  }
   const jwtToken = await generateIotJwtToken(project_id, algorithm, certificate_file)
   const gcpToken = await exchangeIotJwtTokenWithGcpToken(
     cloud_region, project_id, registry_id, device_id, jwtToken, scope
