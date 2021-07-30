@@ -13,10 +13,10 @@
 // limitations under the License.
 
 'use strict';
-const { readFileSync } = require("fs");
+const {readFileSync} = require('fs');
 const jwt = require('jsonwebtoken');
-const { request } = require('gaxios');
-const HOST = "";
+const {request} = require('gaxios');
+const HOST = '';
 // Generate GCP access token."
 const generateGcpToken = async (
   cloud_region,
@@ -27,7 +27,6 @@ const generateGcpToken = async (
   algorithm,
   certificate_file
 ) => {
-
   // [START iot_generate_gcp_token]
   // project_id = 'YOUR_PROJECT_ID'
   // cloud_region = 'us-central1'
@@ -44,14 +43,20 @@ const generateGcpToken = async (
     };
     const privateKey = readFileSync(certificateFile);
 
-    const encodedJwt = jwt.sign(jwtPayload, privateKey, { algorithm: algorithm });
+    const encodedJwt = jwt.sign(jwtPayload, privateKey, {algorithm: algorithm});
     return encodedJwt;
-  };
-  async function exchangeIotJwtTokenWithGcpToken(cloudRegion, projectId, registryId, deviceId, jwtToken, scopes) {
-
+  }
+  async function exchangeIotJwtTokenWithGcpToken(
+    cloudRegion,
+    projectId,
+    registryId,
+    deviceId,
+    jwtToken,
+    scopes
+  ) {
     const requestUrl = `${HOST}/v1alpha1/projects/${projectId}/locations/${cloudRegion}/registries/${registryId}/devices/${deviceId}:generateAccessToken?scope=${scopes}`;
 
-    const headers = { authorization: `Bearer ${jwtToken}` };
+    const headers = {authorization: `Bearer ${jwtToken}`};
     const options = {
       url: requestUrl,
       method: 'POST',
@@ -66,12 +71,21 @@ const generateGcpToken = async (
     } catch (err) {
       console.error('Received error: ', err);
     }
-  };
-  const jwtToken = await generateIotJwtToken(project_id, algorithm, certificate_file)
+  }
+  const jwtToken = await generateIotJwtToken(
+    project_id,
+    algorithm,
+    certificate_file
+  );
   const gcpToken = await exchangeIotJwtTokenWithGcpToken(
-    cloud_region, project_id, registry_id, device_id, jwtToken, scope
-  )
-  return gcpToken
+    cloud_region,
+    project_id,
+    registry_id,
+    device_id,
+    jwtToken,
+    scope
+  );
+  return gcpToken;
   // [END iot_generate_gcp_token]
 };
 
@@ -94,15 +108,13 @@ require(`yargs`) // eslint-disable-line
     },
     registryId: {
       alias: 'r',
-      description:
-        'The Registry ID to use.',
+      description: 'The Registry ID to use.',
       requiresArg: true,
       type: 'string',
     },
     deviceId: {
       alias: 'd',
-      description:
-        'The Device Id to use.',
+      description: 'The Device Id to use.',
       requiresArg: true,
       type: 'string',
     },
@@ -116,19 +128,16 @@ require(`yargs`) // eslint-disable-line
     algorithm: {
       alias: 'a',
       default: 'RS256',
-      description:
-        'The algorithm for the device certificate.',
+      description: 'The algorithm for the device certificate.',
       requiresArg: true,
       type: 'string',
     },
     certificateFile: {
       alias: 'ce',
-      description:
-        'Path to the device private key.',
+      description: 'Path to the device private key.',
       requiresArg: true,
       type: 'string',
     },
-
   })
   .command(
     'generateGcpAccessToken <cloudRegion> <projectId> <registryId> <deviceId> <scopes> <algorithm> <certificateFile>',
@@ -145,4 +154,4 @@ require(`yargs`) // eslint-disable-line
         opts.certificateFile
       );
     }
-  )
+  );

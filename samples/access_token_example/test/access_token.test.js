@@ -14,13 +14,13 @@
 
 'use strict';
 
-const { PubSub } = require('@google-cloud/pubsub');
+const {PubSub} = require('@google-cloud/pubsub');
 const assert = require('assert');
 const cp = require('child_process');
 const cwd = path.join(__dirname, '..');
-const execSync = cmd => cp.execSync(cmd, { encoding: 'utf-8' });
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const uuid = require('uuid');
-const { after, before, it } = require('mocha');
+const {after, before, it} = require('mocha');
 
 const deviceId = 'test-node-device';
 const topicName = `nodejs-docs-samples-test-iot-${uuid.v4()}`;
@@ -34,7 +34,6 @@ const rsaPrivateKey = '../resources/rsa_private.pem'; //process.env.NODEJS_IOT_R
 const iotClient = new iot.v1.DeviceManagerClient();
 
 before(async () => {
-
   assert(
     process.env.GCLOUD_PROJECT,
     'Must set GCLOUD_PROJECT environment variable!'
@@ -83,13 +82,9 @@ after(async () => {
 });
 
 it('should generate gcp access token', async () => {
-
-
   const output = await execSync(
     `${cmd} --certificateFile="${rsaPrivateKey}" --scopes = "scope1 scope2"`
   );
 
   assert.strictEqual(new RegExp(/Publishing message/).test(output), true);
 });
-
-
