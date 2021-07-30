@@ -1,0 +1,34 @@
+{
+  "name": "nodejs-docs-samples-iot-access-token",
+  "version": "0.0.1",
+  "description": "Example of Cloud IoT device federated authentication",
+  "main": "access_token.js",
+  "license": "Apache-2.0",
+  "author": "Google LLC",
+  "files": [
+    "*.js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/googleapis/nodejs-iot.git"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "scripts": {
+    "test": "mocha --timeout=600000"
+  },
+  "dependencies": {
+    "@google-cloud/iot": "^2.0.0",
+    "@google-cloud/pubsub": "^2.0.0",
+    "@google-cloud/storage": "^2.0.0",
+    "yargs": "^16.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "gaxios": "^4.3.0",
+    "mqtt": "^4.0.0"
+  },
+  "devDependencies": {
+    "mocha": "^8.1.1",
+    "uuid": "^8.0.0"
+  }
+}
