@@ -18,13 +18,13 @@ const assert = require('assert');
 const { readFileSync } = require('fs');
 const iot = require('@google-cloud/iot');
 const path = require('path');
-const { PubSub } = require('@google-cloud/pubsub');
+const {PubSub} = require('@google-cloud/pubsub');
 const cp = require('child_process');
 const cwd = path.join(__dirname, '..');
 const execSync = cmd => cp.execSync(cmd, { encoding: 'utf-8' });
 const installDeps = 'npm install';
 const uuid = require('uuid');
-const { after, before, it } = require('mocha');
+const {after, before, it} = require('mocha');
 
 const deviceId = 'test-node-device';
 const topicName = `nodejs-docs-samples-test-iot-${uuid.v4()}`;
@@ -38,8 +38,8 @@ const cmd = `node access_token.js generateGcpAccessToken ${registryName} ${devic
 const rsaPublicCert = '../resources/rsa_cert.pem'; // process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
 const rsaPrivateKey = '../resources/rsa_private.pem'; //process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
 
-const iotClient = new iot.v1.DeviceManagerClient({ servicePath: 'cloudiottoken.googleapis.com' });
-const pubSubClient = new PubSub({ projectId });
+const iotClient = new iot.v1.DeviceManagerClient();
+const pubSubClient = new PubSub({projectId});
 
 before(async () => {
   execSync(installDeps, `${cwd}/manager`);
