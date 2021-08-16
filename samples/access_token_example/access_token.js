@@ -16,7 +16,7 @@
 const { readFileSync } = require('fs');
 const jwt = require('jsonwebtoken');
 const { request } = require('gaxios');
-const HOST = 'https://cloudiottoken.googleapis.com"';
+const HOST = 'https://cloudiottoken.googleapis.com';
 // Generate GCP access token."
 const generateGcpToken = async (
   cloud_region,
@@ -32,7 +32,7 @@ const generateGcpToken = async (
   // cloud_region = 'us-central1'
   // registry_id = 'your-registry-id'
   // device_id = 'your-device-id'
-  // scope = 'scope1 scope2'
+  // scope = 'scope1 scope2' https://developers.google.com/identity/protocols/oauth2/scopes
   // algorithm = 'RS256'
   // certificate_file = 'path/to/certificate.pem'
   async function generateIotJwtToken(projectId, algorithm, certificateFile) {
@@ -54,14 +54,18 @@ const generateGcpToken = async (
     jwtToken,
     scopes
   ) {
-    const requestUrl = `${HOST}/v1alpha1/projects/${projectId}/locations/${cloudRegion}/registries/${registryId}/devices/${deviceId}:generateAccessToken?scope=${scopes}`;
+    const resoureUrl = `projects/${projectId}/locations/${cloudRegion}/registries/${registryId}/devices/${deviceId}`;
+    const requestUrl = `${HOST}/v1alpha1/${resoureUrl}:generateAccessToken`;
 
     const headers = { authorization: `Bearer ${jwtToken}` };
     const options = {
       url: requestUrl,
       method: 'POST',
       headers: headers,
-      data: {},
+      data: {
+        device: resoureUrl,
+        scope: scopes
+      },
       'content-type': 'application/json',
       'cache-control': 'no-cache',
     };
@@ -90,12 +94,11 @@ const generateGcpToken = async (
 };
 
 require(`yargs`) // eslint-disable-line
-  .demand(1)
+  .demandCommand()
   .options({
     cloudRegion: {
       alias: 'c',
       default: 'us-central1',
-      requiresArg: true,
       type: 'string',
     },
     projectId: {
@@ -103,7 +106,6 @@ require(`yargs`) // eslint-disable-line
       default: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,
       description:
         'The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT environment variables.',
-      requiresArg: true,
       type: 'string',
     },
     registryId: {
@@ -128,8 +130,8 @@ require(`yargs`) // eslint-disable-line
     algorithm: {
       alias: 'a',
       default: 'RS256',
-      description: 'The algorithm for the device certificate.',
-      requiresArg: true,
+      description:
+        'The algorithm for the device certificate.',
       type: 'string',
     },
     certificateFile: {
@@ -140,8 +142,8 @@ require(`yargs`) // eslint-disable-line
     },
   })
   .command(
-    'generateGcpAccessToken <cloudRegion> <projectId> <registryId> <deviceId> <scopes> <algorithm> <certificateFile>',
-    'Creates an RSA256 device.',
+    'generateGcpAccessToken <registryId> <deviceId>',
+    'Generate GCP access token.',
     {},
     async opts => {
       await generateGcpToken(
@@ -154,4 +156,8 @@ require(`yargs`) // eslint-disable-line
         opts.certificateFile
       );
     }
-  );
+)
+  .recommendCommands()
+  .epilogue('For more information, see https://cloud.google.com/iot-core/docs')
+  .help()
+  .strict().argv;;
