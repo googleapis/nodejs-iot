@@ -24,7 +24,7 @@ const path = require('path');
 const { PubSub } = require('@google-cloud/pubsub');
 const cp = require('child_process');
 const cwd = path.join(__dirname, '..');
-const execSync = cmd => cp.execSync(cmd, { encoding: 'utf-8' });
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const installDeps = 'npm install';
 const uuid = require('uuid');
 const { after, before, it } = require('mocha');
@@ -120,15 +120,11 @@ after(async () => {
     deviceId
   );
 
-  await iotClient.deleteDevice({ name: devPath });
+  await iotClient.deleteDevice({name: devPath});
 
   console.log(`Device ${deviceId} deleted.`);
 
-  const registryPath = iotClient.registryPath(
-    projectId,
-    region,
-    registryName
-  );
+  const registryPath = iotClient.registryPath(projectId, region, registryName);
   await iotClient.deleteDeviceRegistry({
     name: registryPath,
   });
