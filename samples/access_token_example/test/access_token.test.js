@@ -15,31 +15,32 @@
 'use strict';
 
 const assert = require('assert');
+const { request } = require('gaxios');
+const { Storage } = require('@google-cloud/storage');
+const { generateGcpToken } = require('../access_token');
 const { readFileSync } = require('fs');
 const iot = require('@google-cloud/iot');
 const path = require('path');
-const {PubSub} = require('@google-cloud/pubsub');
+const { PubSub } = require('@google-cloud/pubsub');
 const cp = require('child_process');
 const cwd = path.join(__dirname, '..');
 const execSync = cmd => cp.execSync(cmd, { encoding: 'utf-8' });
 const installDeps = 'npm install';
 const uuid = require('uuid');
-const {after, before, it} = require('mocha');
+const { after, before, it } = require('mocha');
 
 const deviceId = 'test-node-device';
 const topicName = `nodejs-docs-samples-test-iot-${uuid.v4()}`;
 const registryName = `nodejs-test-registry-iot-${uuid.v4()}`;
-const region = 'us-central1';
+const bucketName = `nodejs-test-bucket-iot-${uuid.v4()}`; const region = 'us-central1';
 const projectId =
   process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT;
-
 const helper = 'node ../manager/manager.js';
-const cmd = `node access_token.js generateGcpAccessToken ${registryName} ${deviceId}`;
 const rsaPublicCert = '../resources/rsa_cert.pem'; // process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
 const rsaPrivateKey = '../resources/rsa_private.pem'; //process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
-
 const iotClient = new iot.v1.DeviceManagerClient();
-const pubSubClient = new PubSub({projectId});
+const pubSubClient = new PubSub({ projectId });
+const storageClient = new Storage();
 
 before(async () => {
   execSync(installDeps, `${cwd}/manager`);
@@ -98,9 +99,18 @@ before(async () => {
 
   createDevice();
   console.log(`Created Device: ${deviceId}`);
+  //create gcs bucket to be used for testing
+  const [bucket] = await storageClient.createBucket(bucketName, {
+    location: region,
+    ['dra']: true,
+  });
+  console.log(
+    `Created bucket: ${bucket.name} created with standard class in ${region}`
+  );
 });
 
 after(async () => {
+  // delete pubsub topic
   await pubSubClient.topic(topicName).delete();
   console.log(`Topic ${topicName} deleted.`);
   const devPath = iotClient.devicePath(
@@ -123,12 +133,35 @@ after(async () => {
     name: registryPath,
   });
   console.log('Deleted test registry.');
+  await storageClient.bucket(bucketName).delete();
+  console.log(`Bucket ${bucketName} deleted`);
+
+
 });
 
-it('should generate gcp access token', async () => {
-  const output = await execSync(
-    `${cmd} --certificateFile=${rsaPrivateKey} --scopes="scope1 scope2"`, cwd
-  );
+it('Generate gcp access token, use gcp access token to enable pubsub notification from gcs bucket',
+  async () => {
+    const scope = 'https://www.googleapis.com/auth/pubsub https://www.googleapis.com/auth/devstorage.full_control'
+    // generate access token
 
-  //assert.strictEqual(new RegExp(/Publishing message/).test(output), true);
-});
+    const access_token = generateGcpToken(region, projectId, registryName, deviceId, scope, 'RS256', rsaPrivateKey);
+
+    // Applying a notification configuration for gcs bucket.
+    const payload = {
+      topic: `projects/${projectId}/topics/${topicName}`,
+      payload_format: "JSON_API_V1"
+    };
+    const requestUrl = `https://storage.googleapis.com/storage/v1/b/${bucketName}/notificationConfigs`;
+    const headers = { authorization: `Bearer ${access_token}` };
+    const options = {
+      url: requestUrl,
+      method: 'POST',
+      headers: headers,
+      data: payload,
+      'content-type': 'application/json',
+      'cache-control': 'no-cache',
+    };
+
+    const response = await request(options);
+    assert.strictEqual(response.status, 200);
+  });

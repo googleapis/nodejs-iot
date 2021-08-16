@@ -21,6 +21,7 @@
   "dependencies": {
     "@google-cloud/iot": "^2.0.0",
     "@google-cloud/pubsub": "^2.0.0",
+    "@google-cloud/storage": "^2.0.0",
     "yargs": "^16.0.0",
     "jsonwebtoken": "^8.5.1",
     "gaxios": "^4.3.0"

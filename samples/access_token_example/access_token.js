@@ -18,7 +18,7 @@ const jwt = require('jsonwebtoken');
 const { request } = require('gaxios');
 const HOST = 'https://cloudiottoken.googleapis.com';
 // Generate GCP access token."
-const generateGcpToken = async (
+export const generateGcpToken = async (
   cloud_region,
   project_id,
   registry_id,
