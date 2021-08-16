@@ -1,8 +1,8 @@
 {
-  "name": "nodejs-docs-samples-iot-manager",
+  "name": "nodejs-docs-samples-iot-access-token",
   "version": "0.0.1",
-  "description": "Example of Cloud IoT device administration",
-  "main": "manager.js",
+  "description": "Example of Cloud IoT Access token api",
+  "main": "access_token.js",
   "license": "Apache-2.0",
   "author": "Google LLC",
   "files": [
