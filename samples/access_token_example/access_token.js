@@ -15,7 +15,7 @@
 'use strict';
 const {readFileSync} = require('fs');
 const jwt = require('jsonwebtoken');
-const { request } = require('gaxios');
+const {request} = require('gaxios');
 const HOST = 'https://cloudiottoken.googleapis.com';
 // Generate GCP access token."
 const generateGcpToken = async (
@@ -64,7 +64,7 @@ const generateGcpToken = async (
       headers: headers,
       data: {
         device: resoureUrl,
-        scope: scopes
+        scope: scopes,
       },
       'content-type': 'application/json',
       'cache-control': 'no-cache',
@@ -130,8 +130,7 @@ require(`yargs`) // eslint-disable-line
     algorithm: {
       alias: 'a',
       default: 'RS256',
-      description:
-        'The algorithm for the device certificate.',
+      description: 'The algorithm for the device certificate.',
       type: 'string',
     },
     certificateFile: {
@@ -156,8 +155,8 @@ require(`yargs`) // eslint-disable-line
         opts.certificateFile
       );
     }
-)
+  )
   .recommendCommands()
   .epilogue('For more information, see https://cloud.google.com/iot-core/docs')
   .help()
-  .strict().argv;;
+  .strict().argv;
