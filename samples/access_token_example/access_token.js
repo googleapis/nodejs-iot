@@ -160,4 +160,3 @@ require(`yargs`) // eslint-disable-line
   .epilogue('For more information, see https://cloud.google.com/iot-core/docs')
   .help()
   .strict().argv;
-
