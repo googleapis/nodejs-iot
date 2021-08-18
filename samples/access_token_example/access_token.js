@@ -18,7 +18,7 @@ const jwt = require('jsonwebtoken');
 const {request} = require('gaxios');
 const HOST = 'https://cloudiottoken.googleapis.com';
 // Generate GCP access token."
-exports.generateGcpToken = async (
+const generateGcpToken = async (
   cloud_region,
   project_id,
   registry_id,
@@ -92,7 +92,7 @@ exports.generateGcpToken = async (
   return gcpToken;
   // [END iot_generate_gcp_token]
 };
-
+exports.generateGcpToken = generateGcpToken;
 require(`yargs`) // eslint-disable-line
   .demandCommand()
   .options({
@@ -160,3 +160,4 @@ require(`yargs`) // eslint-disable-line
   .epilogue('For more information, see https://cloud.google.com/iot-core/docs')
   .help()
   .strict().argv;
+
