@@ -44,7 +44,6 @@ const pubSubClient = new PubSub({projectId});
 const storageClient = new Storage();
 
 before(async () => {
-  execSync(installDeps, `${cwd}/manager`);
   assert(
     process.env.GCLOUD_PROJECT,
     'Must set GCLOUD_PROJECT environment variable!'
@@ -69,7 +68,6 @@ before(async () => {
       ],
     },
   };
-  await execSync(`${helper} setupIotTopic ${topicName}`, cwd);
 
   await iotClient.createDeviceRegistry(createRegistryRequest);
 
@@ -98,7 +96,7 @@ before(async () => {
     console.log('Created device', response);
   }
 
-  createDevice();
+  await createDevice();
   console.log(`Created Device: ${deviceId}`);
   //create gcs bucket to be used for testing
   const [bucket] = await storageClient.createBucket(bucketName, {

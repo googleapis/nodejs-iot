@@ -2,7 +2,7 @@
 
 # Google Cloud IoT Core NodeJS Access token api example
 
-This sample app demonstrates gcp access token generation for Google Cloud IoT .
+This sample app demonstrates gcp access token generation for Google Cloud IoT.
 
 # Setup
 
