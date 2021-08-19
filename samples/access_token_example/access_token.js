@@ -93,5 +93,3 @@ const generateGcpToken = async (
   // [END iot_generate_gcp_token]
 };
 exports.generateGcpToken = generateGcpToken;
-
-
