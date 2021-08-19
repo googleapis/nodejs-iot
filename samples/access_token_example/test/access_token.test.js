@@ -20,12 +20,7 @@ const {Storage} = require('@google-cloud/storage');
 const {generateGcpToken} = require('../access_token');
 const {readFileSync} = require('fs');
 const iot = require('@google-cloud/iot');
-const path = require('path');
-const {PubSub} = require('@google-cloud/pubsub');
-const cp = require('child_process');
-const cwd = path.join(__dirname, '..');
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-const installDeps = 'npm install';
+const { PubSub } = require('@google-cloud/pubsub');
 const uuid = require('uuid');
 const {after, before, it} = require('mocha');
 
@@ -36,7 +31,6 @@ const bucketName = `nodejs-test-bucket-iot-${uuid.v4()}`;
 const region = 'us-central1';
 const projectId =
   process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT;
-const helper = 'node ../manager/manager.js';
 const rsaPublicCert = '../resources/rsa_cert.pem'; // process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
 const rsaPrivateKey = '../resources/rsa_private.pem'; //process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
 const iotClient = new iot.v1.DeviceManagerClient();
