@@ -20,7 +20,7 @@ const {Storage} = require('@google-cloud/storage');
 const {generateGcpToken} = require('../access_token');
 const {readFileSync} = require('fs');
 const iot = require('@google-cloud/iot');
-const { PubSub } = require('@google-cloud/pubsub');
+const {PubSub} = require('@google-cloud/pubsub');
 const uuid = require('uuid');
 const {after, before, it} = require('mocha');
 
