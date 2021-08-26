@@ -194,7 +194,7 @@ it('Generate gcp access token, use gcp access token to create gcs bucket upload 
     method: 'DELETE',
     headers: headers,
     'cache-control': 'no-cache',
-  }
+  };
   const deleteResp = await request(deleteGcsOptions);
   assert.strictEqual(deleteResp.status, 200);
 });
