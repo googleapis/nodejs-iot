@@ -15,27 +15,26 @@
 'use strict';
 
 const assert = require('assert');
-const {request} = require('gaxios');
-const {Storage} = require('@google-cloud/storage');
-const {generateGcpToken} = require('../access_token');
-const {readFileSync} = require('fs');
+const { request } = require('gaxios');
+const { generateGcpToken } = require('../access_token');
+const { readFileSync } = require('fs');
 const iot = require('@google-cloud/iot');
 const { PubSub } = require('@google-cloud/pubsub');
 const uuid = require('uuid');
-const {after, before, it} = require('mocha');
+const { after, before, it } = require('mocha');
 
 const deviceId = 'test-node-device';
 const topicName = `nodejs-docs-samples-test-iot-${uuid.v4()}`;
+const testTopicName = `nodejs-docs-samples-test-pubsub-iot-${uuid.v4()}`;
 const registryName = `nodejs-test-registry-iot-${uuid.v4()}`;
 const bucketName = `nodejs-test-bucket-iot-${uuid.v4()}`;
 const region = 'us-central1';
 const projectId =
   process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT;
-const rsaPublicCert = '../resources/rsa_cert.pem'; // process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
-const rsaPrivateKey = '../resources/rsa_private.pem'; //process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
+const rsaPublicCert = '../../resources/rsa_cert.pem'; // process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
+const rsaPrivateKey = '../../resources/rsa_private.pem'; //process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
 const iotClient = new iot.v1.DeviceManagerClient();
-const pubSubClient = new PubSub({projectId});
-const storageClient = new Storage();
+const pubSubClient = new PubSub({ projectId });
 
 before(async () => {
   assert(
@@ -92,14 +91,6 @@ before(async () => {
 
   await createDevice();
   console.log(`Created Device: ${deviceId}`);
-  //create gcs bucket to be used for testing
-  const [bucket] = await storageClient.createBucket(bucketName, {
-    location: region,
-    ['dra']: true,
-  });
-  console.log(
-    `Created bucket: ${bucket.name} created with standard class in ${region}`
-  );
 });
 
 after(async () => {
@@ -113,7 +104,7 @@ after(async () => {
     deviceId
   );
 
-  await iotClient.deleteDevice({name: devPath});
+  await iotClient.deleteDevice({ name: devPath });
 
   console.log(`Device ${deviceId} deleted.`);
 
@@ -122,16 +113,91 @@ after(async () => {
     name: registryPath,
   });
   console.log('Deleted test registry.');
-  await storageClient.bucket(bucketName).delete();
-  console.log(`Bucket ${bucketName} deleted`);
 });
 
-it('Generate gcp access token, use gcp access token to enable pubsub notification from gcs bucket', async () => {
-  const scope =
-    'https://www.googleapis.com/auth/pubsub https://www.googleapis.com/auth/devstorage.full_control';
+it('Generate gcp access token, use gcp access token to create gcs bucket upload a file to bucket, download file from bucket', async () => {
+  const scope = 'https://www.googleapis.com/auth/devstorage.full_control';
   // generate access token
+  const access_token = await generateGcpToken(
+    region,
+    projectId,
+    registryName,
+    deviceId,
+    scope,
+    'RS256',
+    rsaPrivateKey
+  );
+  const headers = { authorization: `Bearer ${access_token}` };
+  // Create GCS bucket
+  const createGcsPayload = {
+    name: bucketName,
+    location: region,
+    storageClass: "STANDARD",
+    iamConfiguration: {
+      uniformBucketLevelAccess: { enabled: true },
+    },
+  };
 
-  const access_token = generateGcpToken(
+  const createGcsRequestUrl = `https://storage.googleapis.com/storage/v1/b?project=${projectId}`
+  const createGcsOptions = {
+    url: createGcsRequestUrl,
+    method: 'POST',
+    headers: headers,
+    data: Buffer.from(JSON.stringify(createGcsPayload)),
+    'content-type': 'application/json',
+    'cache-control': 'no-cache',
+  };
+  const createResponse = await request(createGcsOptions);
+  assert.strictEqual(createResponse.status, 200);
+
+  // Upload Data to GCS bucket
+  const dataName = 'testFILE';
+  const binaryData = readFileSync('../../../resources/logo.png');
+  const uploadGcsRequestUrl = `https://storage.googleapis.com/upload/storage/v1/b/${bucketName}/o?uploadType=media&name=${dataName}`;
+  const uploadGcsOptions = {
+    url: uploadGcsRequestUrl,
+    method: 'POST',
+    headers: headers,
+    data: binaryData,
+    'content-type': 'image/png',
+    'cache-control': 'no-cache',
+  };
+  const uploadResponse = await request(uploadGcsOptions);
+  assert.strictEqual(uploadResponse.status, 200);
+
+  // Download Data from GCS bucket
+  const downloadGcsRequestUrl = `https://storage.googleapis.com/storage/v1/b/${bucketName}/o/${dataName}?alt=media`;
+  const downloadGcsOptions = {
+    url: downloadGcsRequestUrl,
+    method: 'GET',
+    headers: headers,
+    'cache-control': 'no-cache',
+  };
+  const downloadResponse = await request(downloadGcsOptions);
+  assert.strictEqual(downloadResponse.status, 200);
+
+  // Delete Data from GCS Bucket.
+  const deleteGcsRequestUrl = `https://storage.googleapis.com/storage/v1/b/${bucketName}/o/${dataName}`;
+  const deleteGcsOptions = {
+    url: doeleteGcsRequestUrl,
+    method: 'DELETE',
+    headers: headers,
+    'cache-control': 'no-cache',
+  };
+  const deleteResponse = await request(deleteGcsOptions);
+  assert.strictEqual(deleteResponse.status, 200);
+
+  // Delete GCS bucket
+  const deleteGcsRequestUrl = `https://storage.googleapis.com/storage/v1/b/${createResponse.data?.name}`;
+  const deleteResp = req.delete(url = deleteGcsRequestUrl, headers = headers)
+  assert.strictEqual(deleteResp.status, 200);
+
+});
+
+it('Generate gcp access token, use gcp access token to create pubsub topic, push message to pubsub', async () => {
+  const scope = 'https://www.googleapis.com/auth/pubsub';
+  // generate access token
+  const access_token = await generateGcpToken(
     region,
     projectId,
     registryName,
@@ -141,22 +207,52 @@ it('Generate gcp access token, use gcp access token to enable pubsub notificatio
     rsaPrivateKey
   );
 
-  // Applying a notification configuration for gcs bucket.
-  const payload = {
-    topic: `projects/${projectId}/topics/${topicName}`,
-    payload_format: 'JSON_API_V1',
-  };
-  const requestUrl = `https://storage.googleapis.com/storage/v1/b/${bucketName}/notificationConfigs`;
-  const headers = {authorization: `Bearer ${access_token}`};
-  const options = {
-    url: requestUrl,
-    method: 'POST',
+  const headers = { authorization: `Bearer ${access_token}` };
+  // Create pubsub topic
+  const createPubsubRequestUrl = `https://pubsub.googleapis.com/v1/projects/${projectId}/topics/${testTopicName}`;
+  const createPubsubOptions = {
+    url: createPubsubRequestUrl,
+    method: 'PUT',
     headers: headers,
-    data: payload,
+    data: {},
     'content-type': 'application/json',
     'cache-control': 'no-cache',
   };
+  const createResponse = await request(createPubsubOptions);
+  assert.strictEqual(createResponse.status, 200);
 
-  const response = await request(options);
-  assert.strictEqual(response.status, 200);
+  // Publish message to pubsub topic
+  const publishPayload = {
+    messages: [
+      {
+        attributes: {
+          test: "VALUE"
+        },
+        data: Buffer.from("MESSAGE_DATA", 'base64').toString('utf-8'),
+      }
+    ]
+  };
+  const publishPubsubRequestUrl = `https://pubsub.googleapis.com/v1/projects/${projectId}/topics/${testTopicName}:publish`;
+  const publishPubsubOptions = {
+    url: publishPubsubRequestUrl,
+    method: 'POST',
+    headers: headers,
+    data: publishPayload,
+    'content-type': 'application/json',
+    'cache-control': 'no-cache',
+  };
+  const publishResponse = await request(publishPubsubOptions);
+  assert.strictEqual(publishResponse.status, 200);
+
+  // Delete pubsub topic
+  const deletePubsubRequestPath = `https://pubsub.googleapis.com/v1/projects/${projectId}/topics/${testTopicName}`;
+  const deletePubsubOptions = {
+    url: deletePubsubRequestPath,
+    method: 'DELETE',
+    headers: headers,
+    'content-type': 'application/json',
+    'cache-control': 'no-cache',
+  };
+  const deleteResponse = await request(deletePubsubOptions);
+  assert.strictEqual(deleteResponse.status, 200);
 });
