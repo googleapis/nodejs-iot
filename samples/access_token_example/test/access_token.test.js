@@ -15,13 +15,13 @@
 'use strict';
 
 const assert = require('assert');
-const { request } = require('gaxios');
-const { generateGcpToken } = require('../access_token');
-const { readFileSync } = require('fs');
+const {request} = require('gaxios');
+const {generateGcpToken} = require('../access_token');
+const {readFileSync} = require('fs');
 const iot = require('@google-cloud/iot');
 const {PubSub} = require('@google-cloud/pubsub');
 const uuid = require('uuid');
-const { after, before, it } = require('mocha');
+const {after, before, it} = require('mocha');
 
 const deviceId = 'test-node-device';
 const topicName = `nodejs-docs-samples-test-iot-${uuid.v4()}`;
@@ -34,7 +34,7 @@ const projectId =
 const rsaPublicCert = '../../resources/rsa_cert.pem'; // process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
 const rsaPrivateKey = '../../resources/rsa_private.pem'; //process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
 const iotClient = new iot.v1.DeviceManagerClient();
-const pubSubClient = new PubSub({ projectId });
+const pubSubClient = new PubSub({projectId});
 
 before(async () => {
   assert(
@@ -104,7 +104,7 @@ after(async () => {
     deviceId
   );
 
-  await iotClient.deleteDevice({ name: devPath });
+  await iotClient.deleteDevice({name: devPath});
 
   console.log(`Device ${deviceId} deleted.`);
 
@@ -127,18 +127,18 @@ it('Generate gcp access token, use gcp access token to create gcs bucket upload 
     'RS256',
     rsaPrivateKey
   );
-  const headers = { authorization: `Bearer ${access_token}` };
+  const headers = {authorization: `Bearer ${access_token}`};
   // Create GCS bucket
   const createGcsPayload = {
     name: bucketName,
     location: region,
-    storageClass: "STANDARD",
+    storageClass: 'STANDARD',
     iamConfiguration: {
-      uniformBucketLevelAccess: { enabled: true },
+      uniformBucketLevelAccess: {enabled: true},
     },
   };
 
-  const createGcsRequestUrl = `https://storage.googleapis.com/storage/v1/b?project=${projectId}`
+  const createGcsRequestUrl = `https://storage.googleapis.com/storage/v1/b?project=${projectId}`;
   const createGcsOptions = {
     url: createGcsRequestUrl,
     method: 'POST',
@@ -189,9 +189,11 @@ it('Generate gcp access token, use gcp access token to create gcs bucket upload 
 
   // Delete GCS bucket
   const deleteGcsRequestUrl = `https://storage.googleapis.com/storage/v1/b/${createResponse.data.name}`;
-  const deleteResp = req.delete(url = deleteGcsRequestUrl, headers = headers)
+  const deleteResp = req.delete(
+    (url = deleteGcsRequestUrl),
+    (headers = headers)
+  );
   assert.strictEqual(deleteResp.status, 200);
-
 });
 
 it('Generate gcp access token, use gcp access token to create pubsub topic, push message to pubsub', async () => {
@@ -207,7 +209,7 @@ it('Generate gcp access token, use gcp access token to create pubsub topic, push
     rsaPrivateKey
   );
 
-  const headers = { authorization: `Bearer ${access_token}` };
+  const headers = {authorization: `Bearer ${access_token}`};
   // Create pubsub topic
   const createPubsubRequestUrl = `https://pubsub.googleapis.com/v1/projects/${projectId}/topics/${testTopicName}`;
   const createPubsubOptions = {
@@ -226,11 +228,11 @@ it('Generate gcp access token, use gcp access token to create pubsub topic, push
     messages: [
       {
         attributes: {
-          test: "VALUE"
+          test: 'VALUE',
         },
-        data: Buffer.from("MESSAGE_DATA", 'base64').toString('utf-8'),
-      }
-    ]
+        data: Buffer.from('MESSAGE_DATA', 'base64').toString('utf-8'),
+      },
+    ],
   };
   const publishPubsubRequestUrl = `https://pubsub.googleapis.com/v1/projects/${projectId}/topics/${testTopicName}:publish`;
   const publishPubsubOptions = {
