@@ -177,15 +177,15 @@ it('Generate gcp access token, use gcp access token to create gcs bucket upload 
   assert.strictEqual(downloadResponse.status, 200);
 
   // Delete Data from GCS Bucket.
-  const deleteGcsRequestUrl = `https://storage.googleapis.com/storage/v1/b/${bucketName}/o/${dataName}`;
-  const deleteGcsOptions = {
-    url: doeleteGcsRequestUrl,
+  const deleteDataGcsRequestUrl = `https://storage.googleapis.com/storage/v1/b/${bucketName}/o/${dataName}`;
+  const deleteDataGcsOptions = {
+    url: deleteDataGcsRequestUrl,
     method: 'DELETE',
     headers: headers,
     'cache-control': 'no-cache',
   };
-  const deleteResponse = await request(deleteGcsOptions);
-  assert.strictEqual(deleteResponse.status, 200);
+  const deleteDataResponse = await request(deleteDataGcsOptions);
+  assert.strictEqual(deleteDataResponse.status, 200);
 
   // Delete GCS bucket
   const deleteGcsRequestUrl = `https://storage.googleapis.com/storage/v1/b/${createResponse.data?.name}`;
