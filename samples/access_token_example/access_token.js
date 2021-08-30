@@ -72,7 +72,7 @@ const generateGcpToken = async (
     };
     try {
       const response = await request(options);
-      return response.data;
+      return response.data['access_token'];
     } catch (err) {
       console.error('Received error: ', err);
     }
@@ -90,7 +90,6 @@ const generateGcpToken = async (
     jwtToken,
     scope
   );
-  console.log('Token generated: ', gcpToken);
   return gcpToken;
   // [END iot_generate_gcp_token]
 };
