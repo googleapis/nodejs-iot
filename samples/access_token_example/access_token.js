@@ -90,7 +90,7 @@ const generateGcpToken = async (
     jwtToken,
     scope
   );
-  console.log(`Token generated: `, gcpToken);
+  console.log('Token generated: ', gcpToken);
   return gcpToken;
   // [END iot_generate_gcp_token]
 };
