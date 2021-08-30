@@ -15,13 +15,13 @@
 'use strict';
 
 const assert = require('assert');
-const { request } = require('gaxios');
-const { generateGcpToken } = require('../access_token');
-const { readFileSync } = require('fs');
+const {request} = require('gaxios');
+const {generateGcpToken} = require('../access_token');
+const {readFileSync} = require('fs');
 const iot = require('@google-cloud/iot');
-const { PubSub } = require('@google-cloud/pubsub');
+const {PubSub} = require('@google-cloud/pubsub');
 const uuid = require('uuid');
-const { after, before, it } = require('mocha');
+const {after, before, it} = require('mocha');
 
 const deviceId = 'test-node-device';
 const topicName = `nodejs-docs-samples-test-iot-${uuid.v4()}`;
@@ -34,7 +34,7 @@ const projectId =
 const rsaPublicCert = '.././resources/rsa_cert.pem'; // process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
 const rsaPrivateKey = '.././resources/rsa_private.pem'; //process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
 const iotClient = new iot.v1.DeviceManagerClient();
-const pubSubClient = new PubSub({ projectId });
+const pubSubClient = new PubSub({projectId});
 
 before(async () => {
   assert(
@@ -104,7 +104,7 @@ after(async () => {
     deviceId
   );
 
-  await iotClient.deleteDevice({ name: devPath });
+  await iotClient.deleteDevice({name: devPath});
 
   console.log(`Device ${deviceId} deleted.`);
 
@@ -127,14 +127,14 @@ it('Generate gcp access token, use gcp access token to create gcs bucket upload 
     'RS256',
     rsaPrivateKey
   );
-  const headers = { authorization: `Bearer ${access_token}` };
+  const headers = {authorization: `Bearer ${access_token}`};
   // Create GCS bucket
   const createGcsPayload = {
     name: bucketName,
     location: region,
     storageClass: 'STANDARD',
     iamConfiguration: {
-      uniformBucketLevelAccess: { enabled: true },
+      uniformBucketLevelAccess: {enabled: true},
     },
   };
 
@@ -212,7 +212,7 @@ it('Generate gcp access token, use gcp access token to create pubsub topic, push
     rsaPrivateKey
   );
 
-  const headers = { authorization: `Bearer ${access_token}` };
+  const headers = {authorization: `Bearer ${access_token}`};
   // Create pubsub topic
   const createPubsubRequestUrl = `https://pubsub.googleapis.com/v1/projects/${projectId}/topics/${testTopicName}`;
   const createPubsubOptions = {
@@ -263,7 +263,8 @@ it('Generate gcp access token, use gcp access token to create pubsub topic, push
 });
 it('Generate gcp access token, exchange ubermint token for service account access token, use service account access token to send cloud iot command', async () => {
   const scope = 'https://www.googleapis.com/auth/cloud-platform';
-  const serviceAccountEmail = 'cloud-iot-token-sample-code-te@python-docs-samples-tests.iam.gserviceaccount.com';
+  const serviceAccountEmail =
+    'cloud-iot-token-sample-code-te@python-docs-samples-tests.iam.gserviceaccount.com';
   // Generate gcp ubermint access token
   const access_token = await generateGcpToken(
     region,
@@ -275,11 +276,11 @@ it('Generate gcp access token, exchange ubermint token for service account acces
     rsaPrivateKey
   );
 
-  const headers = { authorization: `Bearer ${access_token}` };
+  const headers = {authorization: `Bearer ${access_token}`};
   // Exchange uber mint token for service account access token.
 
   const exchangePayload = {
-    scope: [scope]
+    scope: [scope],
   };
 
   const exchangeRequestUrl = `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${serviceAccountEmail}:generateAccessToken`;
@@ -293,19 +294,22 @@ it('Generate gcp access token, exchange ubermint token for service account acces
   };
   const exchangeResponse = await request(exchangeOptions);
   assert.strictEqual(exchangeResponse.status, 200);
-  assert.strictEqual(exchangeResponse.data && exchangeResponse.data.accessToken !== '', true);
+  assert.strictEqual(
+    exchangeResponse.data && exchangeResponse.data.accessToken !== '',
+    true
+  );
 
   // Sending a command to a Cloud IoT Core device
 
   const exchangeToken = exchangeResponse.data.accessToken;
   const commandPayload = {
-    binaryData: Buffer.from('CLOSE DOOR')
+    binaryData: Buffer.from('CLOSE DOOR'),
   };
   const commandRequesturl = `https://cloudiot.googleapis.com/v1/projects/${projectId}/locations/${region}/registries/${registryName}/devices/${deviceId}:sendCommandToDevice`;
   const commandOptions = {
     url: commandRequesturl,
     method: 'POST',
-    headers: { authorization: `Bearer ${exchangeToken}` },
+    headers: {authorization: `Bearer ${exchangeToken}`},
     data: commandPayload,
     'content-type': 'application/json',
     'cache-control': 'no-cache',
