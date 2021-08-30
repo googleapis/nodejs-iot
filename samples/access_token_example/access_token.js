@@ -55,7 +55,7 @@ const generateGcpToken = async (
     scopes
   ) {
     const resoureUrl = `projects/${projectId}/locations/${cloudRegion}/registries/${registryId}/devices/${deviceId}`;
-    const requestUrl = `${HOST}/v1alpha1/${resoureUrl}:generateAccessToken`;
+    const requestUrl = `${HOST}/v1beta1/${resoureUrl}:generateAccessToken`;
 
     const headers = {authorization: `Bearer ${jwtToken}`};
     const options = {
