@@ -58,6 +58,7 @@ const generateGcpToken = async (
     const requestUrl = `${HOST}/v1beta1/${resoureUrl}:generateAccessToken`;
 
     const headers = {authorization: `Bearer ${jwtToken}`};
+
     const options = {
       url: requestUrl,
       method: 'POST',
@@ -89,6 +90,7 @@ const generateGcpToken = async (
     jwtToken,
     scope
   );
+  console.log(`Token generated.`);
   return gcpToken;
   // [END iot_generate_gcp_token]
 };
