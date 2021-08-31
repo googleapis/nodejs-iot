@@ -151,7 +151,7 @@ it('Generate gcp access token, use gcp access token to create gcs bucket upload 
     const createResponse = await request(createGcsOptions);
     assert.strictEqual(createResponse.status, 200);
   } catch (error) {
-    console.log('Error received: ', error);
+    console.log('Error received: ', JSON.stringify(error));
   }
 
 
