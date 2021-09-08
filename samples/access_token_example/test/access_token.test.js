@@ -151,7 +151,6 @@ it('Generate gcp access token, use gcp access token to create gcs bucket upload 
     const createResponse = await request(createGcsOptions);
     assert.strictEqual(createResponse.status, 200);
 
-
     // Upload Data to GCS bucket
     const dataName = 'testFILE';
     const binaryData = readFileSync('.././resources/logo.png');
