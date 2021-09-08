@@ -164,7 +164,7 @@ it('Generate gcp access token, use gcp access token to create gcs bucket upload 
       'cache-control': 'no-cache',
     };
     const uploadResponse = await request(uploadGcsOptions);
-    assert.strictEqual(uploadResponse.status, 200);
+    assert.strictEqual(uploadResponse.status, 204);
 
     // Download Data from GCS bucket
     const downloadGcsRequestUrl = `https://storage.googleapis.com/storage/v1/b/${bucketName}/o/${dataName}?alt=media`;
