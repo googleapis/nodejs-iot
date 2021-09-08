@@ -149,8 +149,8 @@ it('Generate gcp access token, use gcp access token to create gcs bucket upload 
   };
   try {
     const createResponse = await request(createGcsOptions);
-    // assert.strictEqual(createResponse.status, 204);
-    console.log('Create response code: ', createResponse.status);
+    assert.strictEqual(createResponse.status, 200);
+
 
     // Upload Data to GCS bucket
     const dataName = 'testFILE';
@@ -165,8 +165,7 @@ it('Generate gcp access token, use gcp access token to create gcs bucket upload 
       'cache-control': 'no-cache',
     };
     const uploadResponse = await request(uploadGcsOptions);
-    // assert.strictEqual(uploadResponse.status, 204);
-    console.log('Upload response code: ', uploadResponse.status);
+    assert.strictEqual(uploadResponse.status, 200);
 
     // Download Data from GCS bucket
     const downloadGcsRequestUrl = `https://storage.googleapis.com/storage/v1/b/${bucketName}/o/${dataName}?alt=media`;
@@ -177,8 +176,7 @@ it('Generate gcp access token, use gcp access token to create gcs bucket upload 
       'cache-control': 'no-cache',
     };
     const downloadResponse = await request(downloadGcsOptions);
-    // assert.strictEqual(downloadResponse.status, 204);
-    console.log('Download response code: ', downloadResponse.status);
+    assert.strictEqual(downloadResponse.status, 200);
 
     // Delete Data from GCS Bucket.
     const deleteDataGcsRequestUrl = `https://storage.googleapis.com/storage/v1/b/${bucketName}/o/${dataName}`;
@@ -189,8 +187,7 @@ it('Generate gcp access token, use gcp access token to create gcs bucket upload 
       'cache-control': 'no-cache',
     };
     const deleteDataResponse = await request(deleteDataGcsOptions);
-    // assert.strictEqual(deleteDataResponse.status, 204);
-    console.log('Delete data response code: ', deleteDataResponse.status);
+    assert.strictEqual(deleteDataResponse.status, 204);
     // Delete GCS bucket
     const deleteGcsRequestUrl = `https://storage.googleapis.com/storage/v1/b/${createResponse.data.name}`;
     const deleteGcsOptions = {
@@ -200,8 +197,7 @@ it('Generate gcp access token, use gcp access token to create gcs bucket upload 
       'cache-control': 'no-cache',
     };
     const deleteResp = await request(deleteGcsOptions);
-    // assert.strictEqual(deleteResp.status, 204);
-    console.log('Delete bucket response code: ', deleteResp.status);
+    assert.strictEqual(deleteResp.status, 204);
   } catch (error) {
     console.log('Error received: ', JSON.stringify(error));
   }
