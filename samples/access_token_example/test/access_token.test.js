@@ -153,7 +153,7 @@ it('Generate gcp access token, use gcp access token to create gcs bucket upload 
 
     // Upload Data to GCS bucket
     const dataName = 'testFILE';
-    const binaryData = readFileSync('../../../resources/logo.png');
+    const binaryData = readFileSync('../resources/logo.png');
     const uploadGcsRequestUrl = `https://storage.googleapis.com/upload/storage/v1/b/${bucketName}/o?uploadType=media&name=${dataName}`;
     const uploadGcsOptions = {
       url: uploadGcsRequestUrl,
@@ -239,7 +239,7 @@ it('Generate gcp access token, use gcp access token to create pubsub topic, push
           attributes: {
             test: 'VALUE',
           },
-          data: Buffer.from('MESSAGE_DATA', 'base64').toString('utf-8'),
+          data: Buffer.from('MESSAGE_DATA').toString('base64'),
         },
       ],
     };
