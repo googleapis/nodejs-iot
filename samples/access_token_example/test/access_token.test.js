@@ -271,8 +271,7 @@ it('Generate gcp access token, use gcp access token to create pubsub topic, push
 });
 it('Generate gcp access token, exchange ubermint token for service account access token, use service account access token to send cloud iot command', async () => {
   const scope = 'https://www.googleapis.com/auth/cloud-platform';
-  const serviceAccountEmail =
-    'cloud-iot-token-sample-code-te@python-docs-samples-tests.iam.gserviceaccount.com';
+  const serviceAccountEmail = 'cloud-iot-test@long-door-651.iam.gserviceaccount.com';
   // Generate gcp ubermint access token
   const access_token = await generateGcpToken(
     region,
