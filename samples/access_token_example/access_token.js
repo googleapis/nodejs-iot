@@ -13,9 +13,9 @@
 // limitations under the License.
 
 'use strict';
-const { readFileSync } = require('fs');
+const {readFileSync} = require('fs');
 const jwt = require('jsonwebtoken');
-const { request } = require('gaxios');
+const {request} = require('gaxios');
 const HOST = 'https://cloudiottoken.googleapis.com';
 // Generate access token."
 const generateAccessToken = async (
@@ -44,7 +44,7 @@ const generateAccessToken = async (
     };
     const privateKey = readFileSync(certificateFile);
 
-    const encodedJwt = jwt.sign(jwtPayload, privateKey, { algorithm: algorithm });
+    const encodedJwt = jwt.sign(jwtPayload, privateKey, {algorithm: algorithm});
     return encodedJwt;
   }
   async function exchangeIotJwtTokenWithGcpToken(
@@ -58,7 +58,7 @@ const generateAccessToken = async (
     const resourePath = `projects/${projectId}/locations/${cloudRegion}/registries/${registryId}/devices/${deviceId}`;
     const requestUrl = `${HOST}/v1beta1/${resourePath}:generateAccessToken`;
 
-    const headers = { authorization: `Bearer ${jwtToken}` };
+    const headers = {authorization: `Bearer ${jwtToken}`};
 
     const options = {
       url: requestUrl,
@@ -103,7 +103,7 @@ const accessTokenPubsub = async (
   scope,
   algorithm,
   certificateFile,
-  topicName,
+  topicName
 ) => {
   // [START iot_access_token_pubsub]
   // cloudRegion = 'us-central1'
@@ -125,7 +125,7 @@ const accessTokenPubsub = async (
     certificateFile
   );
 
-  const headers = { authorization: `Bearer ${access_token}` };
+  const headers = {authorization: `Bearer ${access_token}`};
   try {
     // Create pubsub topic
     const createPubsubRequestUrl = `https://pubsub.googleapis.com/v1/projects/${projectId}/topics/${topicName}`;
@@ -211,14 +211,14 @@ const accessTokenGcs = async (
     algorithm,
     certificateFile
   );
-  const headers = { authorization: `Bearer ${access_token}` };
+  const headers = {authorization: `Bearer ${access_token}`};
   // Create GCS bucket
   const createGcsPayload = {
     name: bucketName,
     location: cloudRegion,
     storageClass: 'STANDARD',
     iamConfiguration: {
-      uniformBucketLevelAccess: { enabled: true },
+      uniformBucketLevelAccess: {enabled: true},
     },
   };
 
@@ -287,14 +287,16 @@ const accessTokenGcs = async (
   // [END iot_access_token_gcs]
 };
 exports.accessTokenGcs = accessTokenGcs;
-const accessTokenIotSendCommand = async (cloudRegion,
+const accessTokenIotSendCommand = async (
+  cloudRegion,
   projectId,
   registryId,
   deviceId,
   scope,
   algorithm,
   certificateFile,
-  serviceAccountEmail) => {
+  serviceAccountEmail
+) => {
   // [START iot_access_token_iot_send_command]
   // cloudRegion = 'us-central1'
   // projectId = 'YOUR_PROJECT_ID'
@@ -317,7 +319,7 @@ const accessTokenIotSendCommand = async (cloudRegion,
     certificateFile
   );
 
-  const headers = { authorization: `Bearer ${access_token}` };
+  const headers = {authorization: `Bearer ${access_token}`};
   try {
     // Exchange GCP access token for service account access token.
     const exchangePayload = {
@@ -350,7 +352,7 @@ const accessTokenIotSendCommand = async (cloudRegion,
     const commandOptions = {
       url: commandRequesturl,
       method: 'POST',
-      headers: { authorization: `Bearer ${serviceAccountAccessToken}` },
+      headers: {authorization: `Bearer ${serviceAccountAccessToken}`},
       data: commandPayload,
       'content-type': 'application/json',
       'cache-control': 'no-cache',
