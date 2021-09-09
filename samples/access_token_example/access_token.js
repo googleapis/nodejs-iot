@@ -177,7 +177,7 @@ const accessTokenPubsub = async (
   } catch (error) {
     console.log('Error received: ', JSON.stringify(error));
   }
-  // [END iot_access_token_pubsun]
+  // [END iot_access_token_pubsub]
 };
 exports.accessTokenPubsub = accessTokenPubsub;
 const accessTokenGcs = async (
