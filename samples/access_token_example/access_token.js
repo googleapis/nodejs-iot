@@ -55,8 +55,8 @@ const generateAccessToken = async (
     jwtToken,
     scopes
   ) {
-    const resoureUrl = `projects/${projectId}/locations/${cloudRegion}/registries/${registryId}/devices/${deviceId}`;
-    const requestUrl = `${HOST}/v1beta1/${resoureUrl}:generateAccessToken`;
+    const resourePath = `projects/${projectId}/locations/${cloudRegion}/registries/${registryId}/devices/${deviceId}`;
+    const requestUrl = `${HOST}/v1beta1/${resourePath}:generateAccessToken`;
 
     const headers = { authorization: `Bearer ${jwtToken}` };
 
@@ -65,7 +65,7 @@ const generateAccessToken = async (
       method: 'POST',
       headers: headers,
       data: {
-        device: resoureUrl,
+        device: resourePath,
         scope: scopes,
       },
       'content-type': 'application/json',
