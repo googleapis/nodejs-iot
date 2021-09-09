@@ -13,6 +13,7 @@
 // limitations under the License.
 
 'use strict';
+const assert = require('assert');
 const {readFileSync} = require('fs');
 const jwt = require('jsonwebtoken');
 const {request} = require('gaxios');
@@ -115,7 +116,7 @@ const accessTokenPubsub = async (
   // algorithm = 'RS256'
   // certificateFile = 'path/to/certificate.pem'
   // topicName = 'name of the pubsub topic to be used'
-  const access_token = await generateGcpToken(
+  const access_token = await generateAccessToken(
     cloudRegion,
     projectId,
     registryId,
@@ -202,7 +203,7 @@ const accessTokenGcs = async (
   // bucketName = 'name-of-gcs-bucket'
 
   // generate access token
-  const access_token = await generateGcpToken(
+  const access_token = await generateAccessToken(
     cloudRegion,
     projectId,
     registryId,
@@ -237,7 +238,7 @@ const accessTokenGcs = async (
 
     // Upload Data to GCS bucket
     const dataName = 'testFILE';
-    const binaryData = readFileSync('.././resources/logo.png');
+    const binaryData = readFileSync('./resources/logo.png');
     const uploadGcsRequestUrl = `https://storage.googleapis.com/upload/storage/v1/b/${bucketName}/o?uploadType=media&name=${dataName}`;
     const uploadGcsOptions = {
       url: uploadGcsRequestUrl,
@@ -309,7 +310,7 @@ const accessTokenIotSendCommand = async (
   // serviceAccountEmail  = 'service account identity to impersonate'
 
   // Generate access token
-  const access_token = await generateGcpToken(
+  const access_token = await generateAccessToken(
     cloudRegion,
     projectId,
     registryId,
@@ -348,7 +349,7 @@ const accessTokenIotSendCommand = async (
     const commandPayload = {
       binaryData: Buffer.from('CLOSE DOOR'),
     };
-    const commandRequesturl = `https://cloudiot.googleapis.com/v1/projects/${projectId}/locations/${region}/registries/${registryId}/devices/${deviceId}:sendCommandToDevice`;
+    const commandRequesturl = `https://cloudiot.googleapis.com/v1/projects/${projectId}/locations/${cloudRegion}/registries/${registryId}/devices/${deviceId}:sendCommandToDevice`;
     const commandOptions = {
       url: commandRequesturl,
       method: 'POST',

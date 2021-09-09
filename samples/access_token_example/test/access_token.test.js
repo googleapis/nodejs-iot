@@ -15,9 +15,7 @@
 'use strict';
 
 const assert = require('assert');
-const {request} = require('gaxios');
 const {
-  generateAccessToken,
   accessTokenPubsub,
   accessTokenGcs,
   accessTokenIotSendCommand,
@@ -36,8 +34,8 @@ const bucketName = `nodejs-test-bucket-iot-${uuid.v4()}`;
 const region = 'us-central1';
 const projectId =
   process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT;
-const rsaPublicCert = '.././resources/rsa_cert.pem'; // process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
-const rsaPrivateKey = '.././resources/rsa_private.pem'; //process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
+const rsaPublicCert = './resources/rsa_cert.pem'; // process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
+const rsaPrivateKey = './resources/rsa_private.pem'; //process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
 const iotClient = new iot.v1.DeviceManagerClient();
 const pubSubClient = new PubSub({projectId});
 
@@ -123,7 +121,7 @@ after(async () => {
 it('Generate gcp access token, use gcp access token to create gcs bucket upload a file to bucket, download file from bucket', async () => {
   const scope = 'https://www.googleapis.com/auth/devstorage.full_control';
   await accessTokenGcs(
-    egion,
+    region,
     projectId,
     registryName,
     deviceId,
@@ -152,7 +150,7 @@ it('Generate gcp access token, exchange ubermint token for service account acces
   const serviceAccountEmail =
     'cloud-iot-test@long-door-651.iam.gserviceaccount.com';
   await accessTokenIotSendCommand(
-    egion,
+    region,
     projectId,
     registryName,
     deviceId,
