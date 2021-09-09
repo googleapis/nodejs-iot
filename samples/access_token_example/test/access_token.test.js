@@ -15,13 +15,18 @@
 'use strict';
 
 const assert = require('assert');
-const { request } = require('gaxios');
-const { generateAccessToken, accessTokenPubsub, accessTokenGcs, accessTokenIotSendCommand } = require('../access_token');
-const { readFileSync } = require('fs');
+const {request} = require('gaxios');
+const {
+  generateAccessToken,
+  accessTokenPubsub,
+  accessTokenGcs,
+  accessTokenIotSendCommand,
+} = require('../access_token');
+const {readFileSync} = require('fs');
 const iot = require('@google-cloud/iot');
-const { PubSub } = require('@google-cloud/pubsub');
+const {PubSub} = require('@google-cloud/pubsub');
 const uuid = require('uuid');
-const { after, before, it } = require('mocha');
+const {after, before, it} = require('mocha');
 
 const deviceId = 'test-node-device';
 const topicName = `nodejs-docs-samples-test-iot-${uuid.v4()}`;
@@ -34,7 +39,7 @@ const projectId =
 const rsaPublicCert = '.././resources/rsa_cert.pem'; // process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
 const rsaPrivateKey = '.././resources/rsa_private.pem'; //process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
 const iotClient = new iot.v1.DeviceManagerClient();
-const pubSubClient = new PubSub({ projectId });
+const pubSubClient = new PubSub({projectId});
 
 before(async () => {
   assert(
@@ -104,7 +109,7 @@ after(async () => {
     deviceId
   );
 
-  await iotClient.deleteDevice({ name: devPath });
+  await iotClient.deleteDevice({name: devPath});
 
   console.log(`Device ${deviceId} deleted.`);
 
@@ -117,7 +122,8 @@ after(async () => {
 
 it('Generate gcp access token, use gcp access token to create gcs bucket upload a file to bucket, download file from bucket', async () => {
   const scope = 'https://www.googleapis.com/auth/devstorage.full_control';
-  await accessTokenGcs(egion,
+  await accessTokenGcs(
+    egion,
     projectId,
     registryName,
     deviceId,
@@ -130,18 +136,23 @@ it('Generate gcp access token, use gcp access token to create gcs bucket upload 
 
 it('Generate gcp access token, use gcp access token to create pubsub topic, push message to pubsub', async () => {
   const scope = 'https://www.googleapis.com/auth/pubsub';
-  await accessTokenPubsub(region,
+  await accessTokenPubsub(
+    region,
     projectId,
     registryName,
     deviceId,
     scope,
     'RS256',
-    rsaPrivateKey, testTopicName);
+    rsaPrivateKey,
+    testTopicName
+  );
 });
 it('Generate gcp access token, exchange ubermint token for service account access token, use service account access token to send cloud iot command', async () => {
   const scope = 'https://www.googleapis.com/auth/cloud-platform';
-  const serviceAccountEmail = 'cloud-iot-test@long-door-651.iam.gserviceaccount.com';
-  await accessTokenIotSendCommand(egion,
+  const serviceAccountEmail =
+    'cloud-iot-test@long-door-651.iam.gserviceaccount.com';
+  await accessTokenIotSendCommand(
+    egion,
     projectId,
     registryName,
     deviceId,
