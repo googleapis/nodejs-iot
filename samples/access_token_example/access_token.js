@@ -17,8 +17,8 @@ const assert = require('assert');
 const {readFileSync} = require('fs');
 const jwt = require('jsonwebtoken');
 const {request} = require('gaxios');
-const HOST = 'https://cloudiottoken.googleapis.com';
-// Generate access token."
+
+// Generate device access token
 const generateAccessToken = async (
   cloudRegion,
   projectId,
@@ -26,7 +26,7 @@ const generateAccessToken = async (
   deviceId,
   scope,
   algorithm,
-  certificateFile
+  privateKeyFile
 ) => {
   // [START iot_generate_access_token]
   // cloudRegion = 'us-central1'
@@ -36,28 +36,26 @@ const generateAccessToken = async (
   // scope = 'scope1 scope2' // See the full list of scopes
   // at: https://developers.google.com/identity/protocols/oauth2/scopes
   // algorithm = 'RS256'
-  // certificateFile = 'path/to/certificate.pem'
-  async function generateIotJwtToken(projectId, algorithm, certificateFile) {
+  // privateKeyFile = 'path/to/private_key.pem'
+  async function createJwt(projectId, privateKeyFile, algorithm) {
     const jwtPayload = {
       iat: parseInt(Date.now() / 1000),
       exp: parseInt(Date.now() / 1000) + 20 * 60, // 20 minutes
       aud: projectId,
     };
-    const privateKey = readFileSync(certificateFile);
-
-    const encodedJwt = jwt.sign(jwtPayload, privateKey, {algorithm: algorithm});
-    return encodedJwt;
+    const privateKey = readFileSync(privateKeyFile);
+    return jwt.sign(jwtPayload, privateKey, {algorithm: algorithm});
   }
-  async function exchangeIotJwtTokenWithGcpToken(
+  async function generateDeviceAccessToken(
     cloudRegion,
     projectId,
     registryId,
     deviceId,
     jwtToken,
-    scopes
+    scope
   ) {
-    const resourePath = `projects/${projectId}/locations/${cloudRegion}/registries/${registryId}/devices/${deviceId}`;
-    const requestUrl = `${HOST}/v1beta1/${resourePath}:generateAccessToken`;
+    const resourcePath = `projects/${projectId}/locations/${cloudRegion}/registries/${registryId}/devices/${deviceId}`;
+    const requestUrl = `https://cloudiottoken.googleapis.com/v1beta1/${resourcePath}:generateAccessToken`;
 
     const headers = {authorization: `Bearer ${jwtToken}`};
 
@@ -66,8 +64,8 @@ const generateAccessToken = async (
       method: 'POST',
       headers: headers,
       data: {
-        device: resourePath,
-        scope: scopes,
+        device: resourcePath,
+        scope: scope,
       },
       'content-type': 'application/json',
       'cache-control': 'no-cache',
@@ -79,12 +77,8 @@ const generateAccessToken = async (
       console.error('Received error: ', err);
     }
   }
-  const jwtToken = await generateIotJwtToken(
-    projectId,
-    algorithm,
-    certificateFile
-  );
-  const gcpToken = await exchangeIotJwtTokenWithGcpToken(
+  const jwtToken = await createJwt(projectId, privateKeyFile, algorithm);
+  const gcpToken = await generateDeviceAccessToken(
     cloudRegion,
     projectId,
     registryId,
@@ -95,15 +89,15 @@ const generateAccessToken = async (
   return gcpToken;
   // [END iot_generate_access_token]
 };
-exports.generateAccessToken = generateAccessToken;
-const accessTokenPubsub = async (
+
+const publishPubSubMessage = async (
   cloudRegion,
   projectId,
   registryId,
   deviceId,
   scope,
   algorithm,
-  certificateFile,
+  privateKeyFile,
   topicName
 ) => {
   // [START iot_access_token_pubsub]
@@ -114,8 +108,10 @@ const accessTokenPubsub = async (
   // scope = 'scope1 scope2' // See the full list of scopes
   // at: https://developers.google.com/identity/protocols/oauth2/scopes
   // algorithm = 'RS256'
-  // certificateFile = 'path/to/certificate.pem'
-  // topicName = 'name of the pubsub topic to be used'
+  // privateKeyFile = 'path/to/private_key.pem'
+  // topicName = 'pubsub-topic-name'
+
+  // Generate device access token
   const access_token = await generateAccessToken(
     cloudRegion,
     projectId,
@@ -123,12 +119,12 @@ const accessTokenPubsub = async (
     deviceId,
     scope,
     algorithm,
-    certificateFile
+    privateKeyFile
   );
 
   const headers = {authorization: `Bearer ${access_token}`};
   try {
-    // Create pubsub topic
+    // Create Pub/Sub topic
     const createPubsubRequestUrl = `https://pubsub.googleapis.com/v1/projects/${projectId}/topics/${topicName}`;
     const createPubsubOptions = {
       url: createPubsubRequestUrl,
@@ -141,7 +137,7 @@ const accessTokenPubsub = async (
     const createResponse = await request(createPubsubOptions);
     assert.strictEqual(createResponse.status, 200);
 
-    // Publish message to pubsub topic
+    // Publish message to Pub/Sub topic
     const publishPayload = {
       messages: [
         {
@@ -164,7 +160,7 @@ const accessTokenPubsub = async (
     const publishResponse = await request(publishPubsubOptions);
     assert.strictEqual(publishResponse.status, 200);
 
-    // Delete pubsub topic
+    // Delete Pub/Sub topic
     const deletePubsubRequestPath = `https://pubsub.googleapis.com/v1/projects/${projectId}/topics/${topicName}`;
     const deletePubsubOptions = {
       url: deletePubsubRequestPath,
@@ -180,15 +176,15 @@ const accessTokenPubsub = async (
   }
   // [END iot_access_token_pubsub]
 };
-exports.accessTokenPubsub = accessTokenPubsub;
-const accessTokenGcs = async (
+
+const downloadCloudStorageFile = async (
   cloudRegion,
   projectId,
   registryId,
   deviceId,
   scope,
   algorithm,
-  certificateFile,
+  privateKeyFile,
   bucketName,
   dataPath
 ) => {
@@ -200,11 +196,11 @@ const accessTokenGcs = async (
   // scope = 'scope1 scope2' // See the full list of scopes
   // at: https://developers.google.com/identity/protocols/oauth2/scopes
   // algorithm = 'RS256'
-  // certificateFile = 'path/to/certificate.pem'
+  // privateKeyFile = 'path/to/private_key.pem'
   // bucketName = 'name-of-gcs-bucket'
-  // dataPath = 'path of the data to be uploaded'
+  // dataPath = 'path/to/file/to/be/uploaded.png'
 
-  // generate access token
+  // Generate device access token
   const access_token = await generateAccessToken(
     cloudRegion,
     projectId,
@@ -212,29 +208,30 @@ const accessTokenGcs = async (
     deviceId,
     scope,
     algorithm,
-    certificateFile
+    privateKeyFile
   );
-  const headers = {authorization: `Bearer ${access_token}`};
-  // Create GCS bucket
-  const createGcsPayload = {
-    name: bucketName,
-    location: cloudRegion,
-    storageClass: 'STANDARD',
-    iamConfiguration: {
-      uniformBucketLevelAccess: {enabled: true},
-    },
-  };
 
-  const createGcsRequestUrl = `https://storage.googleapis.com/storage/v1/b?project=${projectId}`;
-  const createGcsOptions = {
-    url: createGcsRequestUrl,
-    method: 'POST',
-    headers: headers,
-    data: Buffer.from(JSON.stringify(createGcsPayload)),
-    'content-type': 'application/json',
-    'cache-control': 'no-cache',
-  };
+  const headers = {authorization: `Bearer ${access_token}`};
   try {
+    // Create GCS bucket
+    const createGcsPayload = {
+      name: bucketName,
+      location: cloudRegion,
+      storageClass: 'STANDARD',
+      iamConfiguration: {
+        uniformBucketLevelAccess: {enabled: true},
+      },
+    };
+
+    const createGcsRequestUrl = `https://storage.googleapis.com/storage/v1/b?project=${projectId}`;
+    const createGcsOptions = {
+      url: createGcsRequestUrl,
+      method: 'POST',
+      headers: headers,
+      data: Buffer.from(JSON.stringify(createGcsPayload)),
+      'content-type': 'application/json',
+      'cache-control': 'no-cache',
+    };
     const createResponse = await request(createGcsOptions);
     assert.strictEqual(createResponse.status, 200);
 
@@ -274,6 +271,7 @@ const accessTokenGcs = async (
     };
     const deleteDataResponse = await request(deleteDataGcsOptions);
     assert.strictEqual(deleteDataResponse.status, 204);
+
     // Delete GCS bucket
     const deleteGcsRequestUrl = `https://storage.googleapis.com/storage/v1/b/${createResponse.data.name}`;
     const deleteGcsOptions = {
@@ -289,15 +287,15 @@ const accessTokenGcs = async (
   }
   // [END iot_access_token_gcs]
 };
-exports.accessTokenGcs = accessTokenGcs;
-const accessTokenIotSendCommand = async (
+
+const sendCommandToIoTDevice = async (
   cloudRegion,
   projectId,
   registryId,
   deviceId,
   scope,
   algorithm,
-  certificateFile,
+  privateKeyFile,
   serviceAccountEmail
 ) => {
   // [START iot_access_token_iot_send_command]
@@ -308,10 +306,10 @@ const accessTokenIotSendCommand = async (
   // scope = 'scope1 scope2' // See the full list of scopes
   // at: https://developers.google.com/identity/protocols/oauth2/scopes
   // algorithm = 'RS256'
-  // certificateFile = 'path/to/certificate.pem'
-  // serviceAccountEmail  = 'service account identity to impersonate'
+  // privateKeyFile = 'path/to/private_key.pem'
+  // serviceAccountEmail  = 'your-service-account@your-project.iam.gserviceaccount.com'
 
-  // Generate access token
+  // Generate device access token
   const access_token = await generateAccessToken(
     cloudRegion,
     projectId,
@@ -319,7 +317,7 @@ const accessTokenIotSendCommand = async (
     deviceId,
     scope,
     algorithm,
-    certificateFile
+    privateKeyFile
   );
 
   const headers = {authorization: `Bearer ${access_token}`};
@@ -328,7 +326,6 @@ const accessTokenIotSendCommand = async (
     const exchangePayload = {
       scope: [scope],
     };
-
     const exchangeRequestUrl = `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${serviceAccountEmail}:generateAccessToken`;
     const exchangeOptions = {
       url: exchangeRequestUrl,
@@ -346,7 +343,6 @@ const accessTokenIotSendCommand = async (
     );
 
     // Sending a command to a Cloud IoT Core device
-
     const serviceAccountAccessToken = exchangeResponse.data.accessToken;
     const commandPayload = {
       binaryData: Buffer.from('CLOSE DOOR'),
@@ -365,7 +361,12 @@ const accessTokenIotSendCommand = async (
   } catch (error) {
     console.log('Error received: ', JSON.stringify(error));
   }
-
   // [END iot_access_token_iot_send_command]
 };
-exports.accessTokenIotSendCommand = accessTokenIotSendCommand;
+
+module.exports = {
+  generateAccessToken,
+  downloadCloudStorageFile,
+  publishPubSubMessage,
+  sendCommandToIoTDevice,
+};

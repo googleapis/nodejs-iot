@@ -16,9 +16,9 @@
 
 const assert = require('assert');
 const {
-  accessTokenPubsub,
-  accessTokenGcs,
-  accessTokenIotSendCommand,
+  publishPubSubMessage,
+  downloadCloudStorageFile,
+  sendCommandToIoTDevice,
 } = require('../access_token');
 const {readFileSync} = require('fs');
 const iot = require('@google-cloud/iot');
@@ -48,7 +48,7 @@ before(async () => {
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
     'Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!'
   );
-  // Create a topic to be used for testing.
+  // Create a Pub/Sub topic to be used for testing
   const [topic] = await pubSubClient.createTopic(topicName);
   console.log(`Topic ${topic.name} created.`);
 
@@ -97,7 +97,7 @@ before(async () => {
 });
 
 after(async () => {
-  // delete pubsub topic
+  // Delete Pub/Sub topic
   await pubSubClient.topic(topicName).delete();
   console.log(`Topic ${topicName} deleted.`);
   const devPath = iotClient.devicePath(
@@ -122,7 +122,7 @@ it('Generate gcp access token, use gcp access token to create gcs bucket upload 
   const scope = 'https://www.googleapis.com/auth/devstorage.full_control';
   const dataPath = '../resources/logo.png';
   console.log(dataPath);
-  await accessTokenGcs(
+  await downloadCloudStorageFile(
     region,
     projectId,
     registryName,
@@ -137,7 +137,7 @@ it('Generate gcp access token, use gcp access token to create gcs bucket upload 
 
 it('Generate gcp access token, use gcp access token to create pubsub topic, push message to pubsub', async () => {
   const scope = 'https://www.googleapis.com/auth/pubsub';
-  await accessTokenPubsub(
+  await publishPubSubMessage(
     region,
     projectId,
     registryName,
@@ -148,11 +148,12 @@ it('Generate gcp access token, use gcp access token to create pubsub topic, push
     testTopicName
   );
 });
+
 it('Generate gcp access token, exchange ubermint token for service account access token, use service account access token to send cloud iot command', async () => {
   const scope = 'https://www.googleapis.com/auth/cloud-platform';
   const serviceAccountEmail =
     'cloud-iot-test@long-door-651.iam.gserviceaccount.com';
-  await accessTokenIotSendCommand(
+  await sendCommandToIoTDevice(
     region,
     projectId,
     registryName,
