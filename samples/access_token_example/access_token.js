@@ -33,8 +33,8 @@ const generateAccessToken = async (
   // projectId = 'YOUR_PROJECT_ID'
   // registryId = 'your-registry-id'
   // deviceId = 'your-device-id'
-  // scope = 'scope1 scope2' // See the full list of scopes
-  // at: https://developers.google.com/identity/protocols/oauth2/scopes
+  // scope = 'scope1 scope2' // See the full list of scopes \
+  //     at: https://developers.google.com/identity/protocols/oauth2/scopes
   // algorithm = 'RS256'
   // privateKeyFile = 'path/to/private_key.pem'
   async function createJwt(projectId, privateKeyFile, algorithm) {
@@ -105,8 +105,8 @@ const publishPubSubMessage = async (
   // projectId = 'YOUR_PROJECT_ID'
   // registryId = 'your-registry-id'
   // deviceId = 'your-device-id'
-  // scope = 'scope1 scope2' // See the full list of scopes
-  // at: https://developers.google.com/identity/protocols/oauth2/scopes
+  // scope = 'scope1 scope2' // See the full list of scopes \
+  //     at: https://developers.google.com/identity/protocols/oauth2/scopes
   // algorithm = 'RS256'
   // privateKeyFile = 'path/to/private_key.pem'
   // topicName = 'pubsub-topic-name'
@@ -193,8 +193,8 @@ const downloadCloudStorageFile = async (
   // projectId = 'YOUR_PROJECT_ID'
   // registryId = 'your-registry-id'
   // deviceId = 'your-device-id'
-  // scope = 'scope1 scope2' // See the full list of scopes
-  // at: https://developers.google.com/identity/protocols/oauth2/scopes
+  // scope = 'scope1 scope2' // See the full list of scopes \
+  //     at: https://developers.google.com/identity/protocols/oauth2/scopes
   // algorithm = 'RS256'
   // privateKeyFile = 'path/to/private_key.pem'
   // bucketName = 'name-of-gcs-bucket'
@@ -288,41 +288,19 @@ const downloadCloudStorageFile = async (
   // [END iot_access_token_gcs]
 };
 
-const sendCommandToIoTDevice = async (
-  cloudRegion,
-  projectId,
-  registryId,
-  deviceId,
+const exchangeDeviceAccessTokenToServiceAccountToken = async (
+  deviceAccessToken,
   scope,
-  algorithm,
-  privateKeyFile,
   serviceAccountEmail
 ) => {
-  // [START iot_access_token_iot_send_command]
-  // cloudRegion = 'us-central1'
-  // projectId = 'YOUR_PROJECT_ID'
-  // registryId = 'your-registry-id'
-  // deviceId = 'your-device-id'
-  // scope = 'scope1 scope2' // See the full list of scopes
-  // at: https://developers.google.com/identity/protocols/oauth2/scopes
-  // algorithm = 'RS256'
-  // privateKeyFile = 'path/to/private_key.pem'
+  // [START iot_access_token_service_account_token]
+  // deviceAccessToken = 'device-access-token'
+  // scope = 'scope1 scope2' // See the full list of scopes \
+  //     at: https://developers.google.com/identity/protocols/oauth2/scopes
   // serviceAccountEmail  = 'your-service-account@your-project.iam.gserviceaccount.com'
 
-  // Generate device access token
-  const access_token = await generateAccessToken(
-    cloudRegion,
-    projectId,
-    registryId,
-    deviceId,
-    scope,
-    algorithm,
-    privateKeyFile
-  );
-
-  const headers = {authorization: `Bearer ${access_token}`};
+  const headers = {authorization: `Bearer ${deviceAccessToken}`};
   try {
-    // Exchange GCP access token for service account access token.
     const exchangePayload = {
       scope: [scope],
     };
@@ -341,9 +319,55 @@ const sendCommandToIoTDevice = async (
       exchangeResponse.data && exchangeResponse.data.accessToken !== '',
       true
     );
+    return exchangeResponse.data.accessToken;
+  } catch (error) {
+    console.log('Error received: ', JSON.stringify(error));
+  }
+  // [END iot_access_token_service_account_token]
+};
 
-    // Sending a command to a Cloud IoT Core device
-    const serviceAccountAccessToken = exchangeResponse.data.accessToken;
+const sendCommandToIoTDevice = async (
+  cloudRegion,
+  projectId,
+  registryId,
+  deviceId,
+  scope,
+  algorithm,
+  privateKeyFile,
+  serviceAccountEmail
+) => {
+  // [START iot_access_token_iot_send_command]
+  // cloudRegion = 'us-central1'
+  // projectId = 'YOUR_PROJECT_ID'
+  // registryId = 'your-registry-id'
+  // deviceId = 'your-device-id'
+  // scope = 'scope1 scope2' // See the full list of scopes \
+  //     at: https://developers.google.com/identity/protocols/oauth2/scopes
+  // algorithm = 'RS256'
+  // privateKeyFile = 'path/to/private_key.pem'
+  // serviceAccountEmail  = 'your-service-account@your-project.iam.gserviceaccount.com'
+
+  // Generate device access token
+  const access_token = await generateAccessToken(
+    cloudRegion,
+    projectId,
+    registryId,
+    deviceId,
+    scope,
+    algorithm,
+    privateKeyFile
+  );
+
+  // Exchange GCP access token to a service account access token
+  const serviceAccountAccessToken = exchangeDeviceAccessTokenToServiceAccountToken(
+    access_token,
+    scope,
+    serviceAccountEmail
+  );
+
+  const headers = {authorization: `Bearer ${serviceAccountAccessToken}`};
+  try {
+    // Send command to IoT Device
     const commandPayload = {
       binaryData: Buffer.from('CLOSE DOOR'),
     };
@@ -351,7 +375,7 @@ const sendCommandToIoTDevice = async (
     const commandOptions = {
       url: commandRequesturl,
       method: 'POST',
-      headers: {authorization: `Bearer ${serviceAccountAccessToken}`},
+      headers: headers,
       data: commandPayload,
       'content-type': 'application/json',
       'cache-control': 'no-cache',
@@ -366,6 +390,7 @@ const sendCommandToIoTDevice = async (
 
 module.exports = {
   generateAccessToken,
+  exchangeDeviceAccessTokenToServiceAccountToken,
   downloadCloudStorageFile,
   publishPubSubMessage,
   sendCommandToIoTDevice,

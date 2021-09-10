@@ -19,15 +19,17 @@ Run the following command to install the library dependencies for NodeJS:
 # Running the sample
 
     Commands:
-      generateAccessToken         Generates OAuth 2.0 Google Access Token.
-      publishPubSubMessage        Publishes a message to Cloud Pub/Sub topic.
-      downloadCloudStorageFile    Downloads a file from Cloud Storage bucket.
-      sendCommandToIoTDevice      Sends a command to an IoT device.
+      generateAccessToken                                 Generates OAuth 2.0 Google Access Token.
+      exchangeDeviceAccessTokenToServiceAccountToken      Exchanges device access token to service account access token.
+      publishPubSubMessage                                Publishes a message to Cloud Pub/Sub topic.
+      downloadCloudStorageFile                            Downloads a file from Cloud Storage bucket.
+      sendCommandToIoTDevice                              Sends a command to an IoT device.
     
     Examples:
       node access_token.js generateAccessToken us-central1 my-project my-registry my-device https://www.googleapis.com/auth/cloud-platform RS256 ../resources/rsa_private.pem
       node access_token.js publishPubSubMessage us-central1 my-project my-registry my-device https://www.googleapis.com/auth/cloud-platform RS256 ../resources/rsa_private.pem my-pubsub-topic
       node access_token.js downloadCloudStorageFile us-central1 my-project my-registry my-device https://www.googleapis.com/auth/cloud-platform RS256 ../resources/rsa_private.pem my-storage-bucket ../resources/logo.png
       node access_token.js sendCommandToIoTDevice us-central1 my-project my-registry my-device https://www.googleapis.com/auth/cloud-platform RS256 ../resources/rsa_private.pem my-service-account@my-project.iam.gserviceaccount.com
+      node access_token.js exchangeDeviceAccessTokenToServiceAccountToken device-access-token https://www.googleapis.com/auth/cloud-platform my-service-account@my-project.iam.gserviceaccount.com
 
 For more information, see https://cloud.google.com/iot-core/docs
