@@ -189,7 +189,8 @@ const accessTokenGcs = async (
   scope,
   algorithm,
   certificateFile,
-  bucketName
+  bucketName,
+  dataPath
 ) => {
   // [START iot_access_token_gcs]
   // cloudRegion = 'us-central1'
@@ -201,6 +202,7 @@ const accessTokenGcs = async (
   // algorithm = 'RS256'
   // certificateFile = 'path/to/certificate.pem'
   // bucketName = 'name-of-gcs-bucket'
+  // dataPath = 'path of the data to be uploaded'
 
   // generate access token
   const access_token = await generateAccessToken(
@@ -238,7 +240,7 @@ const accessTokenGcs = async (
 
     // Upload Data to GCS bucket
     const dataName = 'testFILE';
-    const binaryData = readFileSync(__dirname + '/resources/logo.png');
+    const binaryData = readFileSync(dataPath);
     const uploadGcsRequestUrl = `https://storage.googleapis.com/upload/storage/v1/b/${bucketName}/o?uploadType=media&name=${dataName}`;
     const uploadGcsOptions = {
       url: uploadGcsRequestUrl,

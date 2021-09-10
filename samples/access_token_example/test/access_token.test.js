@@ -23,6 +23,7 @@ const {
 const {readFileSync} = require('fs');
 const iot = require('@google-cloud/iot');
 const {PubSub} = require('@google-cloud/pubsub');
+const path = require('path');
 const uuid = require('uuid');
 const {after, before, it} = require('mocha');
 
@@ -120,6 +121,8 @@ after(async () => {
 
 it('Generate gcp access token, use gcp access token to create gcs bucket upload a file to bucket, download file from bucket', async () => {
   const scope = 'https://www.googleapis.com/auth/devstorage.full_control';
+  const dataPath = path.resolve(__dirname, '..', 'resources', 'logo.png');
+  console.log(dataPath);
   await accessTokenGcs(
     region,
     projectId,
@@ -128,7 +131,8 @@ it('Generate gcp access token, use gcp access token to create gcs bucket upload 
     scope,
     'RS256',
     rsaPrivateKey,
-    bucketName
+    bucketName,
+    dataPath
   );
 });
 
