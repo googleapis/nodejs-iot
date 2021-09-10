@@ -1,7 +1,7 @@
 {
   "name": "nodejs-docs-samples-iot-access-token",
   "version": "0.0.1",
-  "description": "Example of Cloud IoT Access token api",
+  "description": "Example of Cloud IoT device federated authentication",
   "main": "access_token.js",
   "license": "Apache-2.0",
   "author": "Google LLC",
@@ -10,7 +10,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+    "url": "https://github.com/googleapis/nodejs-iot.git"
   },
   "engines": {
     "node": ">=10.0.0"
