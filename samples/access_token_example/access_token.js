@@ -359,11 +359,12 @@ const sendCommandToIoTDevice = async (
   );
 
   // Exchange GCP access token to a service account access token
-  const serviceAccountAccessToken = exchangeDeviceAccessTokenToServiceAccountToken(
-    access_token,
-    scope,
-    serviceAccountEmail
-  );
+  const serviceAccountAccessToken =
+    exchangeDeviceAccessTokenToServiceAccountToken(
+      access_token,
+      scope,
+      serviceAccountEmail
+    );
 
   const headers = {authorization: `Bearer ${serviceAccountAccessToken}`};
   try {
