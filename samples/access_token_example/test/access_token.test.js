@@ -121,7 +121,7 @@ after(async () => {
 
 it('Generate gcp access token, use gcp access token to create gcs bucket upload a file to bucket, download file from bucket', async () => {
   const scope = 'https://www.googleapis.com/auth/devstorage.full_control';
-  const dataPath = path.resolve(__dirname, '..', 'resources', 'logo.png');
+  const dataPath = '../resources/png';
   console.log(dataPath);
   await accessTokenGcs(
     region,
