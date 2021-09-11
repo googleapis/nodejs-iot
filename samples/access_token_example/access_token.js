@@ -360,7 +360,7 @@ const sendCommandToIoTDevice = async (
 
   // Exchange GCP access token to a service account access token
   const serviceAccountAccessToken =
-    exchangeDeviceAccessTokenToServiceAccountToken(
+    await exchangeDeviceAccessTokenToServiceAccountToken(
       access_token,
       scope,
       serviceAccountEmail
