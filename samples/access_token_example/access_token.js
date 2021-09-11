@@ -334,7 +334,7 @@ const accessTokenIotSendCommand = async (
       url: exchangeRequestUrl,
       method: 'POST',
       headers: headers,
-      data: exchangePayload,
+      data: JSON.stringify(exchangePayload),
       'content-type': 'application/json',
       'cache-control': 'no-cache',
     };
@@ -349,14 +349,14 @@ const accessTokenIotSendCommand = async (
 
     const serviceAccountAccessToken = exchangeResponse.data.accessToken;
     const commandPayload = {
-      binaryData: Buffer.from('CLOSE DOOR'),
+      binaryData: Buffer.from('CLOSE DOOR').toString('base64'),
     };
     const commandRequesturl = `https://cloudiot.googleapis.com/v1/projects/${projectId}/locations/${cloudRegion}/registries/${registryId}/devices/${deviceId}:sendCommandToDevice`;
     const commandOptions = {
       url: commandRequesturl,
       method: 'POST',
       headers: {authorization: `Bearer ${serviceAccountAccessToken}`},
-      data: commandPayload,
+      data: JSON.stringify(commandPayload),
       'content-type': 'application/json',
       'cache-control': 'no-cache',
     };

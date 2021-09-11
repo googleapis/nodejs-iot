@@ -121,7 +121,6 @@ after(async () => {
 it('Generate gcp access token, use gcp access token to create gcs bucket upload a file to bucket, download file from bucket', async () => {
   const scope = 'https://www.googleapis.com/auth/devstorage.full_control';
   const dataPath = '../resources/logo.png';
-  console.log(dataPath);
   await accessTokenGcs(
     region,
     projectId,
@@ -148,7 +147,7 @@ it('Generate gcp access token, use gcp access token to create pubsub topic, push
     testTopicName
   );
 });
-it('Generate gcp access token, exchange ubermint token for service account access token, use service account access token to send cloud iot command', async () => {
+it('Generate gcp access token, exchange gcp access token for service account access token, use service account access token to send cloud iot command', async () => {
   const scope = 'https://www.googleapis.com/auth/cloud-platform';
   const serviceAccountEmail =
     'cloud-iot-test@long-door-651.iam.gserviceaccount.com';
