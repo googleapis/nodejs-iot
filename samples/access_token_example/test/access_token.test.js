@@ -17,14 +17,17 @@
 const assert = require('assert');
 const {
   publishPubSubMessage,
+  createJwt,
   downloadCloudStorageFile,
   sendCommandToIoTDevice,
 } = require('../access_token');
-const {readFileSync} = require('fs');
+const { mqttDeviceDemo } = require('../../mqtt_example/cloudiot_mqtt_example_nodejs');
+const mqtt = require('mqtt');
+const { readFileSync } = require('fs');
 const iot = require('@google-cloud/iot');
-const {PubSub} = require('@google-cloud/pubsub');
+const { PubSub } = require('@google-cloud/pubsub');
 const uuid = require('uuid');
-const {after, before, it} = require('mocha');
+const { after, before, it } = require('mocha');
 
 const deviceId = 'test-node-device';
 const topicName = `nodejs-docs-samples-test-iot-${uuid.v4()}`;
@@ -37,7 +40,7 @@ const projectId =
 const rsaPublicCert = '../resources/rsa_cert.pem'; // process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
 const rsaPrivateKey = '../resources/rsa_private.pem'; //process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
 const iotClient = new iot.v1.DeviceManagerClient();
-const pubSubClient = new PubSub({projectId});
+const pubSubClient = new PubSub({ projectId });
 
 before(async () => {
   assert(
@@ -107,7 +110,7 @@ after(async () => {
     deviceId
   );
 
-  await iotClient.deleteDevice({name: devPath});
+  await iotClient.deleteDevice({ name: devPath });
 
   console.log(`Device ${deviceId} deleted.`);
 
@@ -151,6 +154,39 @@ it('Generate gcp access token, exchange gcp access token for service account acc
   const scope = 'https://www.googleapis.com/auth/cloud-platform';
   const serviceAccountEmail =
     'cloud-iot-test@long-door-651.iam.gserviceaccount.com';
+  const commandTobeSentToDevice = 'OPEN_DOOR';
+  // Create device MQTT client and connect to cloud iot mqtt bridge.
+  const mqttBridgeHostname = "mqtt.googleapis.com";
+  const mqttBridgePort = 8883;
+  const mqttTlsCert = "../resources/roots.pem";
+
+  // The mqttClientId is a unique string that identifies this device. For Google
+  // Cloud IoT Core, it must be in the format below.
+  const mqttClientId = `projects/${projectId}/locations/${region}/registries/${registryId}/devices/${deviceId}`;
+
+  // With Google Cloud IoT Core, the username field is ignored, however it must be
+  // non-empty. The password field is used to transmit a JWT to authorize the
+  // device. The "mqtts" protocol causes the library to connect using SSL, which
+  // is required for Cloud IoT Core.
+  const connectionArgs = {
+    host: mqttBridgeHostname,
+    port: mqttBridgePort,
+    clientId: mqttClientId,
+    username: 'unused',
+    password: createJwt(projectId, 'RS256', rsaPrivateKey),
+    protocol: 'mqtts',
+    secureProtocol: 'TLSv1_2_method',
+    ca: [readFileSync(mqttTlsCert)],
+  };
+  const client = mqtt.connect(connectionArgs);
+
+  client.on('message', (topic, message) => {
+    assert.strictEqual(topic.startsWith(`/devices/${deviceId}/commands`), true);
+    assert.strictEqual(
+      Buffer.from(message, 'base64').toString('ascii'), commandTobeSentToDevice
+    );
+  });
+  // Send command to device
   await sendCommandToIoTDevice(
     region,
     projectId,
@@ -159,6 +195,9 @@ it('Generate gcp access token, exchange gcp access token for service account acc
     scope,
     'RS256',
     rsaPrivateKey,
-    serviceAccountEmail
+    serviceAccountEmail,
+    commandTobeSentToDevice
   );
+  // Disconnect mqtt client.
+  client.end();
 });

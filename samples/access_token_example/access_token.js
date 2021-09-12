@@ -18,6 +18,21 @@ const {readFileSync} = require('fs');
 const jwt = require('jsonwebtoken');
 const {request} = require('gaxios');
 
+const createJwt = (projectId, algorithm, privateKeyFile) => {
+  // [START iot_create_jwt]
+  // projectId = 'YOUR_PROJECT_ID'
+  // algorithm = 'RS256'
+  // certificate_file = 'path/to/certificate.pem'
+  const jwtPayload = {
+    iat: parseInt(Date.now() / 1000),
+    exp: parseInt(Date.now() / 1000) + 20 * 60, // 20 minutes
+    aud: projectId,
+  };
+  const privateKey = readFileSync(privateKeyFile);
+  return jwt.sign(jwtPayload, privateKey, { algorithm: algorithm });
+  // [END iot_create_jwt]
+}
+
 // Generate device access token
 const generateAccessToken = async (
   cloudRegion,
@@ -37,15 +52,7 @@ const generateAccessToken = async (
   //     at: https://developers.google.com/identity/protocols/oauth2/scopes
   // algorithm = 'RS256'
   // privateKeyFile = 'path/to/private_key.pem'
-  async function createJwt(projectId, privateKeyFile, algorithm) {
-    const jwtPayload = {
-      iat: parseInt(Date.now() / 1000),
-      exp: parseInt(Date.now() / 1000) + 20 * 60, // 20 minutes
-      aud: projectId,
-    };
-    const privateKey = readFileSync(privateKeyFile);
-    return jwt.sign(jwtPayload, privateKey, {algorithm: algorithm});
-  }
+
   async function generateDeviceAccessToken(
     cloudRegion,
     projectId,
@@ -77,7 +84,7 @@ const generateAccessToken = async (
       console.error('Received error: ', err);
     }
   }
-  const jwtToken = await createJwt(projectId, privateKeyFile, algorithm);
+  const jwtToken = createJwt(projectId, privateKeyFile, algorithm);
   const gcpToken = await generateDeviceAccessToken(
     cloudRegion,
     projectId,
@@ -334,7 +341,8 @@ const sendCommandToIoTDevice = async (
   scope,
   algorithm,
   privateKeyFile,
-  serviceAccountEmail
+  serviceAccountEmail,
+  commandTobeSentToDevice
 ) => {
   // [START iot_access_token_iot_send_command]
   // cloudRegion = 'us-central1'
@@ -346,6 +354,7 @@ const sendCommandToIoTDevice = async (
   // algorithm = 'RS256'
   // privateKeyFile = 'path/to/private_key.pem'
   // serviceAccountEmail  = 'your-service-account@your-project.iam.gserviceaccount.com'
+  // commandTobeSentToDevice = 'command-label'
 
   // Generate device access token
   const access_token = await generateAccessToken(
@@ -369,7 +378,7 @@ const sendCommandToIoTDevice = async (
   try {
     // Send command to IoT Device
     const commandPayload = {
-      binaryData: Buffer.from('CLOSE DOOR').toString('base64'),
+      binaryData: Buffer.from(commandTobeSentToDevice).toString('base64'),
     };
     const commandRequesturl = `https://cloudiot.googleapis.com/v1/projects/${projectId}/locations/${cloudRegion}/registries/${registryId}/devices/${deviceId}:sendCommandToDevice`;
     const commandOptions = {
@@ -390,6 +399,7 @@ const sendCommandToIoTDevice = async (
 
 module.exports = {
   generateAccessToken,
+  createJwt,
   exchangeDeviceAccessTokenToServiceAccountToken,
   downloadCloudStorageFile,
   publishPubSubMessage,
