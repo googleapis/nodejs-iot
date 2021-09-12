@@ -172,7 +172,7 @@ it('Generate gcp access token, exchange gcp access token for service account acc
     port: mqttBridgePort,
     clientId: mqttClientId,
     username: 'unused',
-    password: createJwt(projectId, 'RS256', rsaPrivateKey),
+    password: createJwt(projectId, rsaPrivateKey, 'RS256'),
     protocol: 'mqtts',
     secureProtocol: 'TLSv1_2_method',
     ca: [readFileSync(mqttTlsCert)],

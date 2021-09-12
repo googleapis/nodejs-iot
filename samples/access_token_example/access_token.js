@@ -18,7 +18,7 @@ const {readFileSync} = require('fs');
 const jwt = require('jsonwebtoken');
 const {request} = require('gaxios');
 
-const createJwt = (projectId, algorithm, privateKeyFile) => {
+const createJwt = (projectId, privateKeyFile, algorithm) => {
   // [START iot_create_jwt]
   // projectId = 'YOUR_PROJECT_ID'
   // algorithm = 'RS256'
