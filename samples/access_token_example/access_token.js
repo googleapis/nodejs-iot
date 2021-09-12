@@ -21,8 +21,9 @@ const {request} = require('gaxios');
 const createJwt = (projectId, privateKeyFile, algorithm) => {
   // [START iot_create_jwt]
   // projectId = 'YOUR_PROJECT_ID'
+  // privateKeyFile = 'path/to/certificate.pem'
   // algorithm = 'RS256'
-  // certificate_file = 'path/to/certificate.pem'
+
   const jwtPayload = {
     iat: parseInt(Date.now() / 1000),
     exp: parseInt(Date.now() / 1000) + 20 * 60, // 20 minutes
