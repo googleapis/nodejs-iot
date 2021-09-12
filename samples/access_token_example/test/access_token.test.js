@@ -21,7 +21,6 @@ const {
   downloadCloudStorageFile,
   sendCommandToIoTDevice,
 } = require('../access_token');
-const { mqttDeviceDemo } = require('../../mqtt_example/cloudiot_mqtt_example_nodejs');
 const mqtt = require('mqtt');
 const { readFileSync } = require('fs');
 const iot = require('@google-cloud/iot');
@@ -162,7 +161,7 @@ it('Generate gcp access token, exchange gcp access token for service account acc
 
   // The mqttClientId is a unique string that identifies this device. For Google
   // Cloud IoT Core, it must be in the format below.
-  const mqttClientId = `projects/${projectId}/locations/${region}/registries/${registryId}/devices/${deviceId}`;
+  const mqttClientId = `projects/${projectId}/locations/${region}/registries/${registryName}/devices/${deviceId}`;
 
   // With Google Cloud IoT Core, the username field is ignored, however it must be
   // non-empty. The password field is used to transmit a JWT to authorize the
