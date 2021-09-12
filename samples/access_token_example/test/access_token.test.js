@@ -22,11 +22,11 @@ const {
   sendCommandToIoTDevice,
 } = require('../access_token');
 const mqtt = require('mqtt');
-const { readFileSync } = require('fs');
+const {readFileSync} = require('fs');
 const iot = require('@google-cloud/iot');
-const { PubSub } = require('@google-cloud/pubsub');
+const {PubSub} = require('@google-cloud/pubsub');
 const uuid = require('uuid');
-const { after, before, it } = require('mocha');
+const {after, before, it} = require('mocha');
 
 const deviceId = 'test-node-device';
 const topicName = `nodejs-docs-samples-test-iot-${uuid.v4()}`;
@@ -39,7 +39,7 @@ const projectId =
 const rsaPublicCert = '../resources/rsa_cert.pem'; // process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
 const rsaPrivateKey = '../resources/rsa_private.pem'; //process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
 const iotClient = new iot.v1.DeviceManagerClient();
-const pubSubClient = new PubSub({ projectId });
+const pubSubClient = new PubSub({projectId});
 
 before(async () => {
   assert(
@@ -109,7 +109,7 @@ after(async () => {
     deviceId
   );
 
-  await iotClient.deleteDevice({ name: devPath });
+  await iotClient.deleteDevice({name: devPath});
 
   console.log(`Device ${deviceId} deleted.`);
 
