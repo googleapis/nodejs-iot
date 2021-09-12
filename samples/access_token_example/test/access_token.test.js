@@ -21,13 +21,15 @@ const {
   downloadCloudStorageFile,
   sendCommandToIoTDevice,
 } = require('../access_token');
-const { mqttDeviceDemo } = require('../../mqtt_example/cloudiot_mqtt_example_nodejs');
+const {
+  mqttDeviceDemo,
+} = require('../../mqtt_example/cloudiot_mqtt_example_nodejs');
 const mqtt = require('mqtt');
-const { readFileSync } = require('fs');
+const {readFileSync} = require('fs');
 const iot = require('@google-cloud/iot');
-const { PubSub } = require('@google-cloud/pubsub');
+const {PubSub} = require('@google-cloud/pubsub');
 const uuid = require('uuid');
-const { after, before, it } = require('mocha');
+const {after, before, it} = require('mocha');
 
 const deviceId = 'test-node-device';
 const topicName = `nodejs-docs-samples-test-iot-${uuid.v4()}`;
@@ -40,7 +42,7 @@ const projectId =
 const rsaPublicCert = '../resources/rsa_cert.pem'; // process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
 const rsaPrivateKey = '../resources/rsa_private.pem'; //process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
 const iotClient = new iot.v1.DeviceManagerClient();
-const pubSubClient = new PubSub({ projectId });
+const pubSubClient = new PubSub({projectId});
 
 before(async () => {
   assert(
@@ -110,7 +112,7 @@ after(async () => {
     deviceId
   );
 
-  await iotClient.deleteDevice({ name: devPath });
+  await iotClient.deleteDevice({name: devPath});
 
   console.log(`Device ${deviceId} deleted.`);
 
@@ -156,9 +158,9 @@ it('Generate gcp access token, exchange gcp access token for service account acc
     'cloud-iot-test@long-door-651.iam.gserviceaccount.com';
   const commandTobeSentToDevice = 'OPEN_DOOR';
   // Create device MQTT client and connect to cloud iot mqtt bridge.
-  const mqttBridgeHostname = "mqtt.googleapis.com";
+  const mqttBridgeHostname = 'mqtt.googleapis.com';
   const mqttBridgePort = 8883;
-  const mqttTlsCert = "../resources/roots.pem";
+  const mqttTlsCert = '../resources/roots.pem';
 
   // The mqttClientId is a unique string that identifies this device. For Google
   // Cloud IoT Core, it must be in the format below.
@@ -183,7 +185,8 @@ it('Generate gcp access token, exchange gcp access token for service account acc
   client.on('message', (topic, message) => {
     assert.strictEqual(topic.startsWith(`/devices/${deviceId}/commands`), true);
     assert.strictEqual(
-      Buffer.from(message, 'base64').toString('ascii'), commandTobeSentToDevice
+      Buffer.from(message, 'base64').toString('ascii'),
+      commandTobeSentToDevice
     );
   });
   // Send command to device
