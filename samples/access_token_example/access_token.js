@@ -29,9 +29,9 @@ const createJwt = (projectId, algorithm, privateKeyFile) => {
     aud: projectId,
   };
   const privateKey = readFileSync(privateKeyFile);
-  return jwt.sign(jwtPayload, privateKey, { algorithm: algorithm });
+  return jwt.sign(jwtPayload, privateKey, {algorithm: algorithm});
   // [END iot_create_jwt]
-}
+};
 
 // Generate device access token
 const generateAccessToken = async (

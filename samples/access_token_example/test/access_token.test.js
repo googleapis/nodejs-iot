@@ -155,9 +155,9 @@ it('Generate gcp access token, exchange gcp access token for service account acc
     'cloud-iot-test@long-door-651.iam.gserviceaccount.com';
   const commandTobeSentToDevice = 'OPEN_DOOR';
   // Create device MQTT client and connect to cloud iot mqtt bridge.
-  const mqttBridgeHostname = "mqtt.googleapis.com";
+  const mqttBridgeHostname = 'mqtt.googleapis.com';
   const mqttBridgePort = 8883;
-  const mqttTlsCert = "../resources/roots.pem";
+  const mqttTlsCert = '../resources/roots.pem';
 
   // The mqttClientId is a unique string that identifies this device. For Google
   // Cloud IoT Core, it must be in the format below.
@@ -182,7 +182,8 @@ it('Generate gcp access token, exchange gcp access token for service account acc
   client.on('message', (topic, message) => {
     assert.strictEqual(topic.startsWith(`/devices/${deviceId}/commands`), true);
     assert.strictEqual(
-      Buffer.from(message, 'base64').toString('ascii'), commandTobeSentToDevice
+      Buffer.from(message, 'base64').toString('ascii'),
+      commandTobeSentToDevice
     );
   });
   // Send command to device
