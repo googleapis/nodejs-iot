@@ -390,7 +390,6 @@ const sendCommandToIoTDevice = async (
       'cache-control': 'no-cache',
     };
     const commandResponse = await request(commandOptions);
-    console.log('Log Command Response: ', commandResponse.data);
     assert.strictEqual(commandResponse.status, 200);
   } catch (error) {
     console.log('Error received: ', JSON.stringify(error));
