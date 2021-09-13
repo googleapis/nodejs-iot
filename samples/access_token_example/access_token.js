@@ -14,9 +14,9 @@
 
 'use strict';
 const assert = require('assert');
-const {readFileSync} = require('fs');
+const { readFileSync } = require('fs');
 const jwt = require('jsonwebtoken');
-const {request} = require('gaxios');
+const { request } = require('gaxios');
 
 const createJwt = (projectId, privateKeyFile, algorithm) => {
   // [START iot_create_jwt]
@@ -30,7 +30,7 @@ const createJwt = (projectId, privateKeyFile, algorithm) => {
     aud: projectId,
   };
   const privateKey = readFileSync(privateKeyFile);
-  return jwt.sign(jwtPayload, privateKey, {algorithm: algorithm});
+  return jwt.sign(jwtPayload, privateKey, { algorithm: algorithm });
   // [END iot_create_jwt]
 };
 
@@ -65,7 +65,7 @@ const generateAccessToken = async (
     const resourcePath = `projects/${projectId}/locations/${cloudRegion}/registries/${registryId}/devices/${deviceId}`;
     const requestUrl = `https://cloudiottoken.googleapis.com/v1beta1/${resourcePath}:generateAccessToken`;
 
-    const headers = {authorization: `Bearer ${jwtToken}`};
+    const headers = { authorization: `Bearer ${jwtToken}` };
 
     const options = {
       url: requestUrl,
@@ -130,7 +130,7 @@ const publishPubSubMessage = async (
     privateKeyFile
   );
 
-  const headers = {authorization: `Bearer ${access_token}`};
+  const headers = { authorization: `Bearer ${access_token}` };
   try {
     // Create Pub/Sub topic
     const createPubsubRequestUrl = `https://pubsub.googleapis.com/v1/projects/${projectId}/topics/${topicName}`;
@@ -219,7 +219,7 @@ const downloadCloudStorageFile = async (
     privateKeyFile
   );
 
-  const headers = {authorization: `Bearer ${access_token}`};
+  const headers = { authorization: `Bearer ${access_token}` };
   try {
     // Create GCS bucket
     const createGcsPayload = {
@@ -227,7 +227,7 @@ const downloadCloudStorageFile = async (
       location: cloudRegion,
       storageClass: 'STANDARD',
       iamConfiguration: {
-        uniformBucketLevelAccess: {enabled: true},
+        uniformBucketLevelAccess: { enabled: true },
       },
     };
 
@@ -307,7 +307,7 @@ const exchangeDeviceAccessTokenToServiceAccountToken = async (
   //     at: https://developers.google.com/identity/protocols/oauth2/scopes
   // serviceAccountEmail  = 'your-service-account@your-project.iam.gserviceaccount.com'
 
-  const headers = {authorization: `Bearer ${deviceAccessToken}`};
+  const headers = { authorization: `Bearer ${deviceAccessToken}` };
   try {
     const exchangePayload = {
       scope: [scope],
@@ -367,16 +367,15 @@ const sendCommandToIoTDevice = async (
     algorithm,
     privateKeyFile
   );
-
-  // Exchange GCP access token to a service account access token
-  const serviceAccountAccessToken =
-    await exchangeDeviceAccessTokenToServiceAccountToken(
-      access_token,
-      scope,
-      serviceAccountEmail
-    );
-
   try {
+    // Exchange GCP access token to a service account access token
+    const serviceAccountAccessToken =
+      await exchangeDeviceAccessTokenToServiceAccountToken(
+        access_token,
+        scope,
+        serviceAccountEmail
+      );
+
     // Send command to IoT Device
     const commandPayload = {
       binaryData: Buffer.from(commandTobeSentToDevice).toString('base64'),
@@ -385,12 +384,13 @@ const sendCommandToIoTDevice = async (
     const commandOptions = {
       url: commandRequesturl,
       method: 'POST',
-      headers: {authorization: `Bearer ${serviceAccountAccessToken}`},
+      headers: { authorization: `Bearer ${serviceAccountAccessToken}` },
       data: JSON.stringify(commandPayload),
       'content-type': 'application/json',
       'cache-control': 'no-cache',
     };
     const commandResponse = await request(commandOptions);
+    console.log('Log Command Response: ', commandResponse.data);
     assert.strictEqual(commandResponse.status, 200);
   } catch (error) {
     console.log('Error received: ', JSON.stringify(error));
