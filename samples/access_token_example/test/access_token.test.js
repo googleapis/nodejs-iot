@@ -187,11 +187,12 @@ it('Generate gcp access token, exchange gcp access token for service account acc
     console.log("Device Connected Successfully.");
   });
   client.on('message', (topic, message) => {
-    assert.strictEqual(topic.startsWith(`/devices/${deviceId}/commands`), true);
-    assert.strictEqual(
-      Buffer.from(message, 'base64').toString('ascii'),
-      commandTobeSentToDevice
-    );
+    if (topic.startsWith(`/devices/${deviceId}/commands`)) {
+      assert.strictEqual(
+        Buffer.from(message, 'base64').toString('ascii'),
+        commandTobeSentToDevice
+      );
+    }
   });
   // Send command to device
   await sendCommandToIoTDevice(
