@@ -366,11 +366,12 @@ const sendCommandToIoTDevice = async (
   );
   try {
     // Exchange GCP access token to a service account access token
-    const serviceAccountAccessToken = await exchangeDeviceAccessTokenToServiceAccountToken(
-      access_token,
-      scope,
-      serviceAccountEmail
-    );
+    const serviceAccountAccessToken =
+      await exchangeDeviceAccessTokenToServiceAccountToken(
+        access_token,
+        scope,
+        serviceAccountEmail
+      );
 
     // Send command to IoT Device
     const commandPayload = {
