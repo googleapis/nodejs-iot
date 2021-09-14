@@ -120,7 +120,21 @@ after(async () => {
   console.log('Deleted test registry.');
 });
 
-it('Generate gcp access token, use gcp access token to create gcs bucket upload a file to bucket, download file from bucket', async () => {
+it('Generate device access token, use access token to create pubsub topic, push message to pubsub topic', async () => {
+  const scope = 'https://www.googleapis.com/auth/pubsub';
+  await publishPubSubMessage(
+    region,
+    projectId,
+    registryName,
+    deviceId,
+    scope,
+    'RS256',
+    rsaPrivateKey,
+    testTopicName
+  );
+});
+
+it('Generate device access token, use access token to create GCS bucket, upload a file to bucket, download file from bucket', async () => {
   const scope = 'https://www.googleapis.com/auth/devstorage.full_control';
   const dataPath = '../resources/logo.png';
   await downloadCloudStorageFile(
@@ -136,20 +150,7 @@ it('Generate gcp access token, use gcp access token to create gcs bucket upload 
   );
 });
 
-it('Generate gcp access token, use gcp access token to create pubsub topic, push message to pubsub', async () => {
-  const scope = 'https://www.googleapis.com/auth/pubsub';
-  await publishPubSubMessage(
-    region,
-    projectId,
-    registryName,
-    deviceId,
-    scope,
-    'RS256',
-    rsaPrivateKey,
-    testTopicName
-  );
-});
-it('Generate gcp access token, exchange gcp access token for service account access token, use service account access token to send cloud iot command', async () => {
+it('Generate device access token, exchange device access token for service account access token, use service account access token to send cloud iot device command', async () => {
   const scope = 'https://www.googleapis.com/auth/cloud-platform';
   const serviceAccountEmail =
     'cloud-iot-test@long-door-651.iam.gserviceaccount.com';

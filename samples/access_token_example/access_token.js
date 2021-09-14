@@ -19,11 +19,6 @@ const jwt = require('jsonwebtoken');
 const {request} = require('gaxios');
 
 const createJwt = (projectId, privateKeyFile, algorithm) => {
-  // [START iot_create_jwt]
-  // projectId = 'YOUR_PROJECT_ID'
-  // privateKeyFile = 'path/to/certificate.pem'
-  // algorithm = 'RS256'
-
   const jwtPayload = {
     iat: parseInt(Date.now() / 1000),
     exp: parseInt(Date.now() / 1000) + 20 * 60, // 20 minutes
@@ -31,7 +26,6 @@ const createJwt = (projectId, privateKeyFile, algorithm) => {
   };
   const privateKey = readFileSync(privateKeyFile);
   return jwt.sign(jwtPayload, privateKey, {algorithm: algorithm});
-  // [END iot_create_jwt]
 };
 
 // Generate device access token
@@ -85,8 +79,11 @@ const generateAccessToken = async (
       console.error('Received error: ', err);
     }
   }
+
+  // Generate IoT device JWT. See https://cloud.google.com/iot/docs/how-tos/credentials/jwts
   const jwtToken = createJwt(projectId, privateKeyFile, algorithm);
-  const gcpToken = await generateDeviceAccessToken(
+
+  const accessToken = await generateDeviceAccessToken(
     cloudRegion,
     projectId,
     registryId,
@@ -94,7 +91,7 @@ const generateAccessToken = async (
     jwtToken,
     scope
   );
-  return gcpToken;
+  return accessToken;
   // [END iot_generate_access_token]
 };
 
@@ -106,7 +103,7 @@ const publishPubSubMessage = async (
   scope,
   algorithm,
   privateKeyFile,
-  topicName
+  topicId
 ) => {
   // [START iot_access_token_pubsub]
   // cloudRegion = 'us-central1'
@@ -117,7 +114,7 @@ const publishPubSubMessage = async (
   //     at: https://developers.google.com/identity/protocols/oauth2/scopes
   // algorithm = 'RS256'
   // privateKeyFile = 'path/to/private_key.pem'
-  // topicName = 'pubsub-topic-name'
+  // topicId = 'pubsub-topic-id'
 
   // Generate device access token
   const access_token = await generateAccessToken(
@@ -133,7 +130,7 @@ const publishPubSubMessage = async (
   const headers = {authorization: `Bearer ${access_token}`};
   try {
     // Create Pub/Sub topic
-    const createPubsubRequestUrl = `https://pubsub.googleapis.com/v1/projects/${projectId}/topics/${topicName}`;
+    const createPubsubRequestUrl = `https://pubsub.googleapis.com/v1/projects/${projectId}/topics/${topicId}`;
     const createPubsubOptions = {
       url: createPubsubRequestUrl,
       method: 'PUT',
@@ -156,7 +153,7 @@ const publishPubSubMessage = async (
         },
       ],
     };
-    const publishPubsubRequestUrl = `https://pubsub.googleapis.com/v1/projects/${projectId}/topics/${topicName}:publish`;
+    const publishPubsubRequestUrl = `https://pubsub.googleapis.com/v1/projects/${projectId}/topics/${topicId}:publish`;
     const publishPubsubOptions = {
       url: publishPubsubRequestUrl,
       method: 'POST',
@@ -169,7 +166,7 @@ const publishPubSubMessage = async (
     assert.strictEqual(publishResponse.status, 200);
 
     // Delete Pub/Sub topic
-    const deletePubsubRequestPath = `https://pubsub.googleapis.com/v1/projects/${projectId}/topics/${topicName}`;
+    const deletePubsubRequestPath = `https://pubsub.googleapis.com/v1/projects/${projectId}/topics/${topicId}`;
     const deletePubsubOptions = {
       url: deletePubsubRequestPath,
       method: 'DELETE',
@@ -355,7 +352,7 @@ const sendCommandToIoTDevice = async (
   // algorithm = 'RS256'
   // privateKeyFile = 'path/to/private_key.pem'
   // serviceAccountEmail  = 'your-service-account@your-project.iam.gserviceaccount.com'
-  // commandTobeSentToDevice = 'command-label'
+  // commandTobeSentToDevice = 'command-to-device'
 
   // Generate device access token
   const access_token = await generateAccessToken(
@@ -369,12 +366,11 @@ const sendCommandToIoTDevice = async (
   );
   try {
     // Exchange GCP access token to a service account access token
-    const serviceAccountAccessToken =
-      await exchangeDeviceAccessTokenToServiceAccountToken(
-        access_token,
-        scope,
-        serviceAccountEmail
-      );
+    const serviceAccountAccessToken = await exchangeDeviceAccessTokenToServiceAccountToken(
+      access_token,
+      scope,
+      serviceAccountEmail
+    );
 
     // Send command to IoT Device
     const commandPayload = {
