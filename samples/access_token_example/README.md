@@ -24,7 +24,7 @@ Run the following command to install the library dependencies for NodeJS:
       publishPubSubMessage                                Publishes a message to Cloud Pub/Sub topic.
       downloadCloudStorageFile                            Downloads a file from Cloud Storage bucket.
       sendCommandToIoTDevice                              Sends a command to an IoT device.
-    
+
     Examples:
       node access_token.js generateAccessToken us-central1 my-project my-registry my-device https://www.googleapis.com/auth/cloud-platform RS256 ../resources/rsa_private.pem
       node access_token.js publishPubSubMessage us-central1 my-project my-registry my-device https://www.googleapis.com/auth/cloud-platform RS256 ../resources/rsa_private.pem my-pubsub-topic
