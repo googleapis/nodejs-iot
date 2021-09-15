@@ -301,7 +301,7 @@ const exchangeDeviceAccessTokenToServiceAccountToken = async (
   // scope = 'scope1 scope2' // See the full list of scopes \
   //     at: https://developers.google.com/identity/protocols/oauth2/scopes
   // serviceAccountEmail  = 'your-service-account@your-project.iam.gserviceaccount.com'
-  const scope = 'https://www.googleapis.com/auth/cloud-platform'
+  const scope = 'https://www.googleapis.com/auth/cloud-platform';
   const headers = {authorization: `Bearer ${deviceAccessToken}`};
   try {
     const exchangePayload = {
@@ -415,7 +415,7 @@ require(`yargs`) // eslint-disable-line
         'The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT environment variables.',
       requiresArg: true,
       type: 'string',
-    }
+    },
   })
   .command(
     'generateAccessToken <registryId> <deviceId> <scope> <algorithm> <privateKeyPath>',
