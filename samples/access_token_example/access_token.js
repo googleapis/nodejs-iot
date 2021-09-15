@@ -14,9 +14,9 @@
 
 'use strict';
 const assert = require('assert');
-const { readFileSync } = require('fs');
+const {readFileSync} = require('fs');
 const jwt = require('jsonwebtoken');
-const { request } = require('gaxios');
+const {request} = require('gaxios');
 
 const createJwt = (projectId, privateKeyFile, algorithm) => {
   const jwtPayload = {
@@ -25,7 +25,7 @@ const createJwt = (projectId, privateKeyFile, algorithm) => {
     aud: projectId,
   };
   const privateKey = readFileSync(privateKeyFile);
-  return jwt.sign(jwtPayload, privateKey, { algorithm: algorithm });
+  return jwt.sign(jwtPayload, privateKey, {algorithm: algorithm});
 };
 
 // Generate device access token
@@ -59,7 +59,7 @@ const generateAccessToken = async (
     const resourcePath = `projects/${projectId}/locations/${cloudRegion}/registries/${registryId}/devices/${deviceId}`;
     const requestUrl = `https://cloudiottoken.googleapis.com/v1beta1/${resourcePath}:generateAccessToken`;
 
-    const headers = { authorization: `Bearer ${jwtToken}` };
+    const headers = {authorization: `Bearer ${jwtToken}`};
 
     const options = {
       url: requestUrl,
@@ -125,7 +125,7 @@ const publishPubSubMessage = async (
     privateKeyFile
   );
 
-  const headers = { authorization: `Bearer ${access_token}` };
+  const headers = {authorization: `Bearer ${access_token}`};
   try {
     // Create Pub/Sub topic
     const createPubsubRequestUrl = `https://pubsub.googleapis.com/v1/projects/${projectId}/topics/${topicId}`;
@@ -211,7 +211,7 @@ const downloadCloudStorageFile = async (
     privateKeyFile
   );
 
-  const headers = { authorization: `Bearer ${access_token}` };
+  const headers = {authorization: `Bearer ${access_token}`};
   try {
     // Create GCS bucket
     const createGcsPayload = {
@@ -219,7 +219,7 @@ const downloadCloudStorageFile = async (
       location: cloudRegion,
       storageClass: 'STANDARD',
       iamConfiguration: {
-        uniformBucketLevelAccess: { enabled: true },
+        uniformBucketLevelAccess: {enabled: true},
       },
     };
 
@@ -296,7 +296,7 @@ const exchangeDeviceAccessTokenToServiceAccountToken = async (
   // deviceAccessToken = 'device-access-token'
   // serviceAccountEmail  = 'your-service-account@your-project.iam.gserviceaccount.com'
   const scope = 'https://www.googleapis.com/auth/cloud-platform';
-  const headers = { authorization: `Bearer ${deviceAccessToken}` };
+  const headers = {authorization: `Bearer ${deviceAccessToken}`};
   try {
     const exchangePayload = {
       scope: [scope],
@@ -370,7 +370,7 @@ const sendCommandToIoTDevice = async (
     const commandOptions = {
       url: commandRequesturl,
       method: 'POST',
-      headers: { authorization: `Bearer ${serviceAccountAccessToken}` },
+      headers: {authorization: `Bearer ${serviceAccountAccessToken}`},
       data: JSON.stringify(commandPayload),
       'content-type': 'application/json',
       'cache-control': 'no-cache',
@@ -407,7 +407,7 @@ require(`yargs`) // eslint-disable-line
         'The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT environment variables.',
       requiresArg: true,
       type: 'string',
-    }
+    },
   })
   .command(
     'generateAccessToken <registryId> <deviceId> <scope> <algorithm> <privateKeyPath>',
@@ -489,10 +489,18 @@ require(`yargs`) // eslint-disable-line
   .example(
     'node $0 generateAccessToken my-registry my-device https://www.googleapis.com/auth/devstorage.full_control  RS256 ./rsa_cert.pem'
   )
-  .example('node $0 publishPubSubMessage us-central1 my-project my-registry my-device RS256 ../resources/rsa_private.pem my-pubsub-topic')
-  .example('node $0 downloadCloudStorageFile us-central1 my-project my-registry my-device RS256 ../resources/rsa_private.pem my-storage-bucket ../resources/logo.png')
-  .example('node $0 sendCommandToIoTDevice us-central1 my-project my-registry my-device RS256 ../resources/rsa_private.pem my-service-account@my-project.iam.gserviceaccount.com')
-  .example('node $0 exchangeDeviceAccessTokenToServiceAccountToken device-access-token my-service-account@my-project.iam.gserviceaccount.com')
+  .example(
+    'node $0 publishPubSubMessage us-central1 my-project my-registry my-device RS256 ../resources/rsa_private.pem my-pubsub-topic'
+  )
+  .example(
+    'node $0 downloadCloudStorageFile us-central1 my-project my-registry my-device RS256 ../resources/rsa_private.pem my-storage-bucket ../resources/logo.png'
+  )
+  .example(
+    'node $0 sendCommandToIoTDevice us-central1 my-project my-registry my-device RS256 ../resources/rsa_private.pem my-service-account@my-project.iam.gserviceaccount.com'
+  )
+  .example(
+    'node $0 exchangeDeviceAccessTokenToServiceAccountToken device-access-token my-service-account@my-project.iam.gserviceaccount.com'
+  )
   .wrap(120)
   .recommendCommands()
   .epilogue('For more information, see https://cloud.google.com/iot-core/docs')
