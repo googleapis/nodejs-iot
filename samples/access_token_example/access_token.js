@@ -109,8 +109,6 @@ const publishPubSubMessage = async (
   // projectId = 'YOUR_PROJECT_ID'
   // registryId = 'your-registry-id'
   // deviceId = 'your-device-id'
-  // scope = 'scope1 scope2' // See the full list of scopes \
-  //     at: https://developers.google.com/identity/protocols/oauth2/scopes
   // algorithm = 'RS256'
   // privateKeyFile = 'path/to/private_key.pem'
   // topicId = 'pubsub-topic-id'
@@ -197,8 +195,6 @@ const downloadCloudStorageFile = async (
   // projectId = 'YOUR_PROJECT_ID'
   // registryId = 'your-registry-id'
   // deviceId = 'your-device-id'
-  // scope = 'scope1 scope2' // See the full list of scopes \
-  //     at: https://developers.google.com/identity/protocols/oauth2/scopes
   // algorithm = 'RS256'
   // privateKeyFile = 'path/to/private_key.pem'
   // bucketName = 'name-of-gcs-bucket'
@@ -298,8 +294,6 @@ const exchangeDeviceAccessTokenToServiceAccountToken = async (
 ) => {
   // [START iot_access_token_service_account_token]
   // deviceAccessToken = 'device-access-token'
-  // scope = 'scope1 scope2' // See the full list of scopes \
-  //     at: https://developers.google.com/identity/protocols/oauth2/scopes
   // serviceAccountEmail  = 'your-service-account@your-project.iam.gserviceaccount.com'
   const scope = 'https://www.googleapis.com/auth/cloud-platform'
   const headers = {authorization: `Bearer ${deviceAccessToken}`};
@@ -344,8 +338,6 @@ const sendCommandToIoTDevice = async (
   // projectId = 'YOUR_PROJECT_ID'
   // registryId = 'your-registry-id'
   // deviceId = 'your-device-id'
-  // scope = 'scope1 scope2' // See the full list of scopes \
-  //     at: https://developers.google.com/identity/protocols/oauth2/scopes
   // algorithm = 'RS256'
   // privateKeyFile = 'path/to/private_key.pem'
   // serviceAccountEmail  = 'your-service-account@your-project.iam.gserviceaccount.com'
