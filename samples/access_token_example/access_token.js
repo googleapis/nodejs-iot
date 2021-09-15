@@ -103,7 +103,6 @@ const publishPubSubMessage = async (
   projectId,
   registryId,
   deviceId,
-  scope,
   algorithm,
   privateKeyFile,
   topicName
@@ -119,6 +118,7 @@ const publishPubSubMessage = async (
   // privateKeyFile = 'path/to/private_key.pem'
   // topicName = 'pubsub-topic-name'
 
+  const scope = 'https://www.googleapis.com/auth/pubsub';
   // Generate device access token
   const access_token = await generateAccessToken(
     cloudRegion,
@@ -190,7 +190,6 @@ const downloadCloudStorageFile = async (
   projectId,
   registryId,
   deviceId,
-  scope,
   algorithm,
   privateKeyFile,
   bucketName,
@@ -207,7 +206,7 @@ const downloadCloudStorageFile = async (
   // privateKeyFile = 'path/to/private_key.pem'
   // bucketName = 'name-of-gcs-bucket'
   // dataPath = 'path/to/file/to/be/uploaded.png'
-
+  const scope = 'https://www.googleapis.com/auth/devstorage.full_control';
   // Generate device access token
   const access_token = await generateAccessToken(
     cloudRegion,
@@ -298,7 +297,6 @@ const downloadCloudStorageFile = async (
 
 const exchangeDeviceAccessTokenToServiceAccountToken = async (
   deviceAccessToken,
-  scope,
   serviceAccountEmail
 ) => {
   // [START iot_access_token_service_account_token]
@@ -306,7 +304,7 @@ const exchangeDeviceAccessTokenToServiceAccountToken = async (
   // scope = 'scope1 scope2' // See the full list of scopes \
   //     at: https://developers.google.com/identity/protocols/oauth2/scopes
   // serviceAccountEmail  = 'your-service-account@your-project.iam.gserviceaccount.com'
-
+  const scope = 'https://www.googleapis.com/auth/cloud-platform'
   const headers = {authorization: `Bearer ${deviceAccessToken}`};
   try {
     const exchangePayload = {
@@ -339,7 +337,6 @@ const sendCommandToIoTDevice = async (
   projectId,
   registryId,
   deviceId,
-  scope,
   algorithm,
   privateKeyFile,
   serviceAccountEmail,
@@ -357,6 +354,7 @@ const sendCommandToIoTDevice = async (
   // serviceAccountEmail  = 'your-service-account@your-project.iam.gserviceaccount.com'
   // commandTobeSentToDevice = 'command-label'
 
+  const scope = 'https://www.googleapis.com/auth/cloud-platform';
   // Generate device access token
   const access_token = await generateAccessToken(
     cloudRegion,
@@ -372,7 +370,6 @@ const sendCommandToIoTDevice = async (
     const serviceAccountAccessToken =
       await exchangeDeviceAccessTokenToServiceAccountToken(
         access_token,
-        scope,
         serviceAccountEmail
       );
 
@@ -405,3 +402,106 @@ module.exports = {
   publishPubSubMessage,
   sendCommandToIoTDevice,
 };
+require(`yargs`) // eslint-disable-line
+  .demand(1)
+  .options({
+    cloudRegion: {
+      alias: 'c',
+      default: 'us-central1',
+      requiresArg: true,
+      type: 'string',
+    },
+    projectId: {
+      alias: 'p',
+      default: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,
+      description:
+        'The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT environment variables.',
+      requiresArg: true,
+      type: 'string',
+    }
+  })
+  .command(
+    'generateAccessToken <registryId> <deviceId> <scope> <algorithm> <privateKeyPath>',
+    'Generate GCP Access Token.',
+    {},
+    async opts => {
+      await generateAccessToken(
+        opts.cloudRegion,
+        opts.projectId,
+        opts.registryId,
+        opts.deviceId,
+        opts.scope,
+        opts.algorithm,
+        opts.privateKeyPath
+      );
+    }
+  )
+  .command(
+    'publishPubSubMessage <registryId> <deviceId> <algorithm> <privateKeyPath> <topicName>',
+    'Publish message to pubsub.',
+    {},
+    async opts => {
+      await publishPubSubMessage(
+        opts.cloudRegion,
+        opts.projectId,
+        opts.registryId,
+        opts.deviceId,
+        opts.algorithm,
+        opts.privateKeyPath,
+        opts.topicName
+      );
+    }
+  )
+  .command(
+    'downloadCloudStorageFile <registryId> <deviceId> <algorithm> <privateKeyPath> <bucketName> <dataPath>',
+    'Download file from Cloud Storage.',
+    {},
+    async opts => {
+      await downloadCloudStorageFile(
+        opts.cloudRegion,
+        opts.projectId,
+        opts.registryId,
+        opts.deviceId,
+        opts.algorithm,
+        opts.privateKeyPath,
+        opts.bucketName,
+        opts.dataPath
+      );
+    }
+  )
+  .command(
+    'sendCommandToIoTDevice <registryId> <deviceId> <algorithm> <privateKeyPath> <serviceAccountEmail> <commandToBeSent>',
+    'Send command to IoT Device.',
+    {},
+    async opts => {
+      await sendCommandToIoTDevice(
+        opts.cloudRegion,
+        opts.projectId,
+        opts.registryId,
+        opts.deviceId,
+        opts.algorithm,
+        opts.privateKeyPath,
+        opts.serviceAccountEmail,
+        opts.commandToBeSent
+      );
+    }
+  )
+  .command(
+    'exchangeDeviceAccessTokenToServiceAccountToken <deviceAccessToken> <serviceAccountEmail>',
+    'Exchange Device Access Token for Service Account Token.',
+    {},
+    async opts => {
+      await exchangeDeviceAccessTokenToServiceAccountToken(
+        opts.deviceAccessToken,
+        opts.serviceAccountEmail
+      );
+    }
+  )
+  .example(
+    'node $0 generateAccessToken my-registry my-device https://www.googleapis.com/auth/devstorage.full_control  RS256 ./rsa_cert.pem'
+  )
+  .wrap(120)
+  .recommendCommands()
+  .epilogue('For more information, see https://cloud.google.com/iot-core/docs')
+  .help()
+  .strict().argv;
