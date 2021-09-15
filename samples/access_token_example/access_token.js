@@ -295,7 +295,7 @@ const exchangeDeviceAccessTokenToServiceAccountToken = async (
   // [START iot_access_token_service_account_token]
   // deviceAccessToken = 'device-access-token'
   // serviceAccountEmail  = 'your-service-account@your-project.iam.gserviceaccount.com'
-  const scope = 'https://www.googleapis.com/auth/cloud-platform'
+  const scope = 'https://www.googleapis.com/auth/cloud-platform';
   const headers = {authorization: `Bearer ${deviceAccessToken}`};
   try {
     const exchangePayload = {
@@ -407,7 +407,7 @@ require(`yargs`) // eslint-disable-line
         'The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT environment variables.',
       requiresArg: true,
       type: 'string',
-    }
+    },
   })
   .command(
     'generateAccessToken <registryId> <deviceId> <scope> <algorithm> <privateKeyPath>',
