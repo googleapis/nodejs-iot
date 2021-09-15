@@ -21,7 +21,7 @@ require(`yargs`) // eslint-disable-line
         'The Project ID to use. Defaults to the value of the GCLOUD_PROJECT or GOOGLE_CLOUD_PROJECT environment variables.',
       requiresArg: true,
       type: 'string',
-    }
+    },
   })
   .command(
     'generateAccessToken <registryId> <deviceId> <scope> <algorithm> <privateKeyPath>',
@@ -103,10 +103,18 @@ require(`yargs`) // eslint-disable-line
   .example(
     'node $0 generateAccessToken my-registry my-device https://www.googleapis.com/auth/devstorage.full_control  RS256 ./rsa_cert.pem'
   )
-  .example('node $0 publishPubSubMessage us-central1 my-project my-registry my-device RS256 ../resources/rsa_private.pem my-pubsub-topic')
-  .example('node $0 downloadCloudStorageFile us-central1 my-project my-registry my-device RS256 ../resources/rsa_private.pem my-storage-bucket ../resources/logo.png')
-  .example('node $0 sendCommandToIoTDevice us-central1 my-project my-registry my-device RS256 ../resources/rsa_private.pem my-service-account@my-project.iam.gserviceaccount.com')
-  .example('node $0 exchangeDeviceAccessTokenToServiceAccountToken device-access-token my-service-account@my-project.iam.gserviceaccount.com')
+  .example(
+    'node $0 publishPubSubMessage us-central1 my-project my-registry my-device RS256 ../resources/rsa_private.pem my-pubsub-topic'
+  )
+  .example(
+    'node $0 downloadCloudStorageFile us-central1 my-project my-registry my-device RS256 ../resources/rsa_private.pem my-storage-bucket ../resources/logo.png'
+  )
+  .example(
+    'node $0 sendCommandToIoTDevice us-central1 my-project my-registry my-device RS256 ../resources/rsa_private.pem my-service-account@my-project.iam.gserviceaccount.com'
+  )
+  .example(
+    'node $0 exchangeDeviceAccessTokenToServiceAccountToken device-access-token my-service-account@my-project.iam.gserviceaccount.com'
+  )
   .wrap(120)
   .recommendCommands()
   .epilogue('For more information, see https://cloud.google.com/iot-core/docs')
