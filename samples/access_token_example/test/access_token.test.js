@@ -135,7 +135,6 @@ it('Generate device access token, use access token to create pubsub topic, push 
 });
 
 it('Generate device access token, use access token to create GCS bucket, upload a file to bucket, download file from bucket', async () => {
-  const scope = 'https://www.googleapis.com/auth/devstorage.full_control';
   const dataPath = '../resources/logo.png';
   await downloadCloudStorageFile(
     region,
