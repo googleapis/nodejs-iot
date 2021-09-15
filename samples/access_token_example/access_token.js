@@ -391,4 +391,3 @@ module.exports = {
   publishPubSubMessage,
   sendCommandToIoTDevice,
 };
-
