@@ -22,11 +22,11 @@ const {
   sendCommandToIoTDevice,
 } = require('../access_token');
 const mqtt = require('mqtt');
-const {readFileSync} = require('fs');
+const { readFileSync } = require('fs');
 const iot = require('@google-cloud/iot');
-const {PubSub} = require('@google-cloud/pubsub');
+const { PubSub } = require('@google-cloud/pubsub');
 const uuid = require('uuid');
-const {after, before, it} = require('mocha');
+const { after, before, it } = require('mocha');
 
 const deviceId = 'test-node-device';
 const topicName = `nodejs-docs-samples-test-iot-${uuid.v4()}`;
@@ -39,7 +39,7 @@ const projectId =
 const rsaPublicCert = '../resources/rsa_cert.pem'; // process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
 const rsaPrivateKey = '../resources/rsa_private.pem'; //process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
 const iotClient = new iot.v1.DeviceManagerClient();
-const pubSubClient = new PubSub({projectId});
+const pubSubClient = new PubSub({ projectId });
 
 before(async () => {
   assert(
@@ -109,7 +109,7 @@ after(async () => {
     deviceId
   );
 
-  await iotClient.deleteDevice({name: devPath});
+  await iotClient.deleteDevice({ name: devPath });
 
   console.log(`Device ${deviceId} deleted.`);
 
@@ -120,7 +120,22 @@ after(async () => {
   console.log('Deleted test registry.');
 });
 
-it('Generate gcp access token, use gcp access token to create gcs bucket upload a file to bucket, download file from bucket', async () => {
+it('Generate device access token, use access token to create pubsub topic, push message to pubsub topic', async () => {
+  const scope = 'https://www.googleapis.com/auth/pubsub';
+  await publishPubSubMessage(
+    region,
+    projectId,
+    registryName,
+    deviceId,
+    scope,
+    'RS256',
+    rsaPrivateKey,
+    testTopicName
+  );
+});
+
+it('Generate device access token, use access token to create GCS bucket, upload a file to bucket, download file from bucket', async () => {
+  const scope = 'https://www.googleapis.com/auth/devstorage.full_control';
   const dataPath = '../resources/logo.png';
   await downloadCloudStorageFile(
     region,
@@ -134,18 +149,7 @@ it('Generate gcp access token, use gcp access token to create gcs bucket upload 
   );
 });
 
-it('Generate gcp access token, use gcp access token to create pubsub topic, push message to pubsub', async () => {
-  await publishPubSubMessage(
-    region,
-    projectId,
-    registryName,
-    deviceId,
-    'RS256',
-    rsaPrivateKey,
-    testTopicName
-  );
-});
-it('Generate gcp access token, exchange gcp access token for service account access token, use service account access token to send cloud iot command', async () => {
+it('Generate device access token, exchange device access token for service account access token, use service account access token to send cloud iot device command', async () => {
   const scope = 'https://www.googleapis.com/auth/cloud-platform';
   const serviceAccountEmail =
     'cloud-iot-test@long-door-651.iam.gserviceaccount.com';
@@ -175,10 +179,10 @@ it('Generate gcp access token, exchange gcp access token for service account acc
   };
   const client = mqtt.connect(connectionArgs);
   // Subscribe to the /devices/{device-id}/config topic to receive config updates.
-  client.subscribe(`/devices/${deviceId}/config`, {qos: 1});
+  client.subscribe(`/devices/${deviceId}/config`, { qos: 1 });
   // Subscribe to the /devices/{device-id}/commands/# topic to receive all
   // commands.
-  client.subscribe(`/devices/${deviceId}/commands/#`, {qos: 0});
+  client.subscribe(`/devices/${deviceId}/commands/#`, { qos: 0 });
   client.on('connect', () => {
     console.log('Device Connected Successfully.');
   });
