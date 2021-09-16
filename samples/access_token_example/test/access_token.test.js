@@ -16,17 +16,17 @@
 
 const assert = require('assert');
 const {
-  publishPubSubMessage,
   createJwt,
-  downloadCloudStorageFile,
-  sendCommandToIoTDevice,
-} = require('../access_token');
+} = require('../common');
 const mqtt = require('mqtt');
-const {readFileSync} = require('fs');
+const { readFileSync } = require('fs');
 const iot = require('@google-cloud/iot');
-const {PubSub} = require('@google-cloud/pubsub');
+const { PubSub } = require('@google-cloud/pubsub');
 const uuid = require('uuid');
-const {after, before, it} = require('mocha');
+const cp = require('child_process');
+const cwd = path.join(__dirname, '..');
+const execSync = cmd => cp.execSync(cmd, { encoding: 'utf-8' });
+const { after, before, it } = require('mocha');
 
 const deviceId = 'test-node-device';
 const topicName = `nodejs-docs-samples-test-iot-${uuid.v4()}`;
@@ -39,7 +39,10 @@ const projectId =
 const rsaPublicCert = '../resources/rsa_cert.pem'; // process.env.NODEJS_IOT_RSA_PUBLIC_CERT;
 const rsaPrivateKey = '../resources/rsa_private.pem'; //process.env.NODEJS_IOT_RSA_PRIVATE_KEY;
 const iotClient = new iot.v1.DeviceManagerClient();
-const pubSubClient = new PubSub({projectId});
+const pubSubClient = new PubSub({ projectId });
+
+const cmd = 'node access_token.js';
+
 
 before(async () => {
   assert(
@@ -109,7 +112,7 @@ after(async () => {
     deviceId
   );
 
-  await iotClient.deleteDevice({name: devPath});
+  await iotClient.deleteDevice({ name: devPath });
 
   console.log(`Device ${deviceId} deleted.`);
 
@@ -121,35 +124,21 @@ after(async () => {
 });
 
 it('Generate device access token, use access token to create pubsub topic, push message to pubsub topic', async () => {
-  const scope = 'https://www.googleapis.com/auth/pubsub';
-  await publishPubSubMessage(
-    region,
-    projectId,
-    registryName,
-    deviceId,
-    scope,
-    'RS256',
-    rsaPrivateKey,
-    testTopicName
+  await execSync(
+    `${cmd} publishPubSubMessage  ${registryName} ${deviceId} RS256 ${rsaPrivateKey} ${testTopicName}`,
+    cwd
   );
 });
 
 it('Generate device access token, use access token to create GCS bucket, upload a file to bucket, download file from bucket', async () => {
   const dataPath = '../resources/logo.png';
-  await downloadCloudStorageFile(
-    region,
-    projectId,
-    registryName,
-    deviceId,
-    'RS256',
-    rsaPrivateKey,
-    bucketName,
-    dataPath
+  await execSync(
+    `${cmd} downloadCloudStorageFile  ${registryName} ${deviceId} RS256 ${rsaPrivateKey} ${bucketName} ${dataPath}`,
+    cwd
   );
 });
 
 it('Generate device access token, exchange device access token for service account access token, use service account access token to send cloud iot device command', async () => {
-  const scope = 'https://www.googleapis.com/auth/cloud-platform';
   const serviceAccountEmail =
     'cloud-iot-test@long-door-651.iam.gserviceaccount.com';
   const commandTobeSentToDevice = 'OPEN_DOOR';
@@ -178,10 +167,10 @@ it('Generate device access token, exchange device access token for service accou
   };
   const client = mqtt.connect(connectionArgs);
   // Subscribe to the /devices/{device-id}/config topic to receive config updates.
-  client.subscribe(`/devices/${deviceId}/config`, {qos: 1});
+  client.subscribe(`/devices/${deviceId}/config`, { qos: 1 });
   // Subscribe to the /devices/{device-id}/commands/# topic to receive all
   // commands.
-  client.subscribe(`/devices/${deviceId}/commands/#`, {qos: 0});
+  client.subscribe(`/devices/${deviceId}/commands/#`, { qos: 0 });
   client.on('connect', () => {
     console.log('Device Connected Successfully.');
   });
@@ -193,17 +182,11 @@ it('Generate device access token, exchange device access token for service accou
       );
     }
   });
+
   // Send command to device
-  await sendCommandToIoTDevice(
-    region,
-    projectId,
-    registryName,
-    deviceId,
-    scope,
-    'RS256',
-    rsaPrivateKey,
-    serviceAccountEmail,
-    commandTobeSentToDevice
+  await execSync(
+    `${cmd} sendCommandToIoTDevice  ${registryName} ${deviceId} RS256 ${rsaPrivateKey} ${serviceAccountEmail} ${commandTobeSentToDevice}`,
+    cwd
   );
   // Disconnect mqtt client.
   client.end();
