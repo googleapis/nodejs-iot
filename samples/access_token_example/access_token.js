@@ -237,7 +237,7 @@ const downloadCloudStorageFile = async (
     console.log('Successfully created Storage bucket: ' + bucketName + '.');
 
     // Upload Data to GCS bucket
-    const dataName = 'testFile.png';
+    const dataName = 'testFile.ext';
     const binaryData = readFileSync(dataPath);
     const uploadGcsRequestUrl = `https://storage.googleapis.com/upload/storage/v1/b/${bucketName}/o?uploadType=media&name=${dataName}`;
     const uploadGcsOptions = {
@@ -245,7 +245,6 @@ const downloadCloudStorageFile = async (
       method: 'POST',
       headers: headers,
       data: binaryData,
-      'content-type': 'image/png',
       'cache-control': 'no-cache',
     };
     const uploadResponse = await request(uploadGcsOptions);
