@@ -15,9 +15,7 @@
 'use strict';
 
 const assert = require('assert');
-const {
-  createJwt,
-} = require('../common');
+const { createJwt } = require('../common');
 const mqtt = require('mqtt');
 const { readFileSync } = require('fs');
 const iot = require('@google-cloud/iot');
@@ -43,7 +41,6 @@ const iotClient = new iot.v1.DeviceManagerClient();
 const pubSubClient = new PubSub({ projectId });
 
 const cmd = 'node access_token.js';
-
 
 before(async () => {
   assert(
