@@ -16,7 +16,6 @@ const {readFileSync} = require('fs');
 const jwt = require('jsonwebtoken');
 
 const createJwt = (projectId, privateKeyFile, algorithm) => {
-  // [START iot_create_jwt]
   // projectId = 'YOUR_PROJECT_ID'
   // privateKeyFile = 'path/to/private_key.pem'
   // algorithm = 'RS256'
@@ -27,7 +26,6 @@ const createJwt = (projectId, privateKeyFile, algorithm) => {
   };
   const privateKey = readFileSync(privateKeyFile);
   return jwt.sign(jwtPayload, privateKey, {algorithm: algorithm});
-  // [END iot_create_jwt]
 };
 
 module.exports = {createJwt};

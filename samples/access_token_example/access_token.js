@@ -48,7 +48,6 @@ const generateAccessToken = async (
   ) {
     const resourcePath = `projects/${projectId}/locations/${cloudRegion}/registries/${registryId}/devices/${deviceId}`;
     const requestUrl = `https://cloudiottoken.googleapis.com/v1beta1/${resourcePath}:generateAccessToken`;
-
     const headers = {authorization: `Bearer ${jwtToken}`};
 
     const options = {
@@ -73,6 +72,7 @@ const generateAccessToken = async (
   // Generate IoT device JWT. See https://cloud.google.com/iot/docs/how-tos/credentials/jwts
   const jwtToken = createJwt(projectId, privateKeyFile, algorithm);
 
+  // Generate OAuth 2.0 access token. See https://developers.google.com/identity/protocols/oauth2
   const accessToken = await generateDeviceAccessToken(
     cloudRegion,
     projectId,
@@ -81,6 +81,7 @@ const generateAccessToken = async (
     jwtToken,
     scope
   );
+  console.log('Device access token: ' + accessToken);
   return accessToken;
   // [END iot_generate_access_token]
 };
@@ -129,6 +130,7 @@ const publishPubSubMessage = async (
     };
     const createResponse = await request(createPubsubOptions);
     assert.strictEqual(createResponse.status, 200);
+    console.log('Successfully created Pub/Sub topic: ' + topicId + '.');
 
     // Publish message to Pub/Sub topic
     const publishPayload = {
@@ -152,6 +154,13 @@ const publishPubSubMessage = async (
     };
     const publishResponse = await request(publishPubsubOptions);
     assert.strictEqual(publishResponse.status, 200);
+    console.log(
+      'Pub/Sub message has been successfully published to ' +
+        topicId +
+        ': ' +
+        JSON.stringify(publishResponse.data) +
+        '.'
+    );
 
     // Delete Pub/Sub topic
     const deletePubsubRequestPath = `https://pubsub.googleapis.com/v1/projects/${projectId}/topics/${topicId}`;
@@ -164,6 +173,7 @@ const publishPubSubMessage = async (
     };
     const deleteResponse = await request(deletePubsubOptions);
     assert.strictEqual(deleteResponse.status, 200);
+    console.log('Successfully deleted Pub/Sub topic: ' + topicId + '.');
   } catch (error) {
     console.log('Error received: ', JSON.stringify(error));
   }
@@ -224,9 +234,10 @@ const downloadCloudStorageFile = async (
     };
     const createResponse = await request(createGcsOptions);
     assert.strictEqual(createResponse.status, 200);
+    console.log('Successfully created Storage bucket: ' + bucketName + '.');
 
     // Upload Data to GCS bucket
-    const dataName = 'testFILE';
+    const dataName = 'testFile.png';
     const binaryData = readFileSync(dataPath);
     const uploadGcsRequestUrl = `https://storage.googleapis.com/upload/storage/v1/b/${bucketName}/o?uploadType=media&name=${dataName}`;
     const uploadGcsOptions = {
@@ -239,6 +250,15 @@ const downloadCloudStorageFile = async (
     };
     const uploadResponse = await request(uploadGcsOptions);
     assert.strictEqual(uploadResponse.status, 200);
+    console.log(
+      'Successfully uploaded ' +
+        dataPath +
+        ' as ' +
+        dataName +
+        ' to bucket ' +
+        bucketName +
+        '.'
+    );
 
     // Download Data from GCS bucket
     const downloadGcsRequestUrl = `https://storage.googleapis.com/storage/v1/b/${bucketName}/o/${dataName}?alt=media`;
@@ -250,6 +270,9 @@ const downloadCloudStorageFile = async (
     };
     const downloadResponse = await request(downloadGcsOptions);
     assert.strictEqual(downloadResponse.status, 200);
+    console.log(
+      'Successfully downloaded ' + dataName + ' from bucket ' + bucketName + '.'
+    );
 
     // Delete Data from GCS Bucket.
     const deleteDataGcsRequestUrl = `https://storage.googleapis.com/storage/v1/b/${bucketName}/o/${dataName}`;
@@ -261,6 +284,9 @@ const downloadCloudStorageFile = async (
     };
     const deleteDataResponse = await request(deleteDataGcsOptions);
     assert.strictEqual(deleteDataResponse.status, 204);
+    console.log(
+      'Successfully deleted ' + dataName + ' from bucket ' + bucketName + '.'
+    );
 
     // Delete GCS bucket
     const deleteGcsRequestUrl = `https://storage.googleapis.com/storage/v1/b/${createResponse.data.name}`;
@@ -272,6 +298,7 @@ const downloadCloudStorageFile = async (
     };
     const deleteResp = await request(deleteGcsOptions);
     assert.strictEqual(deleteResp.status, 204);
+    console.log('Successfully deleted bucket: ' + bucketName + '.');
   } catch (error) {
     console.log('Error received: ', JSON.stringify(error));
   }
@@ -302,9 +329,9 @@ const exchangeDeviceAccessTokenToServiceAccountToken = async (
     };
     const exchangeResponse = await request(exchangeOptions);
     assert.strictEqual(exchangeResponse.status, 200);
-    assert.strictEqual(
-      exchangeResponse.data && exchangeResponse.data.accessToken !== '',
-      true
+    assert.ok(exchangeResponse.data && exchangeResponse.data.accessToken);
+    console.log(
+      'Service account access token: ' + exchangeResponse.data.accessToken
     );
     return exchangeResponse.data.accessToken;
   } catch (error) {
@@ -367,6 +394,9 @@ const sendCommandToIoTDevice = async (
     };
     const commandResponse = await request(commandOptions);
     assert.strictEqual(commandResponse.status, 200);
+    console.log(
+      'Successfully sent command ' + commandTobeSentToDevice + ' to device.'
+    );
   } catch (error) {
     console.log('Error received: ', JSON.stringify(error));
   }
@@ -393,7 +423,7 @@ require(`yargs`) // eslint-disable-line
   })
   .command(
     'generateAccessToken <registryId> <deviceId> <scope> <algorithm> <privateKeyPath>',
-    'Generate GCP Access Token.',
+    'Generate OAuth 2.0 Google Access Token.',
     {},
     async opts => {
       await generateAccessToken(
@@ -409,7 +439,7 @@ require(`yargs`) // eslint-disable-line
   )
   .command(
     'publishPubSubMessage <registryId> <deviceId> <algorithm> <privateKeyPath> <topicName>',
-    'Publish message to pubsub.',
+    'Publish a message to a Cloud Pub/Sub topic.',
     {},
     async opts => {
       await publishPubSubMessage(
@@ -425,7 +455,7 @@ require(`yargs`) // eslint-disable-line
   )
   .command(
     'downloadCloudStorageFile <registryId> <deviceId> <algorithm> <privateKeyPath> <bucketName> <dataPath>',
-    'Download file from Cloud Storage.',
+    'Download a file from Cloud Storage bucket.',
     {},
     async opts => {
       await downloadCloudStorageFile(
@@ -442,7 +472,7 @@ require(`yargs`) // eslint-disable-line
   )
   .command(
     'sendCommandToIoTDevice <registryId> <deviceId> <algorithm> <privateKeyPath> <serviceAccountEmail> <commandToBeSent>',
-    'Send command to IoT Device.',
+    'Send a command to an IoT device',
     {},
     async opts => {
       await sendCommandToIoTDevice(
@@ -459,7 +489,7 @@ require(`yargs`) // eslint-disable-line
   )
   .command(
     'exchangeDeviceAccessTokenToServiceAccountToken <deviceAccessToken> <serviceAccountEmail>',
-    'Exchange Device Access Token for Service Account Token.',
+    'Exchanges device access token to service account access token.',
     {},
     async opts => {
       await exchangeDeviceAccessTokenToServiceAccountToken(
@@ -469,22 +499,24 @@ require(`yargs`) // eslint-disable-line
     }
   )
   .example(
-    'node $0 generateAccessToken my-registry my-device https://www.googleapis.com/auth/devstorage.full_control  RS256 ./rsa_cert.pem'
+    'node $0 generateAccessToken my-registry my-device https://www.googleapis.com/auth/cloud-platform RS256 ./rsa_cert.pem'
   )
   .example(
-    'node $0 publishPubSubMessage us-central1 my-project my-registry my-device RS256 ../resources/rsa_private.pem my-pubsub-topic'
+    'node $0 publishPubSubMessage my-registry my-device RS256 ../resources/rsa_private.pem my-pubsub-topic'
   )
   .example(
-    'node $0 downloadCloudStorageFile us-central1 my-project my-registry my-device RS256 ../resources/rsa_private.pem my-storage-bucket ../resources/logo.png'
+    'node $0 downloadCloudStorageFile my-registry my-device RS256 ../resources/rsa_private.pem my-storage-bucket ../resources/logo.png'
   )
   .example(
-    'node $0 sendCommandToIoTDevice us-central1 my-project my-registry my-device RS256 ../resources/rsa_private.pem my-service-account@my-project.iam.gserviceaccount.com'
+    'node $0 sendCommandToIoTDevice my-registry my-device RS256 ../resources/rsa_private.pem my-service-account@my-project.iam.gserviceaccount.com DEVICE_COMMAND'
   )
   .example(
     'node $0 exchangeDeviceAccessTokenToServiceAccountToken device-access-token my-service-account@my-project.iam.gserviceaccount.com'
   )
   .wrap(120)
   .recommendCommands()
-  .epilogue('For more information, see https://cloud.google.com/iot-core/docs')
+  .epilogue(
+    'For more information, see https://cloud.google.com/iot/alpha/docs/how-tos/federated_auth'
+  )
   .help()
   .strict().argv;
