@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const { readFileSync } = require('fs');
+const {readFileSync} = require('fs');
 const jwt = require('jsonwebtoken');
 
 const createJwt = (projectId, privateKeyFile, algorithm) => {
@@ -26,8 +26,8 @@ const createJwt = (projectId, privateKeyFile, algorithm) => {
     aud: projectId,
   };
   const privateKey = readFileSync(privateKeyFile);
-  return jwt.sign(jwtPayload, privateKey, { algorithm: algorithm });
+  return jwt.sign(jwtPayload, privateKey, {algorithm: algorithm});
   // [END iot_create_jwt]
 };
 
-module.exports = { createJwt }
+module.exports = {createJwt};
