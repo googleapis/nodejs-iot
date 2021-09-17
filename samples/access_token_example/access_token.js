@@ -38,18 +38,14 @@ const generateAccessToken = async (
   // algorithm = 'RS256'
   // privateKeyFile = 'path/to/private_key.pem'
 
-  async function generateDeviceAccessToken(
-    cloudRegion,
-    projectId,
-    registryId,
-    deviceId,
-    jwtToken,
-    scope
-  ) {
+  // Generate IoT device JWT. See https://cloud.google.com/iot/docs/how-tos/credentials/jwts
+  const jwtToken = createJwt(projectId, privateKeyFile, algorithm);
+
+  // Generate OAuth 2.0 access token. See https://developers.google.com/identity/protocols/oauth2
+  const headers = {authorization: `Bearer ${jwtToken}`};
+  try {
     const resourcePath = `projects/${projectId}/locations/${cloudRegion}/registries/${registryId}/devices/${deviceId}`;
     const requestUrl = `https://cloudiottoken.googleapis.com/v1beta1/${resourcePath}:generateAccessToken`;
-    const headers = {authorization: `Bearer ${jwtToken}`};
-
     const options = {
       url: requestUrl,
       method: 'POST',
@@ -61,28 +57,13 @@ const generateAccessToken = async (
       'content-type': 'application/json',
       'cache-control': 'no-cache',
     };
-    try {
-      const response = await request(options);
-      return response.data['access_token'];
-    } catch (err) {
-      console.error('Received error: ', err);
-    }
+    const response = await request(options);
+    const accessToken = response.data['access_token'];
+    console.log('Device access token: ' + accessToken);
+    return accessToken;
+  } catch (err) {
+    console.error('Received error: ', err);
   }
-
-  // Generate IoT device JWT. See https://cloud.google.com/iot/docs/how-tos/credentials/jwts
-  const jwtToken = createJwt(projectId, privateKeyFile, algorithm);
-
-  // Generate OAuth 2.0 access token. See https://developers.google.com/identity/protocols/oauth2
-  const accessToken = await generateDeviceAccessToken(
-    cloudRegion,
-    projectId,
-    registryId,
-    deviceId,
-    jwtToken,
-    scope
-  );
-  console.log('Device access token: ' + accessToken);
-  return accessToken;
   // [END iot_generate_access_token]
 };
 
