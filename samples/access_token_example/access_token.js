@@ -84,8 +84,8 @@ const publishPubSubMessage = async (
   // algorithm = 'RS256'
   // privateKeyFile = 'path/to/private_key.pem'
   // topicId = 'pubsub-topic-id'
-
   const scope = 'https://www.googleapis.com/auth/pubsub';
+
   // Generate device access token
   const access_token = await generateAccessToken(
     cloudRegion,
@@ -181,6 +181,7 @@ const downloadCloudStorageFile = async (
   // bucketName = 'name-of-gcs-bucket'
   // dataPath = 'path/to/file/to/be/uploaded.png'
   const scope = 'https://www.googleapis.com/auth/devstorage.full_control';
+
   // Generate device access token
   const access_token = await generateAccessToken(
     cloudRegion,
@@ -203,7 +204,6 @@ const downloadCloudStorageFile = async (
         uniformBucketLevelAccess: {enabled: true},
       },
     };
-
     const createGcsRequestUrl = `https://storage.googleapis.com/storage/v1/b?project=${projectId}`;
     const createGcsOptions = {
       url: createGcsRequestUrl,
@@ -339,8 +339,8 @@ const sendCommandToIoTDevice = async (
   // privateKeyFile = 'path/to/private_key.pem'
   // serviceAccountEmail  = 'your-service-account@your-project.iam.gserviceaccount.com'
   // commandTobeSentToDevice = 'command-to-device'
-
   const scope = 'https://www.googleapis.com/auth/cloud-platform';
+
   // Generate device access token
   const access_token = await generateAccessToken(
     cloudRegion,
