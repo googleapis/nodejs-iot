@@ -397,6 +397,10 @@ export class DeviceManagerClient {
    *   for more details and examples.
    * @example
    * const [response] = await client.createDeviceRegistry(request);
+   *
+   * @example <caption>include:samples/generated/v1/device_manager.create_device_registry.js</caption>
+   * region_tag:iot_create_device_registry_sample
+   *
    */
   createDeviceRegistry(
     request?: protos.google.cloud.iot.v1.ICreateDeviceRegistryRequest,
@@ -485,6 +489,10 @@ export class DeviceManagerClient {
    *   for more details and examples.
    * @example
    * const [response] = await client.getDeviceRegistry(request);
+   *
+   * @example <caption>include:samples/generated/v1/device_manager.get_device_registry.js</caption>
+   * region_tag:iot_get_device_registry_sample
+   *
    */
   getDeviceRegistry(
     request?: protos.google.cloud.iot.v1.IGetDeviceRegistryRequest,
@@ -582,6 +590,10 @@ export class DeviceManagerClient {
    *   for more details and examples.
    * @example
    * const [response] = await client.updateDeviceRegistry(request);
+   *
+   * @example <caption>include:samples/generated/v1/device_manager.update_device_registry.js</caption>
+   * region_tag:iot_update_device_registry_sample
+   *
    */
   updateDeviceRegistry(
     request?: protos.google.cloud.iot.v1.IUpdateDeviceRegistryRequest,
@@ -674,6 +686,10 @@ export class DeviceManagerClient {
    *   for more details and examples.
    * @example
    * const [response] = await client.deleteDeviceRegistry(request);
+   *
+   * @example <caption>include:samples/generated/v1/device_manager.delete_device_registry.js</caption>
+   * region_tag:iot_delete_device_registry_sample
+   *
    */
   deleteDeviceRegistry(
     request?: protos.google.cloud.iot.v1.IDeleteDeviceRegistryRequest,
@@ -767,6 +783,10 @@ export class DeviceManagerClient {
    *   for more details and examples.
    * @example
    * const [response] = await client.createDevice(request);
+   *
+   * @example <caption>include:samples/generated/v1/device_manager.create_device.js</caption>
+   * region_tag:iot_create_device_sample
+   *
    */
   createDevice(
     request?: protos.google.cloud.iot.v1.ICreateDeviceRequest,
@@ -856,6 +876,10 @@ export class DeviceManagerClient {
    *   for more details and examples.
    * @example
    * const [response] = await client.getDevice(request);
+   *
+   * @example <caption>include:samples/generated/v1/device_manager.get_device.js</caption>
+   * region_tag:iot_get_device_sample
+   *
    */
   getDevice(
     request?: protos.google.cloud.iot.v1.IGetDeviceRequest,
@@ -947,6 +971,10 @@ export class DeviceManagerClient {
    *   for more details and examples.
    * @example
    * const [response] = await client.updateDevice(request);
+   *
+   * @example <caption>include:samples/generated/v1/device_manager.update_device.js</caption>
+   * region_tag:iot_update_device_sample
+   *
    */
   updateDevice(
     request?: protos.google.cloud.iot.v1.IUpdateDeviceRequest,
@@ -1032,6 +1060,10 @@ export class DeviceManagerClient {
    *   for more details and examples.
    * @example
    * const [response] = await client.deleteDevice(request);
+   *
+   * @example <caption>include:samples/generated/v1/device_manager.delete_device.js</caption>
+   * region_tag:iot_delete_device_sample
+   *
    */
   deleteDevice(
     request?: protos.google.cloud.iot.v1.IDeleteDeviceRequest,
@@ -1131,6 +1163,10 @@ export class DeviceManagerClient {
    *   for more details and examples.
    * @example
    * const [response] = await client.modifyCloudToDeviceConfig(request);
+   *
+   * @example <caption>include:samples/generated/v1/device_manager.modify_cloud_to_device_config.js</caption>
+   * region_tag:iot_modify_cloud_to_device_config_sample
+   *
    */
   modifyCloudToDeviceConfig(
     request?: protos.google.cloud.iot.v1.IModifyCloudToDeviceConfigRequest,
@@ -1233,6 +1269,10 @@ export class DeviceManagerClient {
    *   for more details and examples.
    * @example
    * const [response] = await client.listDeviceConfigVersions(request);
+   *
+   * @example <caption>include:samples/generated/v1/device_manager.list_device_config_versions.js</caption>
+   * region_tag:iot_list_device_config_versions_sample
+   *
    */
   listDeviceConfigVersions(
     request?: protos.google.cloud.iot.v1.IListDeviceConfigVersionsRequest,
@@ -1331,6 +1371,10 @@ export class DeviceManagerClient {
    *   for more details and examples.
    * @example
    * const [response] = await client.listDeviceStates(request);
+   *
+   * @example <caption>include:samples/generated/v1/device_manager.list_device_states.js</caption>
+   * region_tag:iot_list_device_states_sample
+   *
    */
   listDeviceStates(
     request?: protos.google.cloud.iot.v1.IListDeviceStatesRequest,
@@ -1423,6 +1467,10 @@ export class DeviceManagerClient {
    *   for more details and examples.
    * @example
    * const [response] = await client.setIamPolicy(request);
+   *
+   * @example <caption>include:samples/generated/v1/device_manager.set_iam_policy.js</caption>
+   * region_tag:iot_set_iam_policy_sample
+   *
    */
   setIamPolicy(
     request?: protos.google.iam.v1.ISetIamPolicyRequest,
@@ -1512,6 +1560,10 @@ export class DeviceManagerClient {
    *   for more details and examples.
    * @example
    * const [response] = await client.getIamPolicy(request);
+   *
+   * @example <caption>include:samples/generated/v1/device_manager.get_iam_policy.js</caption>
+   * region_tag:iot_get_iam_policy_sample
+   *
    */
   getIamPolicy(
     request?: protos.google.iam.v1.IGetIamPolicyRequest,
@@ -1603,6 +1655,10 @@ export class DeviceManagerClient {
    *   for more details and examples.
    * @example
    * const [response] = await client.testIamPermissions(request);
+   *
+   * @example <caption>include:samples/generated/v1/device_manager.test_iam_permissions.js</caption>
+   * region_tag:iot_test_iam_permissions_sample
+   *
    */
   testIamPermissions(
     request?: protos.google.iam.v1.ITestIamPermissionsRequest,
@@ -1708,6 +1764,10 @@ export class DeviceManagerClient {
    *   for more details and examples.
    * @example
    * const [response] = await client.sendCommandToDevice(request);
+   *
+   * @example <caption>include:samples/generated/v1/device_manager.send_command_to_device.js</caption>
+   * region_tag:iot_send_command_to_device_sample
+   *
    */
   sendCommandToDevice(
     request?: protos.google.cloud.iot.v1.ISendCommandToDeviceRequest,
@@ -1801,6 +1861,10 @@ export class DeviceManagerClient {
    *   for more details and examples.
    * @example
    * const [response] = await client.bindDeviceToGateway(request);
+   *
+   * @example <caption>include:samples/generated/v1/device_manager.bind_device_to_gateway.js</caption>
+   * region_tag:iot_bind_device_to_gateway_sample
+   *
    */
   bindDeviceToGateway(
     request?: protos.google.cloud.iot.v1.IBindDeviceToGatewayRequest,
@@ -1898,6 +1962,10 @@ export class DeviceManagerClient {
    *   for more details and examples.
    * @example
    * const [response] = await client.unbindDeviceFromGateway(request);
+   *
+   * @example <caption>include:samples/generated/v1/device_manager.unbind_device_from_gateway.js</caption>
+   * region_tag:iot_unbind_device_from_gateway_sample
+   *
    */
   unbindDeviceFromGateway(
     request?: protos.google.cloud.iot.v1.IUnbindDeviceFromGatewayRequest,
@@ -2007,6 +2075,10 @@ export class DeviceManagerClient {
    *   Please see the
    *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
    *   for more details and examples.
+   *
+   * @example <caption>include:samples/generated/v1/device_manager.list_device_registries.js</caption>
+   * region_tag:iot_list_device_registries_sample
+   *
    */
   listDeviceRegistries(
     request?: protos.google.cloud.iot.v1.IListDeviceRegistriesRequest,
@@ -2079,6 +2151,10 @@ export class DeviceManagerClient {
    *   Please see the
    *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
    *   for more details and examples.
+   *
+   * @example <caption>include:samples/generated/v1/device_manager.list_device_registries.js</caption>
+   * region_tag:iot_list_device_registries_sample
+   *
    */
   listDeviceRegistriesStream(
     request?: protos.google.cloud.iot.v1.IListDeviceRegistriesRequest,
@@ -2092,7 +2168,8 @@ export class DeviceManagerClient {
       gax.routingHeader.fromParams({
         parent: request.parent || '',
       });
-    const callSettings = new gax.CallSettings(options);
+    const defaultCallSettings = this._defaults['listDeviceRegistries'];
+    const callSettings = defaultCallSettings.merge(options);
     this.initialize();
     return this.descriptors.page.listDeviceRegistries.createStream(
       this.innerApiCalls.listDeviceRegistries as gax.GaxCall,
@@ -2134,6 +2211,10 @@ export class DeviceManagerClient {
    * for await (const response of iterable) {
    *   // process response
    * }
+   *
+   * @example <caption>include:samples/generated/v1/device_manager.list_device_registries.js</caption>
+   * region_tag:iot_list_device_registries_sample
+   *
    */
   listDeviceRegistriesAsync(
     request?: protos.google.cloud.iot.v1.IListDeviceRegistriesRequest,
@@ -2148,7 +2229,8 @@ export class DeviceManagerClient {
         parent: request.parent || '',
       });
     options = options || {};
-    const callSettings = new gax.CallSettings(options);
+    const defaultCallSettings = this._defaults['listDeviceRegistries'];
+    const callSettings = defaultCallSettings.merge(options);
     this.initialize();
     return this.descriptors.page.listDeviceRegistries.asyncIterate(
       this.innerApiCalls['listDeviceRegistries'] as GaxCall,
@@ -2225,6 +2307,10 @@ export class DeviceManagerClient {
    *   Please see the
    *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
    *   for more details and examples.
+   *
+   * @example <caption>include:samples/generated/v1/device_manager.list_devices.js</caption>
+   * region_tag:iot_list_devices_sample
+   *
    */
   listDevices(
     request?: protos.google.cloud.iot.v1.IListDevicesRequest,
@@ -2306,6 +2392,10 @@ export class DeviceManagerClient {
    *   Please see the
    *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
    *   for more details and examples.
+   *
+   * @example <caption>include:samples/generated/v1/device_manager.list_devices.js</caption>
+   * region_tag:iot_list_devices_sample
+   *
    */
   listDevicesStream(
     request?: protos.google.cloud.iot.v1.IListDevicesRequest,
@@ -2319,7 +2409,8 @@ export class DeviceManagerClient {
       gax.routingHeader.fromParams({
         parent: request.parent || '',
       });
-    const callSettings = new gax.CallSettings(options);
+    const defaultCallSettings = this._defaults['listDevices'];
+    const callSettings = defaultCallSettings.merge(options);
     this.initialize();
     return this.descriptors.page.listDevices.createStream(
       this.innerApiCalls.listDevices as gax.GaxCall,
@@ -2374,6 +2465,10 @@ export class DeviceManagerClient {
    * for await (const response of iterable) {
    *   // process response
    * }
+   *
+   * @example <caption>include:samples/generated/v1/device_manager.list_devices.js</caption>
+   * region_tag:iot_list_devices_sample
+   *
    */
   listDevicesAsync(
     request?: protos.google.cloud.iot.v1.IListDevicesRequest,
@@ -2388,7 +2483,8 @@ export class DeviceManagerClient {
         parent: request.parent || '',
       });
     options = options || {};
-    const callSettings = new gax.CallSettings(options);
+    const defaultCallSettings = this._defaults['listDevices'];
+    const callSettings = defaultCallSettings.merge(options);
     this.initialize();
     return this.descriptors.page.listDevices.asyncIterate(
       this.innerApiCalls['listDevices'] as GaxCall,
