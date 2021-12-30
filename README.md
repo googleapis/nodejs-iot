@@ -6,6 +6,7 @@
 
 
 [![npm version](https://img.shields.io/npm/v/@google-cloud/iot.svg)](https://www.npmjs.org/package/@google-cloud/iot)
+[![codecov](https://img.shields.io/codecov/c/github/googleapis/nodejs-iot/main.svg?style=flat)](https://codecov.io/gh/googleapis/nodejs-iot)
 
 
 
