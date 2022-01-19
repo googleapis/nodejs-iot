@@ -156,7 +156,7 @@ const publishPubSubMessage = async (
     assert.strictEqual(deleteResponse.status, 200);
     console.log('Successfully deleted Pub/Sub topic: ' + topicId + '.');
   } catch (error) {
-    console.log('Error received: ', JSON.stringify(error));
+    console.log('Error receiveds: ', JSON.stringify(error));
   }
   // [END iot_access_token_pubsub]
 };
