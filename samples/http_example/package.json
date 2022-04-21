@@ -19,7 +19,7 @@
     "test": "mocha --timeout=60000"
   },
   "dependencies": {
-    "gaxios": "^4.0.0",
+    "gaxios": "^5.0.0",
     "jsonwebtoken": "^8.5.0",
     "yargs": "^16.0.0"
   },
