@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.0](https://github.com/googleapis/nodejs-iot/compare/v2.5.1...v2.6.0) (2022-05-09)
+
+
+### Features
+
+* AuditConfig for IAM v1 ([#552](https://github.com/googleapis/nodejs-iot/issues/552)) ([1b1a3d2](https://github.com/googleapis/nodejs-iot/commit/1b1a3d226374bb7e9df3444d7384ae6e4d4ece4d))
+
 ### [2.5.1](https://www.github.com/googleapis/nodejs-iot/compare/v2.5.0...v2.5.1) (2021-09-27)
 
 
