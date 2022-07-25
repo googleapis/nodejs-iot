@@ -19,7 +19,7 @@
     "test": "mocha --timeout=600000"
   },
   "dependencies": {
-    "@google-cloud/iot": "^2.0.0",
+    "@google-cloud/iot": "^3.0.0",
     "@google-cloud/pubsub": "^3.0.0",
     "yargs": "^16.0.0"
   },
