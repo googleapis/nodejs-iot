@@ -29,6 +29,8 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+import * as https from "https"
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1/device_manager_client_config.json`.
@@ -107,6 +109,7 @@ export class DeviceManagerClient {
     gaxInstance?: typeof gax | typeof gax.fallback
   ) {
     // Ensure that options include all the required fields.
+    console.log("DeviceManagerClient cons OTIONS: ", opts);
     const staticMembers = this.constructor as typeof DeviceManagerClient;
     const servicePath =
       opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
@@ -163,6 +166,7 @@ export class DeviceManagerClient {
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
     } else if (opts.fallback === 'rest') {
+      console.log("USING REST API");
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -235,6 +239,8 @@ export class DeviceManagerClient {
     if (this.deviceManagerStub) {
       return this.deviceManagerStub;
     }
+    console.log("initialize");
+    
 
     // Put together the "service stub" for
     // google.cloud.iot.v1.DeviceManager.
@@ -249,6 +255,7 @@ export class DeviceManagerClient {
       this._providedCustomServicePath
     ) as Promise<{[method: string]: Function}>;
 
+    console.log("initialize deviceManagerStub: ", this.deviceManagerStub);
     // Iterate over each of the methods that the service provides
     // and create an API call method for each.
     const deviceManagerStubMethods = [
@@ -273,13 +280,17 @@ export class DeviceManagerClient {
       'unbindDeviceFromGateway',
     ];
     for (const methodName of deviceManagerStubMethods) {
-      const callPromise = this.deviceManagerStub.then(
+        const callPromise = this.deviceManagerStub.then(
         stub =>
           (...args: Array<{}>) => {
             if (this._terminated) {
               return Promise.reject('The client has already been closed.');
             }
             const func = stub[methodName];
+            console.log("intialize methodName: ", methodName);
+            console.log("intialize args: ", args);
+            //console.log("intialize stub   : ", stub);
+            console.log("intialize func: LAST CALLL: ", func);
             return func.apply(stub, args);
           },
         (err: Error | null | undefined) => () => {
@@ -294,10 +305,10 @@ export class DeviceManagerClient {
         descriptor,
         this._opts.fallback
       );
-
+      //console.log("initialize apicall: ", apiCall);
       this.innerApiCalls[methodName] = apiCall;
     }
-
+    console.log("intialize LAST LINE: ");
     return this.deviceManagerStub;
   }
 
@@ -2051,24 +2062,129 @@ export class DeviceManagerClient {
       protos.google.cloud.iot.v1.IListDeviceRegistriesResponse
     ]
   > | void {
-    request = request || {};
-    let options: CallOptions;
-    if (typeof optionsOrCallback === 'function' && callback === undefined) {
-      callback = optionsOrCallback;
-      options = {};
-    } else {
-      options = optionsOrCallback as CallOptions;
-    }
-    options = options || {};
-    options.otherArgs = options.otherArgs || {};
-    options.otherArgs.headers = options.otherArgs.headers || {};
-    options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        parent: request.parent || '',
-      });
-    this.initialize();
-    return this.innerApiCalls.listDeviceRegistries(request, options, callback);
+    console.log("going to calling async....");
+    var options = {
+      host: 'iot-sandbox.clearblade.com',
+      //port: '80',
+      path: `/api/v/1/code/84abb9b30ca4ece486d4bcf7ad71/getProjectAreas`,
+      //method: 'GET',
+      headers: {
+          'Content-Type': 'application/json',          
+          'ClearBlade-SystemKey': '84abb9b30ca4ece486d4bcf7ad71',
+          'ClearBlade-SystemSecret': '84ABB9B30C98BED9D8FCFAB0FBD001',
+          'ClearBlade-UserToken': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2YxZGViMzBjYjBkMmNjODk4Njk3OWNkZGZmMDEiLCJzaWQiOiJlZDllODAzZS04MTkzLTQyZDEtOTg1MC1hZDg2NzEzNmJiODQiLCJ1dCI6MiwidHQiOjEsImV4cCI6MTY2NTI5OTc3OSwiaWF0IjoxNjY0ODY3Nzc5fQ.2IPaPbM7h0aV2OS7YSJQxeDxNL4HQ1fH6Y_YqtnN5HA'
+      }
+    };    
+    return new Promise((resolve,reject) => {
+      console.log("calling prmoise....");  
+      interface response {
+        ideviceregistry : protos.google.cloud.iot.v1.IDeviceRegistry[],
+        ilistDeviceregistriesrequest : protos.google.cloud.iot.v1.IListDeviceRegistriesRequest | null,
+        ilistdeviceregistriesresponse : protos.google.cloud.iot.v1.IListDeviceRegistriesResponse
+      }
+      
+      const req = https.request({
+            method: 'POST',
+            ...options,
+        }, res => {
+            let data = '';
+            const chunks : any[] = [];
+            res.on('data', chunk =>  data += chunk)
+            res.on('end', () => {
+              console.log('Body: ', JSON.parse(data));  
+                // let resBody = Buffer.concat(chunks);
+                // switch(res.headers['content-type']) {
+                //     case 'application/json':
+                //       resBody = JSON.parse(resBody);
+                //         break;
+                // }
+                let array : [protos.google.cloud.iot.v1.IDeviceRegistry[], protos.google.cloud.iot.v1.IListDeviceRegistriesRequest | null, protos.google.cloud.iot.v1.IListDeviceRegistriesResponse];
+
+                
+                const ideviceregistry: protos.google.cloud.iot.v1.IDeviceRegistry[] = [];
+
+                const registry: protos.google.cloud.iot.v1.IDeviceRegistry = {};
+                registry.name='ABC';
+                registry.id='123';
+                ideviceregistry.push(registry);
+                registry.name='xyz';
+                registry.id='456';
+                ideviceregistry.push(registry);
+                
+                const ilistDeviceregistriesrequest: protos.google.cloud.iot.v1.IListDeviceRegistriesRequest = {};
+                const ilistdeviceregistriesresponse: protos.google.cloud.iot.v1.IListDeviceRegistriesResponse = {};
+                ilistdeviceregistriesresponse.deviceRegistries = ideviceregistry;
+                //let res : response;
+                array = [ideviceregistry, ilistDeviceregistriesrequest, ilistdeviceregistriesresponse];
+                //res.ideviceregistry
+                //array.push(ideviceregistry);
+                //array.push(ilistDeviceregistriesrequest);
+                //array.push(ilistdeviceregistriesresponse);
+                resolve(array);
+            })
+        })
+        req.on('error',reject);
+        // if(body) {
+        //     req.write(body);
+        // }
+        req.end();
+    })
+
+    // request = request || {};
+    // let options: CallOptions;
+    // console.log("listDeviceRegistries");
+    
+    // if (typeof optionsOrCallback === 'function' && callback === undefined) {
+    //   callback = optionsOrCallback;
+    //   options = {};
+    // } else {
+    //   options = optionsOrCallback as CallOptions;
+    // }
+    
+    // options = options || {};
+    // options.otherArgs = options.otherArgs || {};
+    // options.otherArgs.headers = options.otherArgs.headers || {};
+    // options.otherArgs.headers['x-goog-request-params'] =
+    //   this._gaxModule.routingHeader.fromParams({
+    //     parent: request.parent || '',
+    //   });
+    // console.log("options: ", options);  
+    // console.log("request: ", request);
+    // this.initialize();
+    // console.log("initialize COMPLETE BACK TO FUNCTION: ", request);
+    // console.log("callback: ", callback);
+    // return this.innerApiCalls.listDeviceRegistries(request, options, callback);
   }
+
+  
+
+  // async listDeviceRegistries(request?: protos.google.cloud.iot.v1.IListDeviceRegistriesRequest, options?: CallOptions, 
+  //   callback?: PaginationCallback<
+  //        protos.google.cloud.iot.v1.IListDeviceRegistriesRequest,
+  //        | protos.google.cloud.iot.v1.IListDeviceRegistriesResponse
+  //        | null
+  //        | undefined,
+  //        protos.google.cloud.iot.v1.IDeviceRegistry
+  //      >) {
+  //   const response = await fetch("https://iot-sandbox.clearblade.com/api/v/1/code/b8c8b9b20cf4b7a790cfa1a3d250/registriesGet", {
+  //     method: 'POST',
+  //     //body: JSON.stringify({notification: {title: message},to : '/topics/user_'+username}),
+  //     headers: {'Content-Type': 'application/json', 'ClearBlade-DevToken': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJlNGU3OWViMjBjZmVhNDk4OTY5OWY0ZDg5OTFiIiwic2lkIjoiYzBmMDExNTEtODYzYi00MGM0LWI3ZjAtOGFjZWE0Y2Q3MmRlIiwidXQiOjEsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjQ0MjY4ODR9.kDiA0oLxBMIR22yExQxM9EVAUE2_T4kFEh9gZaR5EQs'} 
+  //   });
+    
+  //   if (!response.ok) 
+  //   { 
+  //       console.error("Error");
+  //   }
+  //   // else if (response.statusCode >= 400) {
+  //   //     console.error('HTTP Error: '+response.statusCode+' - '+response.statusMessage);
+  //   // }
+  //   else{
+  //     console.log("onSuccess");  
+  //     //onSuccess();
+  //     //return callback;
+  //   }
+  // }
 
   /**
    * Equivalent to `method.name.toCamelCase()`, but returns a NodeJS Stream object.
