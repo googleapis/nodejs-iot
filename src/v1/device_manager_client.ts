@@ -2063,21 +2063,46 @@ export class DeviceManagerClient {
     ]
   > | void {
     console.log("going to calling async....");
-    const token = this.httpsPost();
-    var options = {
-      host: 'iot-sandbox.clearblade.com',
-      //port: '80',
-      path: `/api/v/1/code/84abb9b30ca4ece486d4bcf7ad71/getProjectAreas`,
-      //method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'ClearBlade-SystemKey': '84abb9b30ca4ece486d4bcf7ad71',
-        'ClearBlade-SystemSecret': '84ABB9B30C98BED9D8FCFAB0FBD001',
-        'ClearBlade-UserToken': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2YxZGViMzBjYjBkMmNjODk4Njk3OWNkZGZmMDEiLCJzaWQiOiJlZDllODAzZS04MTkzLTQyZDEtOTg1MC1hZDg2NzEzNmJiODQiLCJ1dCI6MiwidHQiOjEsImV4cCI6MTY2NTI5OTc3OSwiaWF0IjoxNjY0ODY3Nzc5fQ.2IPaPbM7h0aV2OS7YSJQxeDxNL4HQ1fH6Y_YqtnN5HA'
-      }
-    };
-    return new Promise((resolve, reject) => {
+    console.log("request parent: ", request?.parent);
+    // const token = this.httpsPost();
+    // console.log("token RES: ", token);
+    // var options = {
+    //   host: 'iot-sandbox.clearblade.com',
+    //   //port: '80',
+    //   path: `/api/v/1/code/84abb9b30ca4ece486d4bcf7ad71/getProjectAreas`,
+    //   //method: 'GET',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'ClearBlade-SystemKey': '84abb9b30ca4ece486d4bcf7ad71',
+    //     'ClearBlade-SystemSecret': '84ABB9B30C98BED9D8FCFAB0FBD001',
+    //     'ClearBlade-UserToken': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2YxZGViMzBjYjBkMmNjODk4Njk3OWNkZGZmMDEiLCJzaWQiOiJlZDllODAzZS04MTkzLTQyZDEtOTg1MC1hZDg2NzEzNmJiODQiLCJ1dCI6MiwidHQiOjEsImV4cCI6MTY2NTI5OTc3OSwiaWF0IjoxNjY0ODY3Nzc5fQ.2IPaPbM7h0aV2OS7YSJQxeDxNL4HQ1fH6Y_YqtnN5HA'
+    //   }
+    // };
+    return new Promise(async (resolve, reject) => {
       console.log("calling prmoise....");
+      const token_response = await this.httpsPost();
+      const token = JSON.parse(token_response);
+      //console.log("token RES: ", token_response);
+      //console.log("token RES: system ky: ", token.systemKey);
+      const payload = JSON.stringify({
+        //parent: "projects/ingressdevelopmentenv/locations/us-central1"
+        parent: request?.parent
+      })
+      var options = {
+        host: 'iot-sandbox.clearblade.com',
+        //port: '80',
+        path: `/api/v/1/code/84abb9b30ca4ece486d4bcf7ad71/registriesList`,
+        //method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          // 'ClearBlade-SystemKey': '84abb9b30ca4ece486d4bcf7ad71',
+          // 'ClearBlade-SystemSecret': '84ABB9B30C98BED9D8FCFAB0FBD001',
+          'ClearBlade-UserToken': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5Y2YxZGViMzBjYjBkMmNjODk4Njk3OWNkZGZmMDEiLCJzaWQiOiIxMWQxMzljMy1iNmQzLTQ2Y2QtODg4OC0xOTE1ZDQyZjY5M2YiLCJ1dCI6MiwidHQiOjEsImV4cCI6MTY2NTg1ODE1OSwiaWF0IjoxNjY1NDI2MTU5fQ.aoQRw_NBm7FY1Zhy5tJGf_vPVCA-QA8Wal5MMluZo4c'
+          //'ClearBlade-SystemKey': token.systemKey,
+          //'ClearBlade-SystemSecret': '84ABB9B30C98BED9D8FCFAB0FBD001',
+          //'ClearBlade-UserToken': token.serviceAccountToken
+        }
+      };
       interface response {
         ideviceregistry: protos.google.cloud.iot.v1.IDeviceRegistry[],
         ilistDeviceregistriesrequest: protos.google.cloud.iot.v1.IListDeviceRegistriesRequest | null,
@@ -2092,13 +2117,9 @@ export class DeviceManagerClient {
         const chunks: any[] = [];
         res.on('data', chunk => data += chunk)
         res.on('end', () => {
-          console.log('RESPONSE main: ', JSON.parse(data));
-          // let resBody = Buffer.concat(chunks);
-          // switch(res.headers['content-type']) {
-          //     case 'application/json':
-          //       resBody = JSON.parse(resBody);
-          //         break;
-          // }
+          //console.log('RESPONSE main: ', JSON.parse(data));
+
+
           let array: [protos.google.cloud.iot.v1.IDeviceRegistry[], protos.google.cloud.iot.v1.IListDeviceRegistriesRequest | null, protos.google.cloud.iot.v1.IListDeviceRegistriesResponse];
 
 
@@ -2106,12 +2127,20 @@ export class DeviceManagerClient {
 
           //for loop fetching JSON
           const registry: protos.google.cloud.iot.v1.IDeviceRegistry = {};
-          registry.name = 'ABC';
-          registry.id = '123';
-          ideviceregistry.push(registry);
-          registry.name = 'xyz';
-          registry.id = '456';
-          ideviceregistry.push(registry);
+          // registry.name = 'ABC';
+          // registry.id = '123';
+          // ideviceregistry.push(registry);
+          // registry.name = 'xyz';
+          // registry.id = '456';
+          // ideviceregistry.push(registry);
+          const registriesList = JSON.parse(data);
+          for (let index in registriesList.deviceRegistries) {
+            //console.log("each registry NAME: ", registriesList.deviceRegistries[index].name);
+            //console.log("each registry ID: ", registriesList.deviceRegistries[index].id);
+            registry.name = registriesList.deviceRegistries[index].name;
+            registry.id = registriesList.deviceRegistries[index].id;
+            ideviceregistry.push(registry);
+          }
 
           const ilistDeviceregistriesrequest: protos.google.cloud.iot.v1.IListDeviceRegistriesRequest = {};
           const ilistdeviceregistriesresponse: protos.google.cloud.iot.v1.IListDeviceRegistriesResponse = {};
@@ -2130,9 +2159,9 @@ export class DeviceManagerClient {
         console.log("INNER FAILURE: ", e);
         reject(e);
       });
-      // if(body) {
-      //     req.write(body);
-      // }
+      if (payload) {
+        req.write(payload);
+      }
       req.end();
     })
 
@@ -2162,53 +2191,53 @@ export class DeviceManagerClient {
     // return this.innerApiCalls.listDeviceRegistries(request, options, callback);
   }
 
-  async getRegistryToken() {
-    console.log('getRegistryToken');
-    var options = {
-      host: 'iot-sandbox.clearblade.com',
-      //port: '80',
-      path: `/api/v/1/code/84abb9b30ca4ece486d4bcf7ad71/getRegistryCredentials`,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'ClearBlade-UserToken': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5NGFiYjliMzBjOTRjMGE1ZGNhOGE4ODRiYzU5Iiwic2lkIjoiMmQ5ZTAzZjUtZmQ2OC00MWM4LTg5OGYtYWQzMWE4ZjMzMmIwIiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjQ1NTk5NDR9.0RrKIrs9vBY1fcp_nei3mTRhYxcZU5mdar9ribHlso0'
-      },
-      body: {
-        'region': 'us-central1',
-        'registry': 'ingressRegistry',
-        'project': 'ingressdevelopmentenv'
-      }
-    };
-    const req = await https.request({
-      ...options,
-    }, res => {
-      let data = '';
-      const chunks: any[] = [];
-      res.on('data', chunk => data += chunk)
-      res.on('end', () => {
-        console.log('end ');
-        //console.log('RESPONSE: ', JSON.parse(data));  
-        // let resBody = Buffer.concat(chunks);
-        // switch(res.headers['content-type']) {
-        //     case 'application/json':
-        //       resBody = JSON.parse(resBody);
-        //         break;
-        // }
-        //res.ideviceregistry
-        //array.push(ideviceregistry);
-        //array.push(ilistDeviceregistriesrequest);
-        //array.push(ilistdeviceregistriesresponse);
-        return data;
-      })
-    })
-    req.on('error', (e) => {
-      console.log("toketn API FAILURE: ", e)
-    });
-    // if(body) {
-    //     req.write(body);
-    // }
-    req.end();
-  }
+  // async getRegistryToken() {
+  //   console.log('getRegistryToken');
+  //   var options = {
+  //     host: 'iot-sandbox.clearblade.com',
+  //     //port: '80',
+  //     path: `/api/v/1/code/84abb9b30ca4ece486d4bcf7ad71/getRegistryCredentials`,
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'ClearBlade-UserToken': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5NGFiYjliMzBjOTRjMGE1ZGNhOGE4ODRiYzU5Iiwic2lkIjoiMmQ5ZTAzZjUtZmQ2OC00MWM4LTg5OGYtYWQzMWE4ZjMzMmIwIiwidXQiOjIsInR0IjoxLCJleHAiOi0xLCJpYXQiOjE2NjQ1NTk5NDR9.0RrKIrs9vBY1fcp_nei3mTRhYxcZU5mdar9ribHlso0'
+  //     },
+  //     body: {
+  //       'region': 'us-central1',
+  //       'registry': 'ingressRegistry',
+  //       'project': 'ingressdevelopmentenv'
+  //     }
+  //   };
+  //   const req = await https.request({
+  //     ...options,
+  //   }, res => {
+  //     let data = '';
+  //     const chunks: any[] = [];
+  //     res.on('data', chunk => data += chunk)
+  //     res.on('end', () => {
+  //       console.log('end ');
+  //       //console.log('RESPONSE: ', JSON.parse(data));  
+  //       // let resBody = Buffer.concat(chunks);
+  //       // switch(res.headers['content-type']) {
+  //       //     case 'application/json':
+  //       //       resBody = JSON.parse(resBody);
+  //       //         break;
+  //       // }
+  //       //res.ideviceregistry
+  //       //array.push(ideviceregistry);
+  //       //array.push(ilistDeviceregistriesrequest);
+  //       //array.push(ilistdeviceregistriesresponse);
+  //       return data;
+  //     })
+  //   })
+  //   req.on('error', (e) => {
+  //     console.log("toketn API FAILURE: ", e)
+  //   });
+  //   // if(body) {
+  //   //     req.write(body);
+  //   // }
+  //   req.end();
+  // }
 
   async httpsPost() {
     console.log('httpsPost');
@@ -2218,7 +2247,7 @@ export class DeviceManagerClient {
       registry: "ingressRegistry",
       project: "ingressdevelopmentenv"
     })
-    return new Promise(async (resolve, reject) => {
+    return new Promise<string>(async (resolve, reject) => {
 
       const options = {
         host: 'iot-sandbox.clearblade.com',
@@ -2231,12 +2260,12 @@ export class DeviceManagerClient {
           'Content-Length': payload.length
         }
       };
-
+      //console.log('httpsPost payload: ', payload);
       //const body = [];
 
       const req = https.request(options, res => {
-        // console.log('httpsPost statusCode:', res.statusCode);
-        // console.log('httpsPost headers:', res.headers);
+        console.log('httpsPost statusCode:', res.statusCode);
+        //console.log('httpsPost headers:', res.headers);
         let data = '';
         const chunks: any[] = [];
         res.on('data', chunk => data += chunk)
@@ -2244,7 +2273,7 @@ export class DeviceManagerClient {
           console.log(`httpsPost RESPONSE: `, data);
           // resolve(JSON.parse(Buffer.concat(body).toString()));
           console.log('end');
-          resolve("'region': 'us-central1','registry': 'ingressRegistry','project': 'ingressdevelopmentenv'");
+          resolve(data);
         });
       });
       req.on('error', e => {
@@ -2252,9 +2281,9 @@ export class DeviceManagerClient {
         console.log('error');
         reject(e);
       });
-      req.write(JSON.stringify(payload));
+      req.write(payload);
       req.end();
-      console.log('end');
+      //console.log('end');
     });
 
   }
