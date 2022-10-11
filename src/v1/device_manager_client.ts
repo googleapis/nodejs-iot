@@ -1761,23 +1761,58 @@ export class DeviceManagerClient {
       {} | undefined
     ]
   > | void {
-    request = request || {};
-    let options: CallOptions;
-    if (typeof optionsOrCallback === 'function' && callback === undefined) {
-      callback = optionsOrCallback;
-      options = {};
-    } else {
-      options = optionsOrCallback as CallOptions;
-    }
-    options = options || {};
-    options.otherArgs = options.otherArgs || {};
-    options.otherArgs.headers = options.otherArgs.headers || {};
-    options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        name: request.name || '',
+
+    console.log("going SEND DEVICE COMMAND");
+        
+    return new Promise(async (resolve, reject) => {
+      console.log("calling prmoise....");
+      const token_response = await this.httpsPost();
+      const token = JSON.parse(token_response);
+      const payload = JSON.stringify({
+        binaryData: 'c2VuZEZ1bm55TWVzc2FnZVRvRGV2aWNl'
+      })
+      var options = {
+        host: 'iot-sandbox.clearblade.com',
+        port: '443',
+        path: `/api/v/4/webhook/execute/` + token.systemKey + `/devices?method=sendCommandToDevice&name=device_ingress`,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'ClearBlade-UserToken': token.serviceAccountToken,
+          'Content-Length': payload.length
+        }
+      };
+
+      console.log("REQUEST OPTIONS ", options);
+      
+      const req = https.request({
+        ...options,
+      }, res => {
+        let data = '';
+        const chunks: any[] = [];
+        //console.log('REQUEST: ', req);
+        res.on('data', chunk => data += chunk)
+        res.on('end', () => {
+          console.log('RESPONSE main: ');
+          
+          let array: [protos.google.cloud.iot.v1.ISendCommandToDeviceResponse, protos.google.cloud.iot.v1.ISendCommandToDeviceRequest | undefined, {} | undefined];
+
+          const isendcommandtodevicerequest: protos.google.cloud.iot.v1.ISendCommandToDeviceRequest | undefined = {};
+          const isendcommandtodeviceresponse: protos.google.cloud.iot.v1.ISendCommandToDeviceResponse = {};
+          array = [isendcommandtodevicerequest, isendcommandtodeviceresponse, {}];
+          resolve(array);
+        })
+      })
+      req.on('error', (e) => {
+        console.log("INNER FAILURE: ", e);
+        reject(e);
       });
-    this.initialize();
-    return this.innerApiCalls.sendCommandToDevice(request, options, callback);
+      if (payload) {
+        req.write(payload);
+      }
+      req.end();
+    })
+
   }
   /**
    * Associates the device with the gateway.
