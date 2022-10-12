@@ -1762,19 +1762,21 @@ export class DeviceManagerClient {
     ]
   > | void {
 
-    console.log("going SEND DEVICE COMMAND");
+    //console.log("going SEND DEVICE COMMAND");
+    //console.log("REQUEST: ", request);
         
     return new Promise(async (resolve, reject) => {
       console.log("calling prmoise....");
       const token_response = await this.httpsPost();
       const token = JSON.parse(token_response);
       const payload = JSON.stringify({
-        binaryData: 'c2VuZEZ1bm55TWVzc2FnZVRvRGV2aWNl'
+        binaryData: request?.binaryData,
+        subfolder: request?.subfolder
       })
       var options = {
         host: 'iot-sandbox.clearblade.com',
         port: '443',
-        path: `/api/v/4/webhook/execute/` + token.systemKey + `/devices?method=sendCommandToDevice&name=device_ingress`,
+        path: `/api/v/4/webhook/execute/` + token.systemKey + `/devices?method=sendCommandToDevice&name=` + request?.name,
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -1783,7 +1785,7 @@ export class DeviceManagerClient {
         }
       };
 
-      console.log("REQUEST OPTIONS ", options);
+      //console.log("REQUEST OPTIONS ", options);
       
       const req = https.request({
         ...options,

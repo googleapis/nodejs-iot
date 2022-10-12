@@ -34,8 +34,9 @@ async function main() {
     const binaryData = Buffer.from("c2VuZEZ1bm55TWVzc2FnZVRvRGV2aWNl");
 
     const request = {
-      name: 'formattedName',
-      binaryData: binaryData,
+      subfolder : 'sub',
+      name: 'device_ingress',
+      binaryData: 'c2VuZEZ1bm55TWVzc2FnZVRvRGV2aWNl',
     };
 
     const [response] = await client.sendCommandToDevice(request);
